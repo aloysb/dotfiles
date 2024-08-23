@@ -1,0 +1,180 @@
+{
+  config,
+  pkgs,
+  lib,
+  ...
+}: let
+  isDarwin = pkgs.stdenv.isDarwin;
+  isLinux = pkgs.stdenv.isLinux;
+in {
+  # Home Manager needs a bit of information about you and the paths it should
+  # manage.
+  home = rec {
+    username = "aloys";
+    homeDirectory =
+      if isLinux
+      then "/home/${username}/"
+      else "/Users/${username}/";
+    # This value determines the Home Manager release that your configuration is
+    # compatible with. This helps avoid breakage when a new Home Manager release
+    # introduces backwards incompatible changes.
+    # You should not change this value, even if you update Home Manager. If you do
+    # want to update the value, then make sure to first check the Home Manager
+    # release notes.
+    stateVersion = "24.11"; # Please read the comment before changing.
+  };
+
+  imports = [
+    ./symlinks.nix # import non nix assets, such as lua config
+    ./nvim.nix # neovim pkgs
+  ];
+
+  # The home.packages option allows you to install Nix packages into your
+  # environment.
+  home.packages = with pkgs;
+    [
+      git
+      curl
+      gh
+      wezterm
+      ripgrep # better grep
+      just # better make
+      fd # better find
+      jq # json utils
+      tree # display file tree
+      lazygit # git TUI
+      lazydocker # docker tui
+      asdf-vm # asdf version manage
+      zig # replace cclang
+      entr # run command on change/watch
+      neofetch # system info
+      delta # better git diff
+      caddy # proxy (better ngingx)
+      # Node/TS/JS
+      corepack # yarn/npm/pnpm
+
+      go
+    ]
+    ++ lib.optionals pkgs.stdenv.isDarwin [
+      colima # better docker daemon
+      # work SH
+      mkcert
+      awscli2
+      ffmpeg
+      resvg
+    ]
+    ++ lib.optionals pkgs.stdenv.isLinux [
+      # hyprland related pkgs
+      rofi-wayland
+      hyprpaper
+      waybar
+      # others
+      brightnessctl # control brighness
+    ]
+    ++ import ./lsp.nix {inherit pkgs;};
+
+  services =
+    {}
+    // lib.optionalAttrs isLinux
+    {
+      hyprpaper = {
+        enable = true;
+        settings = {
+          preload = ["${config.home.homeDirectory}/.config/home-manager/dotfiles/wallpapers/nord_wave.png"];
+          wallpaper = [",${config.home.homeDirectory}/.config/home-manager/dotfiles/wallpapers/nord_wave.png"];
+        };
+      };
+
+      podman = {
+        enable = true;
+      };
+    };
+
+  programs =
+    {
+      starship = {
+        enable = true;
+        enableZshIntegration = true;
+      };
+      zsh = {
+        enable = true;
+        shellAliases = {
+          hms = "home-manager switch --flake $HOME/.config/nix/#darwin";
+          gg = "lazygit";
+          v = "nvim";
+          yy = "yazi";
+          fk = "fuck";
+          p = "pnpm";
+        };
+        initExtra = ''
+          . "${pkgs.asdf-vm}/share/asdf-vm/asdf.sh"
+           autoload -Uz bashcompinit && bashcompinit
+           . "${pkgs.asdf-vm}/share/asdf-vm/completions/asdf.bash"
+
+             eval $(thefuck --alias)
+        '';
+        sessionVariables = {
+          VISUAL = "nvim";
+          EDITOR = "nvim";
+          HM = "${config.home.homeDirectory}/.config/home-manager/";
+          DOTFILES = "${config.home.homeDirectory}/.config/home-manager/dotfiles/"; # Where I keep the source link of my dotfiles not managed within HM
+          DOCKER_HOST = "unix:///var/run/docker.sock"; # this is to be able to run docker rootless
+          ASDF_DATA_DIR = "${config.home.homeDirectory}/.config/asdf";
+          COREPACK_ENABLE_AUTO_PIN = 0;
+          CONF = "$HOME/.config/";
+          DY = "$HOME/dylan/";
+        };
+        oh-my-zsh = {
+          enable = true;
+          plugins = [
+            "aliases"
+            "git"
+            "docker"
+            "docker-compose"
+            "eza"
+            "git-commit"
+            "gh"
+          ];
+        };
+      };
+      zoxide = {
+        enable = true;
+        enableZshIntegration = true;
+      };
+      bat = {
+        enable = true;
+        extraPackages = [pkgs.bat-extras.batman pkgs.bat-extras.batgrep];
+      };
+      direnv = {
+        enable = true;
+        enableZshIntegration = true;
+        nix-direnv.enable = true;
+      };
+      yazi = {
+        enable = true;
+        enableZshIntegration = true;
+      };
+      fzf = {
+        enable = true;
+        enableZshIntegration = true;
+        historyWidgetOptions = [
+          "--bind 'ctrl-y:execute-silent(echo -n {2..} | pbcopy)+abort'"
+          "--color header:italic"
+          "--header 'Press CTRL-Y to copy command into clipboard'"
+        ];
+        changeDirWidgetOptions = [
+          "--walker-skip .git,node_modules,target"
+          "--preview 'eza -T'"
+        ];
+      };
+      home-manager = {
+        enable = true;
+        path = lib.mkForce "$HOME/.config/nix/home-manager";
+      };
+    }
+    // lib.optionalAttrs isLinux
+    {
+      qutebrowser.enable = true;
+      firefox.enable = true;
+    };
+}
