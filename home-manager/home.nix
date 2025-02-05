@@ -7,8 +7,6 @@
   isDarwin = pkgs.stdenv.isDarwin;
   isLinux = pkgs.stdenv.isLinux;
 in {
-  # Home Manager needs a bit of information about you and the paths it should
-  # manage.
   home = rec {
     username = "aloys";
     homeDirectory =
@@ -29,8 +27,6 @@ in {
     ./nvim.nix # neovim pkgs
   ];
 
-  # The home.packages option allows you to install Nix packages into your
-  # environment.
   home.packages = with pkgs;
     [
       git
@@ -50,9 +46,7 @@ in {
       neofetch # system info
       delta # better git diff
       caddy # proxy (better ngingx)
-      # Node/TS/JS
       corepack # yarn/npm/pnpm
-
       go
     ]
     ++ lib.optionals pkgs.stdenv.isDarwin [
@@ -84,7 +78,6 @@ in {
           wallpaper = [",${config.home.homeDirectory}/.config/home-manager/dotfiles/wallpapers/nord_wave.png"];
         };
       };
-
       podman = {
         enable = true;
       };
@@ -108,21 +101,20 @@ in {
         };
         initExtra = ''
           . "${pkgs.asdf-vm}/share/asdf-vm/asdf.sh"
-           autoload -Uz bashcompinit && bashcompinit
-           . "${pkgs.asdf-vm}/share/asdf-vm/completions/asdf.bash"
-
-             eval $(thefuck --alias)
+          autoload -Uz bashcompinit && bashcompinit
+          . "${pkgs.asdf-vm}/share/asdf-vm/completions/asdf.bash"
+          eval $(thefuck --alias)
         '';
         sessionVariables = {
           VISUAL = "nvim";
           EDITOR = "nvim";
-          HM = "${config.home.homeDirectory}/.config/home-manager/";
-          DOTFILES = "${config.home.homeDirectory}/.config/home-manager/dotfiles/"; # Where I keep the source link of my dotfiles not managed within HM
+          HM = "${config.home.homeDirectory}/.config/nix/home-manager/";
+          DOTFILES = "${config.home.homeDirectory}/.config/nix/dotfiles/"; # Where I keep the source link of my dotfiles not managed within HM
           DOCKER_HOST = "unix:///var/run/docker.sock"; # this is to be able to run docker rootless
           ASDF_DATA_DIR = "${config.home.homeDirectory}/.config/asdf";
-          COREPACK_ENABLE_AUTO_PIN = 0;
+          COREPACK_ENABLE_AUTO_PIN = 0; # Sh
           CONF = "$HOME/.config/";
-          DY = "$HOME/dylan/";
+          DY = "$HOME/dylan/"; # SH
         };
         oh-my-zsh = {
           enable = true;
@@ -170,31 +162,6 @@ in {
       home-manager = {
         enable = true;
         path = lib.mkForce "$HOME/.config/nix/home-manager";
-      };
-      neovim = {
-        enable = true;
-        extraConfig = ''
-          lua << EOF
-          -- Target all files except .nix files
-          vim.api.nvim_create_autocmd("BufEnter", {
-            pattern = "*",
-            callback = function()
-              local file_ext = vim.fn.expand('%:e')
-              if file_ext ~= 'nix' then
-                print("This is not a nix file")
-              end
-            end,
-          })
-
-          -- Alternative approach using pattern exclusion
-          vim.api.nvim_create_autocmd("BufEnter", {
-            pattern = {"*", "!*.nix"},  -- matches all files but excludes .nix
-            callback = function()
-              print("This is not a nix file")
-            end,
-          })
-          EOF
-        '';
       };
     }
     // lib.optionalAttrs isLinux
