@@ -1,0 +1,22 @@
+{
+"position": "bottom",
+"mode":"overlay",
+"modules-center" : [
+	"hyprland/workspaces"
+],
+"modules-right": [
+	"battery"
+],
+"reload_style_on_change": true,
+
+// Modules config
+"battery":{},
+
+"hyprland/workspaces": {
+	"persistent-workspaces": {
+		"*":5
+	}
+}
+}
+
+

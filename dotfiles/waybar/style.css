@@ -1,0 +1,9 @@
+window#waybar {
+	color: yellow;
+	background: none;
+	border: none;
+}
+
+.modules-right {
+	padding: .5rem;
+}

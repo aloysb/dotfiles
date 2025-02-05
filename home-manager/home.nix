@@ -171,6 +171,31 @@ in {
         enable = true;
         path = lib.mkForce "$HOME/.config/nix/home-manager";
       };
+      neovim = {
+        enable = true;
+        extraConfig = ''
+          lua << EOF
+          -- Target all files except .nix files
+          vim.api.nvim_create_autocmd("BufEnter", {
+            pattern = "*",
+            callback = function()
+              local file_ext = vim.fn.expand('%:e')
+              if file_ext ~= 'nix' then
+                print("This is not a nix file")
+              end
+            end,
+          })
+
+          -- Alternative approach using pattern exclusion
+          vim.api.nvim_create_autocmd("BufEnter", {
+            pattern = {"*", "!*.nix"},  -- matches all files but excludes .nix
+            callback = function()
+              print("This is not a nix file")
+            end,
+          })
+          EOF
+        '';
+      };
     }
     // lib.optionalAttrs isLinux
     {
