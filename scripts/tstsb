@@ -1,0 +1,9 @@
+#!/bin/bash
+# (shorthand) Get the current test branch based on the current branch
+
+BRANCH=$(git branch --show-current)
+TEST_SERVER="https://sb-$(echo $BRANCH | sed 's#sb/##').sb.shorthand.dev"
+
+echo $TEST_SERVER
+echo $TEST_SERVER | pbcopy
+

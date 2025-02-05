@@ -1,0 +1,8 @@
+#!/bin/bash
+# A fuzzy finder to execute custom scripts
+
+ls $HOME/scripts/ | fzf \
+  --header 'Select a script to execute' \
+  --height 40% \
+  --border \
+  --preview "bat --color=always $HOME/scripts/{}"

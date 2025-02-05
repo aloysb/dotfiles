@@ -25,12 +25,14 @@
     ];
   pathToFolder = "${config.home.homeDirectory}/.config/nix/dotfiles";
 in {
-  home.file = lib.listToAttrs (lib.lists.forEach foldersToSymlink (folder: {
-    name = ".config/${folder}";
-    value = {
-      source = config.lib.file.mkOutOfStoreSymlink "${pathToFolder}/${folder}";
-      force = true;
-      recursive = true;
-    };
-  }));
+  home.file =
+    lib.listToAttrs (lib.lists.forEach foldersToSymlink (folder: {
+      name = ".config/${folder}";
+      value = {
+        source = config.lib.file.mkOutOfStoreSymlink "${pathToFolder}/${folder}";
+        force = true;
+        recursive = true;
+      };
+    }))
+    // import ./scripts.nix {inherit config;};
 }

@@ -1,0 +1,6 @@
+#!/bin/bash
+# Display the list of npm scripts in a fuzzy finder to execute
+
+jq -r '.scripts | keys[]' package.json | fzf \
+  --header "Select a script to execute" \
+  --bind "enter:become(pnpm run {})"

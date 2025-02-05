@@ -1,0 +1,4 @@
+#!/bin/sh
+bundleid=$(osascript -e "id of app \"$1\"")
+echo "Bundle ID: \"$bundleid\" (copied to clipboard)"
+echo $bundleid | pbcopy

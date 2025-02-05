@@ -1,0 +1,9 @@
+#!/bin/bash
+# (shorthand) Get the current test branch based on the current branch
+
+BRANCH=$(git branch --show-current)
+TEST_SERVER="https://test-$(echo $BRANCH | sed 's#test/##').test.shorthand.com"
+
+echo $TEST_SERVER
+echo $TEST_SERVER | pbcopy
+

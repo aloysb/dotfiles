@@ -104,6 +104,7 @@ in {
           autoload -Uz bashcompinit && bashcompinit
           . "${pkgs.asdf-vm}/share/asdf-vm/completions/asdf.bash"
           eval $(thefuck --alias)
+          PATH=$PATH:${config.home.homeDirectory}/.config/scripts
         '';
         sessionVariables = {
           VISUAL = "nvim";

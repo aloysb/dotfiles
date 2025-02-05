@@ -40,8 +40,7 @@ o.signcolumn = 'yes'
 o.updatetime = 1000
 
 -- Decrease mapped sequence wait time
--- Displays which-key popup sooner
-o.timeoutlen = 200
+o.timeoutlen = 1000
 
 -- Configure how new splits should be opened
 o.splitright = true
