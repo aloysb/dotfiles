@@ -28,3 +28,9 @@ vim.keymap.set({ 'n' }, "<leader>so", function()
     fzf.oldfiles(opts)
   end,
   { desc = "Grep codebase" })
+
+
+vim.keymap.set({ 'n' }, "<leader>sk", function()
+    fzf.keymaps()
+  end,
+  { desc = "Search keymaps" })
