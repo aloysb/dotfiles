@@ -19,9 +19,14 @@ vim.keymap.set({ 'n' }, "<leader>sf", function()
   { desc = "Fuzzy find files" })
 
 vim.keymap.set({ 'n' }, "<leader>sg", function()
+    fzf.live_grep()
+  end,
+  { desc = "Grep codebase from cwd" })
+
+vim.keymap.set({ 'n' }, "<leader>sG", function()
     fzf.live_grep(opts)
   end,
-  { desc = "Grep codebase" })
+  { desc = "Grep entire codebase" })
 
 
 vim.keymap.set({ 'n' }, "<leader>so", function()

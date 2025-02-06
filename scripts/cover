@@ -7,10 +7,10 @@ cd $DYLAN_PATH
 WATCH_FLAG=""
 if [[ "$1" == "--watch" ]]; then
   WATCH_FLAG="--watch"
-fi
+  fi
 
 FILEPATH="app/src/$(git ls-files "*.test.tsx" | sed 's:^app/src/::' | fzf --header "Select a test to run")"
 FILEPATH_FROM_ROOT_DIR=$(echo "$FILEPATH" | sed 's:.*/src/:src/:' | sed 's:\.test\.tsx:\.tsx:')
 
-pnpm jest --runTestsByPath $FILEPATH --coverage=true --coverageReporters="text" --collectCoverageFrom="$FILEPATH_FROM_ROOT_DIR" $1
+pnpm jest --runTestsByPath $FILEPATH --coverage=true --coverageReporters="text" --collectCoverageFrom="$FILEPATH_FROM_ROOT_DIR"
 #pnpm jest --runTestsByPath $FILEPATH --coverage=true --coverageReporters="text" --collectCoverageFrom="$FILEPATH_FROM_ROOT_DIR" 

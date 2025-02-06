@@ -62,8 +62,8 @@ o.cursorline = true
 o.scrolloff = 10
 
 -- Disable netrwPlugin
-vim.g.loaded_netrwPlugin = 1
-vim.g.loaded_netrw = 1
+-- vim.g.loaded_netrwPlugin = 1
+-- vim.g.loaded_netrw = 1
 
 -- Tabs
 o.tabstop = 2

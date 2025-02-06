@@ -27,6 +27,12 @@
       url = "github:homebrew/homebrew-cask";
       flake = false;
     };
+
+    hyprland = {
+    	url = "github:hyprwm/Hyprland/b1e5cc66bdb20b002c93479490c3a317552210b3";
+    	#url = "github:hyprwm/Hyprland/b74a56e2acce8fe88a575287a20ac196d8d01938";
+	inputs.nixpkgs.follows = "nixpkgs";
+     };
   };
 
   outputs = inputs @ {
@@ -37,10 +43,16 @@
     nix-homebrew,
     homebrew-core,
     neovim-nightly-overlay,
+    hyprland,
     ...
   }: let
     overlays = [
       neovim-nightly-overlay.overlays.default
+	(final: prev: {
+		hyprland = prev.hyprland.override {
+			libgbm = prev.mesa;
+		};
+	})
     ];
 
     systemDarwin = "aarch64-darwin";
@@ -51,12 +63,15 @@
       home-manager.lib.homeManagerConfiguration {
         pkgs = import nixpkgs {
           inherit system;
-          overlays = overlays;
+          inherit overlays;
         };
         modules = [
           ./home-manager/home.nix
           {nixpkgs.overlays = overlays;}
         ];
+	extraSpecialArgs = {
+	inherit hyprland;
+	};
       };
   in {
     ##########################################

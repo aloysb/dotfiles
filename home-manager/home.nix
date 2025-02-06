@@ -2,11 +2,15 @@
   config,
   pkgs,
   lib,
+  hyprland,
   ...
 }: let
   isDarwin = pkgs.stdenv.isDarwin;
   isLinux = pkgs.stdenv.isLinux;
 in {
+  nixpkgs.overlays = [
+  ];
+
   home = rec {
     username = "aloys";
     homeDirectory =
@@ -27,6 +31,15 @@ in {
     ./nvim.nix # neovim pkgs
   ];
 
+  wayland.windowManager.hyprland = {
+    enable = false;
+    package = pkgs.hyprland;
+    xwayland.enable = false;
+    settings = {
+      "$mod" = "SUPER";
+    };
+    extraConfig = builtins.readFile ../dotfiles/hypr/hyprland.conf;
+  };
   home.packages = with pkgs;
     [
       git
@@ -60,10 +73,11 @@ in {
     ++ lib.optionals pkgs.stdenv.isLinux [
       # hyprland related pkgs
       rofi-wayland
-      hyprpaper
       waybar
+      hyprland
       # others
       brightnessctl # control brighness
+      kitty
     ]
     ++ import ./lsp.nix {inherit pkgs;};
 
@@ -75,7 +89,7 @@ in {
         enable = true;
         settings = {
           preload = ["${config.home.homeDirectory}/.config/home-manager/dotfiles/wallpapers/nord_wave.png"];
-          wallpaper = [",${config.home.homeDirectory}/.config/home-manager/dotfiles/wallpapers/nord_wave.png"];
+          wallpaper = ["${config.home.homeDirectory}/.config/home-manager/dotfiles/wallpapers/nord_wave.png"];
         };
       };
       podman = {
@@ -98,6 +112,7 @@ in {
           yy = "yazi";
           fk = "fuck";
           p = "pnpm";
+          hypr = "Hyprland -c /home/aloys/.config/hyprland/hyprland.conf";
         };
         initExtra = ''
           . "${pkgs.asdf-vm}/share/asdf-vm/asdf.sh"
@@ -159,6 +174,15 @@ in {
           "--walker-skip .git,node_modules,target"
           "--preview 'eza -T'"
         ];
+      };
+      thefuck = {
+        enable = true;
+        enableInstantMode = true;
+        enableZshIntegration = true;
+      };
+      eza = {
+        enable = true;
+        enableZshIntegration = true;
       };
       home-manager = {
         enable = true;
