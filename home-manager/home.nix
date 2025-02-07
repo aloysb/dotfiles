@@ -2,7 +2,6 @@
   config,
   pkgs,
   lib,
-  hyprland,
   ...
 }: let
   isDarwin = pkgs.stdenv.isDarwin;
@@ -72,9 +71,9 @@ in {
     ]
     ++ lib.optionals pkgs.stdenv.isLinux [
       # hyprland related pkgs
+      hyprpaper
       rofi-wayland
       waybar
-      hyprland
       # others
       brightnessctl # control brighness
       kitty
@@ -86,10 +85,10 @@ in {
     // lib.optionalAttrs isLinux
     {
       hyprpaper = {
-        enable = true;
+        enable = false;
         settings = {
-          preload = ["${config.home.homeDirectory}/.config/home-manager/dotfiles/wallpapers/nord_wave.png"];
-          wallpaper = ["${config.home.homeDirectory}/.config/home-manager/dotfiles/wallpapers/nord_wave.png"];
+          preload = ["${config.home.homeDirectory}/.config/wallpapers/nord_wave.png"];
+          wallpaper = ["${config.home.homeDirectory}/.config/wallpapers/nord_wave.png"];
         };
       };
       podman = {

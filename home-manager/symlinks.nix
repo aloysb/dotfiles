@@ -20,7 +20,7 @@
     ++ lib.optionals pkgs.stdenv.isLinux [
       "waybar"
       "rofi"
-      "hyprland"
+      "hypr"
       "wallpapers"
     ];
   pathToFolder = "${config.home.homeDirectory}/.config/nix/dotfiles";
