@@ -8,6 +8,7 @@
       oil-nvim
       blink-cmp
       nvim-treesitter.withAllGrammars
+      diffview-nvim
     ];
   };
 }

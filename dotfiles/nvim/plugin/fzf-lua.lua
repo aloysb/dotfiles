@@ -6,6 +6,11 @@ fzf.setup({
     preview = {
       hidden = true
     }
+  },
+  keymap = {
+    fzf = {
+      ["ctrl-q"] = "select-all+accept",
+    }
   }
 })
 
