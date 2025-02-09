@@ -108,6 +108,7 @@ in {
       password-store = {
         enable = true;
         settings = {
+          PASSWORD_STORE_DIR = "${config.home.homeDirectory}/.config/nix/.password-store";
         };
       };
       starship = {
@@ -142,8 +143,7 @@ in {
           COREPACK_ENABLE_AUTO_PIN = 0; # Sh
           CONF = "$HOME/.config/";
           DY = "$HOME/dylan/"; # SH
-          PASSWORD_STORE_DIR = "${config.home.homeDirectory}/.config/nix/pass-store";
-          OPENROUTER_KEY = "pass show openrouter/key";
+          OPENROUTER_API_KEY = "pass show openrouter/key";
         };
         oh-my-zsh = {
           enable = true;
