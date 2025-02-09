@@ -61,6 +61,7 @@ in {
       corepack # yarn/npm/pnpm
       go
       aider-chat
+      pass
     ]
     ++ lib.optionals pkgs.stdenv.isDarwin [
       colima # better docker daemon
@@ -141,6 +142,7 @@ in {
           COREPACK_ENABLE_AUTO_PIN = 0; # Sh
           CONF = "$HOME/.config/";
           DY = "$HOME/dylan/"; # SH
+          OPENROUTER_KEY = "pass show openrouter/key";
         };
         oh-my-zsh = {
           enable = true;
