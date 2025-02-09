@@ -60,6 +60,7 @@ in {
       caddy # proxy (better ngingx)
       corepack # yarn/npm/pnpm
       go
+      aider-chat
     ]
     ++ lib.optionals pkgs.stdenv.isDarwin [
       colima # better docker daemon
@@ -74,6 +75,7 @@ in {
       hyprpaper
       rofi-wayland
       waybar
+      wl-clipboard-rs
       # others
       brightnessctl # control brighness
       kitty
@@ -84,6 +86,10 @@ in {
     {}
     // lib.optionalAttrs isLinux
     {
+      cliphist = {
+        enable = true;
+        allowImages = true;
+      };
       hyprpaper = {
         enable = false;
         settings = {
@@ -98,6 +104,11 @@ in {
 
   programs =
     {
+      password-store = {
+        enable = true;
+        settings = {
+        };
+      };
       starship = {
         enable = true;
         enableZshIntegration = true;
