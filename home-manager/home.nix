@@ -61,7 +61,6 @@ in {
       corepack # yarn/npm/pnpm
       go
       aider-chat
-      pass
     ]
     ++ lib.optionals pkgs.stdenv.isDarwin [
       colima # better docker daemon
@@ -75,8 +74,8 @@ in {
       # hyprland related pkgs
       hyprpaper
       rofi-wayland
+      wl-clipboard
       waybar
-      wl-clipboard-rs
       # others
       brightnessctl # control brighness
       kitty

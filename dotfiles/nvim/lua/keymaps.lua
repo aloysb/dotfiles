@@ -1,5 +1,11 @@
 -- [[ Basic Keymaps ]]
---
+
+-- Copy/Paste for wayland - Won't work on mac
+vim.keymap.set({ 'n' }, '<C-V>', ':r !wl-paste<CR>', { desc = "Paste" })
+vim.keymap.set({ 'v' }, '<C-V>', '<Esc> :r !wl-paste<CR>', { desc = "Paste" })
+
+vim.keymap.set({ 'v' }, '<C-C>', ':w !wl-copy<CR>', { desc = "Copy" })
+
 -- Set highlight on search, but clear on pressing <Esc> in normal mode
 vim.opt.hlsearch = true
 vim.keymap.set('n', '<Esc>', '<cmd>nohlsearch<CR>')
@@ -36,4 +42,3 @@ for i = 0, 9 do
   vim.api.nvim_set_keymap('o', '<k' .. i .. '>', tostring(i), { noremap = true, silent = true })
   vim.api.nvim_set_keymap('i', '<k' .. i .. '>', tostring(i), { noremap = true, silent = true })
 end
-
