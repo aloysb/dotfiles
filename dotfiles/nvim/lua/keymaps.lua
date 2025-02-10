@@ -10,6 +10,8 @@ vim.keymap.set({ 'v' }, '<C-C>', ':w !wl-copy<CR>', { desc = "Copy" })
 vim.opt.hlsearch = true
 vim.keymap.set('n', '<Esc>', '<cmd>nohlsearch<CR>')
 
+vim.keymap.set('n', '<leader>w', '<cmd>:w!', { desc = "Save" })
+
 -- Keybinds to make split navigation easier.
 --  Use CTRL+<hjkl> to switch between windows
 --  See `:help wincmd` for a list of all window commands

@@ -23,7 +23,7 @@ vim.api.nvim_create_autocmd('LspAttach', {
     end
 
     if client:supports_method('textDocument/definiton') then
-      vim.keymap.set({ 'n' }, "grn", vim.lsp.buf.definition, { buffer = 0 })
+      vim.keymap.set({ 'n' }, "gd", vim.lsp.buf.definition, { buffer = 0 })
     end
   end,
 })
