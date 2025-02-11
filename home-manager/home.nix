@@ -57,7 +57,6 @@ in {
   };
   home.packages = with pkgs;
     [
-      git
       curl
       gh
       wezterm
@@ -76,7 +75,8 @@ in {
       caddy # proxy (better ngingx)
       corepack # yarn/npm/pnpm
       go
-      aider-chat # Not latest
+      aider-chat
+      handbrake
     ]
     ++ lib.optionals pkgs.stdenv.isDarwin [
       colima # better docker daemon
@@ -120,6 +120,40 @@ in {
 
   programs =
     {
+      git = {
+        enable = true;
+        userName = "aloysb";
+        userEmail = "aloysberger@gmail.com";
+        aliases = {
+          oops = "commit --amend --no-edit";
+        };
+        delta = {
+          enable = true;
+        };
+        extraConfig = {
+          pull.rebase = true;
+          log.abbrevCommit = true;
+          push.default = "upstream";
+          core = {
+            editor = "nvim";
+            whitespace = "trailing-space,space-before-tab";
+          };
+          rebase = {
+            autostash = true;
+          };
+          diff = {
+            algorithm = "histogram";
+          };
+          rerere = {
+            enabled = true;
+          };
+          url = {
+            "git@github.com:" = {
+              insteadOf = "gh:";
+            };
+          };
+        };
+      };
       password-store = {
         enable = true;
         settings = {
