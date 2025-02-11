@@ -6,8 +6,24 @@
 }: let
   isDarwin = pkgs.stdenv.isDarwin;
   isLinux = pkgs.stdenv.isLinux;
+
+  version = "0.74.0";
+  # Define the overlay for the latest version of Aider Chat
+  aiderLatest = final: prev: {
+    aider-chat = prev.python3.pkgs.aider-chat.overrideAttrs (old: {
+      version = version;
+      src = prev.fetchFromGitHub {
+        owner = "Aider-AI";
+        repo = "aider";
+        tag = "v${version}";
+        hash = "sha256-5dV1EW4qx2tXDlbzyS8CT3p0MXgdKVdIGVLDEQF/4Zc=";
+      };
+    });
+  };
 in {
+  # Apply the overlay to nixpkgs
   nixpkgs.overlays = [
+    aiderLatest
   ];
 
   home = rec {
@@ -60,7 +76,7 @@ in {
       caddy # proxy (better ngingx)
       corepack # yarn/npm/pnpm
       go
-      aider-chat
+      aider-chat # Not latest
     ]
     ++ lib.optionals pkgs.stdenv.isDarwin [
       colima # better docker daemon
