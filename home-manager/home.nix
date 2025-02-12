@@ -156,9 +156,6 @@ in {
       };
       password-store = {
         enable = true;
-        settings = {
-          PASSWORD_STORE_DIR = "${config.home.homeDirectory}/.config/nix/.password-store";
-        };
       };
       starship = {
         enable = true;
