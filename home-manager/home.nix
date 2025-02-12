@@ -67,7 +67,6 @@ in {
       tree # display file tree
       lazygit # git TUI
       lazydocker # docker tui
-      asdf-vm # asdf version manage
       zig # replace cclang
       entr # run command on change/watch
       neofetch # system info
@@ -76,7 +75,7 @@ in {
       corepack # yarn/npm/pnpm
       go
       aider-chat
-      handbrake
+      ffmpeg
     ]
     ++ lib.optionals pkgs.stdenv.isDarwin [
       colima # better docker daemon
@@ -173,9 +172,6 @@ in {
           hypr = "Hyprland -c /home/aloys/.config/hyprland/hyprland.conf";
         };
         initExtra = ''
-          . "${pkgs.asdf-vm}/share/asdf-vm/asdf.sh"
-          autoload -Uz bashcompinit && bashcompinit
-          . "${pkgs.asdf-vm}/share/asdf-vm/completions/asdf.bash"
           eval $(thefuck --alias)
           PATH=$PATH:${config.home.homeDirectory}/.config/scripts
         '';
@@ -185,7 +181,6 @@ in {
           HM = "${config.home.homeDirectory}/.config/nix/home-manager/";
           DOTFILES = "${config.home.homeDirectory}/.config/nix/dotfiles/"; # Where I keep the source link of my dotfiles not managed within HM
           DOCKER_HOST = "unix:///var/run/docker.sock"; # this is to be able to run docker rootless
-          ASDF_DATA_DIR = "${config.home.homeDirectory}/.config/asdf";
           COREPACK_ENABLE_AUTO_PIN = 0; # Sh
           CONF = "$HOME/.config/";
           DY = "$HOME/dylan/"; # SH
