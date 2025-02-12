@@ -76,6 +76,7 @@ in {
       go
       aider-chat
       ffmpeg
+      devenv
     ]
     ++ lib.optionals pkgs.stdenv.isDarwin [
       colima # better docker daemon
