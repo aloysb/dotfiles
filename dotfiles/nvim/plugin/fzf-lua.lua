@@ -44,3 +44,18 @@ vim.keymap.set({ 'n' }, "<leader>sk", function()
     fzf.keymaps()
   end,
   { desc = "Search keymaps" })
+
+vim.keymap.set({ 'n' }, "gra", function()
+    fzf.lsp_code_actions()
+  end,
+  { desc = "Code actions" })
+
+vim.keymap.set({ "n" }, "gd", function()
+    fzf.lsp_definitions()
+  end,
+  { desc = "LSP definitions" })
+
+vim.keymap.set({ "n" }, "grr", function()
+    fzf.lsp_references()
+  end,
+  { desc = "LSP references" })
