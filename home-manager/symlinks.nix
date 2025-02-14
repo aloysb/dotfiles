@@ -13,6 +13,7 @@
     [
       "nvim"
       "wezterm"
+      "kanata"
     ]
     ++ lib.optionals pkgs.stdenv.isDarwin [
       "aerospace"
