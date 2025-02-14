@@ -95,7 +95,7 @@ in {
       waybar
       # others
       brightnessctl # control brighness
-      kitty
+      font-awesome
     ]
     ++ import ./lsp.nix {inherit pkgs;};
 

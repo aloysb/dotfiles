@@ -1,22 +1,45 @@
-{
-"position": "bottom",
-"mode":"overlay",
-"modules-center" : [
-	"hyprland/workspaces"
-],
-"modules-right": [
-	"battery"
-],
-"reload_style_on_change": true,
-
-// Modules config
-"battery":{},
-
-"hyprland/workspaces": {
-	"persistent-workspaces": {
-		"*":5
-	}
+  {
+  "position": "top",
+  "mode":"overlay",
+  "modules-right" : [
+    "hyprland/workspaces",
+    "battery",
+    "network",
+    "bluetooth",
+    "cpu",
+    "pulseaudio"
+  ],
+  "battery":{
+  "format": "\uf240 {capacity}%",
+  "tooltip": false,
+  "on-click":"foot powertop"
+  },
+  "network": {
+    "format":"\uf1eb {essid} ({signalStrength}%)",
+  "tooltip": false,
+  "on-click":"foot nmtui"
+  },
+  "bluetooth": {
+    "format":"\uf294  {status}",
+  "tooltip": false,
+  "on-click":"foot bluetoothctl"
+  },
+  "cpu": {
+    "format":"\uf2db {usage}%",
+  "tooltip": false,
+  "on-click":"foot htop"
+  },
+  "pulseaudio": {
+    "format":"\uf028  {volume}%",
+  "tooltip": false,
+  "on-click":"pavucontrol"
+  },
+  "hyprland/workspaces": {
+    "active-only":true
+    }
+  },
+  "reload_style_on_change": true
 }
-}
+
 
 
