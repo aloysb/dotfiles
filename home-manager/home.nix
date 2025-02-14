@@ -182,6 +182,7 @@ in {
         initExtra = ''
           eval $(thefuck --alias)
           PATH=$PATH:${config.home.homeDirectory}/.config/scripts
+          export OPENROUTER_API_KEY = `pass show openrouter/api_key`
         '';
         sessionVariables = {
           VISUAL = "nvim";
@@ -192,7 +193,6 @@ in {
           COREPACK_ENABLE_AUTO_PIN = 0; # Sh
           CONF = "$HOME/.config/";
           DY = "$HOME/dylan/"; # SH
-          OPENROUTER_API_KEY = "pass show openrouter/key";
         };
         oh-my-zsh = {
           enable = true;

@@ -6,11 +6,25 @@
     "battery",
     "network",
     "bluetooth",
+    "memory",
     "cpu",
-    "pulseaudio"
+    "pulseaudio",
+    "clock"
   ],
   "battery":{
-  "format": "\uf240 {capacity}%",
+  "format": "{icon} {capacity}%",
+  "states": {
+    "warning": 25,
+    "caution":10,
+    "critical": 5
+  },
+  "format-icons": [
+"\uf244",
+"\uf243",
+"\uf242",
+"\uf241",
+"\uf240"
+  ],
   "tooltip": false,
   "on-click":"foot powertop"
   },
@@ -29,6 +43,12 @@
   "tooltip": false,
   "on-click":"foot htop"
   },
+"memory": {
+    "interval": 30,
+    "format": "\uf538 {used}G",
+  "tooltip": false,
+  "on-click":"foot htop"
+  },
   "pulseaudio": {
     "format":"\uf028  {volume}%",
   "tooltip": false,
@@ -38,6 +58,11 @@
     "active-only":true
     }
   },
+  "clock": {
+    "interval": 60,
+    "format": "{:%H:%M}",
+    "max-length": 25
+},
   "reload_style_on_change": true
 }
 
