@@ -1,19 +1,15 @@
-vim.api.nvim_create_user_command("TermOnClose", function(opts)
-  local current_buf = vim.api.nvim_get_current_buf()
-  cmd = opts.args
-  print(cmd)
-  vim.cmd("terminal " .. cmd)
-  vim.cmd('startinsert')
-  vim.api.nvim_create_autocmd('TermClose', {
-    pattern = "*",
-    callback = function()
-      local term_buf = vim.api.nvim_get_current_buf()
-      if term_buf ~= current_buf then
-        vim.api.nvim_set_current_buf(current_buf)
-      end
-    end
-  })
-end, { nargs = "+" })
+vim.keymap.set('n', '<leader>gfh', ':DiffviewFileHistory %<CR>', { desc = "Git file history" })
+vim.keymap.set('v', '<leader>gfh', ":'<,'>DiffviewFileHistory<CR>", { desc = "Git selection history" })
+vim.keymap.set('n', '<leader>gD', ":DiffviewOpen<CR>", { desc = "Git diff view" })
 
-vim.keymap.set({ "n" }, '<leader>gg', function() vim.cmd.TermOnClose("lazygit") end, { desc = "open lazygit" })
-vim.keymap.set({ "n" }, '<leader>ty', function() vim.cmd.TermOnClose("yazi") end, { desc = "open yazi" })
+
+
+local diffview_group = vim.api.nvim_create_augroup("DiffviewGroup", { clear = true })
+
+vim.api.nvim_create_autocmd("BufEnter", {
+  group = diffview_group,
+  pattern = "diffview://*",
+  callback = function()
+    vim.keymap.set('n', '<leader>q', ':DiffviewClose<CR>', { desc = "Close Diffview", buffer = true })
+  end,
+})

@@ -130,6 +130,12 @@ in {
         };
         delta = {
           enable = true;
+          options = {
+            dark = true;
+            plus-style = false;
+            minus-style = false;
+            light = false;
+          };
         };
         extraConfig = {
           pull.rebase = true;

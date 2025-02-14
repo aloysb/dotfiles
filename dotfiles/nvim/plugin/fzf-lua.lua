@@ -8,8 +8,13 @@ fzf.setup({
     }
   },
   keymap = {
+    builtin = {
+      ["<C-p>"] = "toggle-preview",
+    },
     fzf = {
+      true,
       ["ctrl-q"] = "select-all+accept",
+      ["ctrl-p"] = "toggle-preview",
     }
   }
 })
@@ -46,7 +51,10 @@ vim.keymap.set({ 'n' }, "<leader>sk", function()
   { desc = "Search keymaps" })
 
 vim.keymap.set({ 'n' }, "gra", function()
-    fzf.lsp_code_actions()
+    fzf.lsp_code_actions({
+      winopts = { fullscreen = false, height = 0.20, width = 0.33, relative = "cursor" }
+    }
+    )
   end,
   { desc = "Code actions" })
 

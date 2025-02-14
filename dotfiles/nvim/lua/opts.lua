@@ -70,3 +70,6 @@ o.tabstop = 2
 o.softtabstop = 0
 o.shiftwidth = 2
 o.expandtab = true
+
+-- highlight search
+vim.opt.hlsearch = true
