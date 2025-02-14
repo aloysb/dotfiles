@@ -14,17 +14,20 @@
   "battery":{
   "format": "{icon} {capacity}%",
   "states": {
+    "full": 75,
+    "half": 50,
     "warning": 25,
     "caution":10,
     "critical": 5
   },
-  "format-icons": [
-"\uf244",
-"\uf243",
-"\uf242",
-"\uf241",
-"\uf240"
-  ],
+  "format-icons": {
+    "charging":"\uf5e7",
+"critical":"\uf244",
+"caution":"\uf243",
+"warning":"\uf242",
+"half":"\uf241",
+"full":"\uf240"
+  },
   "tooltip": false,
   "on-click":"foot powertop"
   },

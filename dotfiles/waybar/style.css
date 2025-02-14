@@ -177,3 +177,7 @@ window#waybar {
 #battery.warning {
   color: @nord13;
 }
+
+#battery.charging {
+  color: @nord14;
+}
