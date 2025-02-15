@@ -34,8 +34,8 @@ local diagnostics_visible = true
 function ToggleDiagnostics()
   diagnostics_visible = not diagnostics_visible
   if diagnostics_visible then
-    vim.diagnostic.show()
+    vim.diagnostic.config({ virtual_text = true })
   else
-    vim.diagnostic.hide()
+    vim.diagnostic.config({ virtual_text = false })
   end
 end
