@@ -46,6 +46,8 @@ in {
     ./nvim.nix # neovim pkgs
   ];
 
+  fonts.fontconfig.enable = true;
+
   wayland.windowManager.hyprland = {
     enable = false;
     package = pkgs.hyprland;
@@ -78,6 +80,7 @@ in {
       ffmpeg
       devenv
       kanata
+      nerd-fonts.monaspace
     ]
     ++ lib.optionals pkgs.stdenv.isDarwin [
       colima # better docker daemon
@@ -182,7 +185,7 @@ in {
         initExtra = ''
           eval $(thefuck --alias)
           PATH=$PATH:${config.home.homeDirectory}/.config/scripts
-          export OPENROUTER_API_KEY = `pass show openrouter/api_key`
+          export OPENROUTER_API_KEY=`pass show openrouter/api_key`
         '';
         sessionVariables = {
           VISUAL = "nvim";

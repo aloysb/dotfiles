@@ -1,6 +1,7 @@
 vim.lsp.enable("tsserver")
 vim.lsp.enable("nix")
 vim.lsp.enable("luals")
+vim.lsp.enable("biome")
 
 local onLspAttach = vim.api.nvim_create_augroup("OnLSPAttach", {})
 vim.api.nvim_create_autocmd('LspAttach', {
