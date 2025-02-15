@@ -28,3 +28,14 @@ vim.api.nvim_create_autocmd('LspAttach', {
     end
   end,
 })
+
+local diagnostics_visible = true
+
+function ToggleDiagnostics()
+  diagnostics_visible = not diagnostics_visible
+  if diagnostics_visible then
+    vim.diagnostic.show()
+  else
+    vim.diagnostic.hide()
+  end
+end

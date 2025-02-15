@@ -23,7 +23,10 @@ vim.keymap.set('n', '<C-k>', '<C-w><C-k>', { desc = 'Move focus to the upper win
 -- buffers
 vim.keymap.set('n', '<leader>bb', '<cmd>b#<CR>', { desc = 'Toggle buffer back/forth' })
 
--- better vertical nav - center the active line after scolling half a page
+-- Toggle LSP diagnostics
+vim.keymap.set('n', '<leader>td', '<cmd>lua ToggleDiagnostics()<CR>', { desc = 'Toggle LSP Diagnostics' })
+
+-- better vertical nav - center the active line after scrolling half a page
 vim.keymap.set('n', '<C-d>', '<C-d>zz', { desc = 'Scroll downwards' })
 vim.keymap.set('n', '<C-u>', '<C-u>zz', { desc = 'Scroll upwards' })
 
