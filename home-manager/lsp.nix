@@ -7,4 +7,5 @@ with pkgs; [
   golangci-lint # golang
   lua-language-server # lua
   biome # a toolchain for JS, useful for formatting json files as well
+  zls # zig
 ]
