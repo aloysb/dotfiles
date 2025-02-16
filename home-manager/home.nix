@@ -99,6 +99,8 @@ in {
       # others
       brightnessctl # control brighness
       font-awesome
+      impala # network TUI
+      bluez
     ]
     ++ import ./lsp.nix {inherit pkgs;};
 

@@ -12,9 +12,9 @@
     "clock"
   ],
   "battery":{
-  "format": "{icon} {capacity}%",
+  "format": "{icon}  {capacity}%",
   "states": {
-    "full": 75,
+    "full": 100,
     "half": 50,
     "warning": 25,
     "caution":10,
@@ -32,9 +32,10 @@
   "on-click":"foot powertop"
   },
   "network": {
-    "format":"\uf1eb {essid} ({signalStrength}%)",
-  "tooltip": false,
-  "on-click":"foot nmtui"
+    "format-wifi":"\uf1eb  {essid} ({ipaddr})",
+    "format-disconnected": "no internet",
+  "tooltip": "{ipaddr}",
+  "on-click":"foot impala"
   },
   "bluetooth": {
     "format":"\uf294  {status}",
