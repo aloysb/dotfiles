@@ -1,74 +1,70 @@
-  {
-  "position": "top",
-  "mode":"overlay",
-  "modules-right" : [
-    "hyprland/workspaces",
-    "battery",
-    "network",
-    "bluetooth",
-    "memory",
-    "cpu",
-    "pulseaudio",
-    "clock"
-  ],
-  "battery":{
-  "format": "{icon}  {capacity}%",
-  "states": {
-    "full": 100,
-    "half": 50,
-    "warning": 25,
-    "caution":10,
-    "critical": 5
-  },
-  "format-icons": {
-    "charging":"\uf5e7",
-"critical":"\uf244",
-"caution":"\uf243",
-"warning":"\uf242",
-"half":"\uf241",
-"full":"\uf240"
-  },
-  "tooltip": false,
-  "on-click":"foot powertop"
-  },
-  "network": {
-    "format-wifi":"\uf1eb  {essid} ({ipaddr})",
-    "format-disconnected": "no internet",
-  "tooltip": "{ipaddr}",
-  "on-click":"foot impala"
-  },
-  "bluetooth": {
-    "format":"\uf294  {status}",
-  "tooltip": false,
-  "on-click":"foot bluetoothctl"
-  },
-  "cpu": {
-    "format":"\uf2db {usage}%",
-  "tooltip": false,
-  "on-click":"foot htop"
-  },
-"memory": {
-    "interval": 30,
-    "format": "\uf538 {used}G",
-  "tooltip": false,
-  "on-click":"foot htop"
-  },
-  "pulseaudio": {
-    "format":"\uf028  {volume}%",
-  "tooltip": false,
-  "on-click":"pavucontrol"
-  },
-  "hyprland/workspaces": {
-    "active-only":true
-    }
-  },
-  "clock": {
-    "interval": 60,
-    "format": "{:%H:%M}",
-    "max-length": 25
-},
-  "reload_style_on_change": true
+{
+	"position": "top",
+	"mode": "overlay",
+	"modules-right": [
+		"hyprland/workspaces",
+		"battery",
+		"network",
+		"bluetooth",
+		"memory",
+		"cpu",
+		"pulseaudio",
+		"clock"
+	],
+	"battery": {
+		"format": "{icon}  {capacity}%",
+		"states": {
+			"full": 100,
+			"half": 50,
+			"warning": 25,
+			"caution": 10,
+			"critical": 5
+		},
+		"format-icons": {
+			"charging": "\uf5e7",
+			"critical": "\uf244",
+			"caution": "\uf243",
+			"warning": "\uf242",
+			"half": "\uf241",
+			"full": "\uf240"
+		},
+		"tooltip": false,
+		"on-click": "foot powertop"
+	},
+	"network": {
+		"format-wifi": "\uf1eb  {essid} ({ipaddr})",
+		"format-disconnected": "no internet",
+		"tooltip": "{ipaddr}",
+		"on-click": "foot impala"
+	},
+	"bluetooth": {
+		"format": "\uf294  {status}",
+		"tooltip": false,
+		"on-click": "foot bluetoothctl"
+	},
+	"cpu": {
+		"format": "\uf2db {usage}%",
+		"tooltip": false,
+		"on-click": "foot htop"
+	},
+	"memory": {
+		"interval": 30,
+		"format": "\uf538 {used}G",
+		"tooltip": false,
+		"on-click": "foot htop"
+	},
+	"pulseaudio": {
+		"format": "\uf028  {volume}%",
+		"tooltip": false,
+		"on-click": "pavucontrol"
+	},
+	"hyprland/workspaces": {
+		"active-only": true
+	},
+	"clock": {
+		"interval": 60,
+		"format": "{:%H:%M}",
+		"max-length": 25
+	},
+	"reload_style_on_change": true
 }
-
-
-

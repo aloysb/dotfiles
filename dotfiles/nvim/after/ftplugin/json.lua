@@ -2,7 +2,6 @@ local group = vim.api.nvim_create_augroup("FormatJson", { clear = true })
 
 -- Autoformat JSON using jq before saving
 vim.api.nvim_create_autocmd("BufWritePre", {
-  pattern = { "*.json", "*.jsonc" },
   callback = function()
     local file = vim.fn.expand("%")
     local output = vim.fn.system({ "jq", ".", file })
