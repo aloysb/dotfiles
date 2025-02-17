@@ -1,21 +1,20 @@
 local M = {}
 
 function M.setup(config)
-	-- Opacity settings
-	config.window_background_opacity = 0.93
-	config.text_background_opacity = 0.5
+  -- Opacity settings
+  config.window_background_opacity = 0.93
+  config.text_background_opacity = 0.5
 
-	-- Font and UI settings
-	config.line_height = 1.3
-	config.font_size = 13.0
-	config.window_decorations = "RESIZE"
+  -- Font and UI settings
+  config.line_height = 1.3
+  config.font_size = 13.0
+  config.window_decorations = "RESIZE"
   config.enable_tab_bar = false
-	config.hide_tab_bar_if_only_one_tab = true
-	config.color_scheme = "nord"
+  config.hide_tab_bar_if_only_one_tab = true
+  config.color_scheme = "nordfox"
 
-	--	config.color_scheme = "Tokyo Night Light (Gogh)"
-	config.adjust_window_size_when_changing_font_size = true
+  --	config.color_scheme = "Tokyo Night Light (Gogh)"
+  config.adjust_window_size_when_changing_font_size = true
 end
 
 return M
-

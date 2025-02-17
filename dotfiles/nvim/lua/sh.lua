@@ -9,20 +9,6 @@ vim.api.nvim_create_autocmd('TermOpen', {
   end,
 })
 
-local job_id = 0
-vim.keymap.set('n', '<leader>st', function()
-  vim.cmd.vnew()
-  vim.cmd.term()
-  vim.cmd.wincmd 'L'
-  vim.api.nvim_win_set_width(0, 50)
-
-  job_id = vim.bo.channel
-end, { desc = 'Open term' })
-
--- vim.keymap.set('n', '<leader>tt', function()
---   vim.fn.chansend(job_id, 'pnpm jest --runTestsByPath --testPathPattern ' .. vim.fn.expand '%' .. '\r\n')
--- end, { desc = 'Test current file' })
-
 vim.keymap.set('n', '<leader>xx', ':luafile %<CR>', { desc = 'reload lua file' })
 
 -- test in split
