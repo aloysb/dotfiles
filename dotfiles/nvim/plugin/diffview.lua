@@ -3,7 +3,6 @@ vim.keymap.set('v', '<leader>gfh', ":'<,'>DiffviewFileHistory<CR>", { desc = "Gi
 vim.keymap.set('n', '<leader>gD', ":DiffviewOpen<CR>", { desc = "Git diff view" })
 
 
-
 local diffview_group = vim.api.nvim_create_augroup("DiffviewGroup", { clear = true })
 
 vim.api.nvim_create_autocmd("BufEnter", {
