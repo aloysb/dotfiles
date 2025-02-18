@@ -79,12 +79,13 @@ in {
       aider-chat
       ffmpeg
       devenv
-      kanata
+      #kanata
       nerd-fonts.monaspace
+      uv
     ]
     ++ lib.optionals pkgs.stdenv.isDarwin [
       colima # better docker daemon
-      # work SH
+      # SH
       mkcert
       awscli2
       ffmpeg
@@ -115,8 +116,8 @@ in {
       hyprpaper = {
         enable = false;
         settings = {
-          preload = ["${config.home.homeDirectory}/.config/wallpapers/nord_wave.png"];
-          wallpaper = ["${config.home.homeDirectory}/.config/wallpapers/nord_wave.png"];
+          preload = ["${config.home.homeDirectory}/.config/wallpapers/starry-sky-night-with-landscape-mountains.jpg"];
+          wallpaper = ["${config.home.homeDirectory}/.config/wallpapers/starry-sky-night-with-landscape-mountains.jpg"];
         };
       };
       podman = {
@@ -184,11 +185,17 @@ in {
           p = "pnpm";
           hypr = "Hyprland -c /home/aloys/.config/hyprland/hyprland.conf";
         };
-        initExtra = ''
-          eval $(thefuck --alias)
-          PATH=$PATH:${config.home.homeDirectory}/.config/scripts
-          export OPENROUTER_API_KEY=`pass show openrouter/api_key`
-        '';
+        initExtra =
+          ''
+            eval $(thefuck --alias)
+            PATH=$PATH:${config.home.homeDirectory}/.config/scripts
+            export OPENROUTER_API_KEY=`pass show openrouter/api_key`
+          ''
+          + lib.optionalString isDarwin ''
+            # SH
+            export PATH="$PATH:/Applications/Docker.app/Contents/Resources/bin/"
+          '';
+
         sessionVariables = {
           VISUAL = "nvim";
           EDITOR = "nvim";
