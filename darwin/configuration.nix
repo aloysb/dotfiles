@@ -1,10 +1,13 @@
 {
   pkgs,
   nix-homebrew,
+  self,
   ...
 }: {
+  imports = [
+    ./dock.nix
+  ];
   # Auto upgrade nix package and the daemon service.
-  services.nix-daemon.enable = true;
   # nix.package = pkgs.nix;
 
   # Necessary for using flakes on this system.
@@ -19,7 +22,7 @@
 
   # Used for backwards compatibility, please read the changelog before changing.
   # $ darwin-rebuild changelog
-  system.stateVersion = 4;
+  system.stateVersion = 5;
 
   nix.extraOptions = ''
     auto-optimise-store = true
@@ -32,14 +35,28 @@
     home = "/Users/$USER";
   };
 
-  security.pam.enableSudoTouchIdAuth = true;
+  security.pam.services.sudo_local.touchIdAuth = true;
 
   system.keyboard.enableKeyMapping = true;
   system.keyboard.remapCapsLockToEscape = true;
 
+  system.startup.chime = false;
+
+  nix = {
+    gc = {
+      automatic = true;
+      interval = {
+        Weekday = 0;
+        Hour = 2;
+        Minute = 0;
+      };
+      options = "--delete-older-than 30d";
+    };
+  };
+
   # Add the homebrew packages
   homebrew = {
-    enable = false;
+    enable = true;
     # onActivation.cleanup = "uninstall";
     taps = [];
     brews = [
@@ -49,8 +66,7 @@
       "nss"
     ];
     casks = [
-      # i3-like window manager
-      "nikitabobko/tap/aerospace"
+      "wezterm"
     ];
   };
 }

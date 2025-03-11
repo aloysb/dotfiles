@@ -27,12 +27,16 @@
       url = "github:homebrew/homebrew-cask";
       flake = false;
     };
+    homebrew-bundle = {
+      url = "github:homebrew/homebrew-bundle";
+      flake = false;
+    };
 
     hyprland = {
-    	url = "github:hyprwm/Hyprland/b1e5cc66bdb20b002c93479490c3a317552210b3";
-    	#url = "github:hyprwm/Hyprland/b74a56e2acce8fe88a575287a20ac196d8d01938";
-	inputs.nixpkgs.follows = "nixpkgs";
-     };
+      url = "github:hyprwm/Hyprland/b1e5cc66bdb20b002c93479490c3a317552210b3";
+      #url = "github:hyprwm/Hyprland/b74a56e2acce8fe88a575287a20ac196d8d01938";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
   };
 
   outputs = inputs @ {
@@ -42,17 +46,19 @@
     home-manager,
     nix-homebrew,
     homebrew-core,
+    homebrew-cask,
+    homebrew-bundle,
     neovim-nightly-overlay,
     hyprland,
     ...
   }: let
     overlays = [
       neovim-nightly-overlay.overlays.default
-	(final: prev: {
-		hyprland = prev.hyprland.override {
-			libgbm = prev.mesa;
-		};
-	})
+      (final: prev: {
+        hyprland = prev.hyprland.override {
+          libgbm = prev.mesa;
+        };
+      })
     ];
 
     systemDarwin = "aarch64-darwin";
@@ -69,9 +75,9 @@
           ./home-manager/home.nix
           {nixpkgs.overlays = overlays;}
         ];
-	extraSpecialArgs = {
-	inherit hyprland;
-	};
+        extraSpecialArgs = {
+          inherit hyprland;
+        };
       };
   in {
     ##########################################
@@ -81,12 +87,23 @@
       system = systemDarwin; #
       specialArgs = {inherit self;};
       modules = [
-        "./nix-darwin/configuration.nix"
+        ./darwin/configuration.nix
         nix-homebrew.darwinModules.nix-homebrew
         {
           nix-homebrew = {
             enable = true;
             user = "aloys";
+            # Optional: Declarative tap management
+            taps = {
+              "homebrew/homebrew-core" = homebrew-core;
+              "homebrew/homebrew-cask" = homebrew-cask;
+              "homebrew/homebrew-bundle" = homebrew-bundle;
+            };
+
+            # Optional: Enable fully-declarative tap management
+            #
+            # With mutableTaps disabled, taps can no longer be added imperatively with `brew tap`.
+            mutableTaps = false;
           };
         }
       ];
