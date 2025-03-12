@@ -1,0 +1,4 @@
+[
+  "qutebrowser"
+  "wezterm"
+]
