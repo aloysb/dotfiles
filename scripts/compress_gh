@@ -1,0 +1,14 @@
+#!/bin/bash
+
+# Select file using fzf
+input_file=$(find . -type f \( -iname "*.mov" -o -iname "*.mp4" \) | fzf)
+
+# Exit if no file is selected
+[ -z "$input_file" ] && echo "No file selected." && exit 1
+
+# Define output file name
+output_file="compressed.mp4"
+
+# Run ffmpeg
+ffmpeg -i "$input_file" -vcodec libx264 -crf 28 -preset fast -acodec aac -b:a 128k "$output_file"
+

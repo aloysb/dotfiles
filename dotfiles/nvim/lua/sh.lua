@@ -12,7 +12,27 @@ vim.api.nvim_create_autocmd('TermOpen', {
 vim.keymap.set('n', '<leader>xx', ':luafile %<CR>', { desc = 'reload lua file' })
 
 -- test in split
-vim.keymap.set('n', '<leader>tt', function()
+vim.keymap.set('n', '<leader>ttt', function()
+  vim.fn.jobstart({
+    'wezterm',
+    'cli',
+    'split-pane',
+    '--right',
+    '--percent',
+    '30',
+    '--',
+    'pnpm',
+    'jest',
+    '--coverage=true',
+    '--reports="text',
+    '--runTestsByPath',
+    '--testPathPattern',
+    vim.fn.expand '%',
+  }, { detach = true })
+end, { desc = 'Test current file' })
+
+
+vim.keymap.set('n', '<leader>ttw', function()
   vim.fn.jobstart({
     'wezterm',
     'cli',

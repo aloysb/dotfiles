@@ -2,7 +2,7 @@ local M = {}
 
 function M.setup(config)
   -- Opacity settings
-  config.window_background_opacity = 0.93
+  config.window_background_opacity = 0.92
   config.text_background_opacity = 0.5
 
   -- Font and UI settings

@@ -14,7 +14,7 @@ fzf.setup({
     fzf = {
       true,
       ["ctrl-q"] = "select-all+accept",
-      ["ctrl-p"] = "toggle-preview",
+      ["ctrl-v"] = "toggle-preview",
     }
   }
 })

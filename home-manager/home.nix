@@ -82,6 +82,8 @@ in {
       #kanata
       nerd-fonts.monaspace
       uv
+      ollama
+      zsh-powerlevel10k
     ]
     ++ lib.optionals pkgs.stdenv.isDarwin [
       colima # better docker daemon
@@ -170,10 +172,6 @@ in {
       password-store = {
         enable = true;
       };
-      starship = {
-        enable = true;
-        enableZshIntegration = true;
-      };
       zsh = {
         enable = true;
         shellAliases = {
@@ -185,17 +183,11 @@ in {
           p = "pnpm";
           hypr = "Hyprland -c /home/aloys/.config/hyprland/hyprland.conf";
         };
-        initExtra =
-          ''
-            eval $(thefuck --alias)
-            PATH=$PATH:${config.home.homeDirectory}/.config/scripts
-            export OPENROUTER_API_KEY=`pass show openrouter/api_key`
-          ''
-          + lib.optionalString isDarwin ''
-            # SH
-            export PATH="$PATH:/Applications/Docker.app/Contents/Resources/bin/"
-          '';
-
+        initExtra = ''
+          export OPENROUTER_API_KEY=`pass show openrouter/api_key`
+          export OLLAMA_API_BASE=http://127.0.0.1:11434
+        '';
+        promptInit = "source ${pkgs.zsh-powerlevel10k}/share/zsh-powerlevel10k/powerlevel10k.zsh-theme";
         sessionVariables = {
           VISUAL = "nvim";
           EDITOR = "nvim";
@@ -205,18 +197,7 @@ in {
           COREPACK_ENABLE_AUTO_PIN = 0; # Sh
           CONF = "$HOME/.config/";
           DY = "$HOME/dylan/"; # SH
-        };
-        oh-my-zsh = {
-          enable = true;
-          plugins = [
-            "aliases"
-            "git"
-            "docker"
-            "docker-compose"
-            "eza"
-            "git-commit"
-            "gh"
-          ];
+          PATH = lib.mkBefore "${config.home.homeDirectory}/.config/scripts:/Applications/Docker.app/Contents/Resources/bin/";
         };
       };
       zoxide = {
