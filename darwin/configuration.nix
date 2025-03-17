@@ -64,6 +64,21 @@
       # work SH
       "postgresql@15"
       "nss"
+      "typescript"
+      "yarn"
+      "coreutils"
+      "ffmpeg"
+      "java"
+      "pkg-config"
+      "cairo"
+      "pango"
+      "libpng"
+      "jpeg"
+      "giflib"
+      "librsvg"
+      "pixman"
+      "python-setuptools"
+      "resvg"
     ];
     casks = [
       "wezterm"

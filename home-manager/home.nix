@@ -93,17 +93,17 @@ in {
       ffmpeg
       devenv
       #kanata
-      nerd-fonts.monaspace
+      #nerd-fonts.monaspace
       uv
       ollama
+      pre-commit
     ]
     ++ lib.optionals pkgs.stdenv.isDarwin [
       colima # better docker daemon
       # SH
       mkcert
       awscli2
-      ffmpeg
-      resvg
+      nodejs_20
     ]
     ++ lib.optionals pkgs.stdenv.isLinux [
       # hyprland related pkgs
@@ -212,6 +212,14 @@ in {
           COREPACK_ENABLE_AUTO_PIN = 0; # Sh
           CONF = "$HOME/.config/";
           DY = "$HOME/dylan/"; # SH
+        };
+        oh-my-zsh = {
+          enable = true;
+          plugins = [
+            "git"
+            "docker"
+            "docker-compose"
+          ];
         };
         plugins = [
           {
