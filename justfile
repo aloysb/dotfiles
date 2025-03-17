@@ -1,13 +1,8 @@
-system := uname
+system := `uname | tr '[:upper:]' '[:lower:]'`
 
-e:
-@echo {{system}}
-
-hms-linux:
-   home-manager switch --flake .#linux
-hms-darwin:
-   home-manager switch --flake .#darwin
-darwin-nix-init:
-   nix run nix-darwin/master#darwin-rebuild -- switch --flake .#darwin
-darwin-hm-init:
-   nix run home-manager/master -- --flake .#darwin switch
+hms:
+   home-manager switch --flake .#{{system}}
+nix-init:
+   nix run nix-darwin/master#darwin-rebuild -- switch --flake .#{{system}}
+hm-init:
+   nix run home-manager/master -- --flake .#{{system}} switch
