@@ -251,7 +251,8 @@ in {
         ];
       };
       thefuck = {
-        enable = true;
+        # reenable after https://github.com/NixOS/nixpkgs/pull/390454 is merged
+        enable = false;
         enableInstantMode = true;
         enableZshIntegration = true;
       };

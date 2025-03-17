@@ -15,7 +15,7 @@
 
     # Add neovim-nightly-overlay with a specific revision
     neovim-nightly-overlay = {
-      url = "github:nix-community/neovim-nightly-overlay?rev=adee34d9e71f021dd8b635e8dd8e7329dea6ef79";
+      url = "github:nix-community/neovim-nightly-overlay/c689a1c053b079dc95231ab4d800e7d3cf13c0ce";
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
@@ -54,14 +54,12 @@
     hyprland,
     ...
   }: let
-    # Remove the custom nixpkgs and neovimNightlyFixed
     overlays = [
-      # Temporarily disable neovim-nightly-overlay to allow the system to update
-      # neovim-nightly-overlay.overlays.default
+      neovim-nightly-overlay.overlays.default
     ];
 
-    systemLinux="aarch64-linux";
-    systemDarwin="aarch64-darwin";
+    systemLinux = "aarch64-linux";
+    systemDarwin = "aarch64-darwin";
 
     # A helper function for the home manager configuration.
     mkHomeConfig = system:
