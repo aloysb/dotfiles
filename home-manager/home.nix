@@ -96,7 +96,6 @@ in {
       nerd-fonts.monaspace
       uv
       ollama
-      zsh-powerlevel10k
     ]
     ++ lib.optionals pkgs.stdenv.isDarwin [
       colima # better docker daemon
@@ -199,8 +198,9 @@ in {
         initExtraFirst = ''
           source ${pkgs.zsh-powerlevel10k}/share/zsh-powerlevel10k/powerlevel10k.zsh-theme'';
         initExtra = ''
-          export OPENROUTER_API_KEY=`pass show openrouter/api_key`
-          export OLLAMA_API_BASE=http://127.0.0.1:11434
+                 export OPENROUTER_API_KEY=`pass show openrouter/api_key`
+                 export OLLAMA_API_BASE=http://127.0.0.1:11434
+          source ~/.p10k.zsh
         '';
         sessionVariables = {
           VISUAL = "nvim";
@@ -212,6 +212,13 @@ in {
           CONF = "$HOME/.config/";
           DY = "$HOME/dylan/"; # SH
         };
+        plugins = [
+          {
+            name = "powerlevel10k";
+            src = pkgs.zsh-powerlevel10k;
+            file = "share/zsh-powerlevel10k/powerlevel10k.zsh-theme";
+          }
+        ];
       };
       zoxide = {
         enable = true;

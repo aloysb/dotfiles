@@ -9,5 +9,5 @@ with pkgs; [
   biome # a toolchain for JS, useful for formatting json files as well
   zls # zig
   ruff # python lint/format
-  pylsp # python lsp
+  #  pylsp # python lsp
 ]

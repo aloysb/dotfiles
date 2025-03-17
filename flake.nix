@@ -2,8 +2,7 @@
   description = "Nix-darwin + nixos configuration";
   inputs = {
     nixpkgs = {
-      url = "github:NixOS/nixpkgs?rev=d2faa1bbca1b1e4962ce7373c5b0879e5b12cef2";
-      # pinned until nix-darwin issue resolved https://github.com/LnL7/nix-darwin/issues/1317
+      url = "github:NixOS/nixpkgs";
     };
     nix-darwin = {
       url = "github:LnL7/nix-darwin";
@@ -61,8 +60,8 @@
       # neovim-nightly-overlay.overlays.default
     ];
 
-    systemDarwin = "aarch64-darwin";
-    systemLinux = "aarch64-linux";
+    systemLinux="aarch64-linux";
+    systemDarwin="aarch64-darwin";
 
     # A helper function for the home manager configuration.
     mkHomeConfig = system:
@@ -84,7 +83,7 @@
     # Nix Darwin
     ##########################################
     darwinConfigurations.darwin = nix-darwin.lib.darwinSystem {
-      system = systemDarwin; #
+      system = systemDarwin;
       specialArgs = {inherit self;};
       modules = [
         ./darwin/configuration.nix
