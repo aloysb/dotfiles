@@ -187,7 +187,8 @@ in {
       zsh = {
         enable = true;
         shellAliases = {
-          hms = "home-manager switch --flake $HOME/.config/nix/#darwin";
+          hms = "pushd ~/.config/nix > /dev/null && just hms && popd > /dev/null";
+          nixsw = "pushd ~/.config/nix > /dev/null && just nix-switch && popd > /dev/null";
           gg = "lazygit";
           v = "nvim";
           yy = "yazi";
