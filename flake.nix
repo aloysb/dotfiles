@@ -14,8 +14,11 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
-    # Add neovim-nightly-overlay
-    neovim-nightly-overlay.url = "github:nix-community/neovim-nightly-overlay";
+    # Add neovim-nightly-overlay with a specific revision
+    neovim-nightly-overlay = {
+      url = "github:nix-community/neovim-nightly-overlay?rev=adee34d9e71f021dd8b635e8dd8e7329dea6ef79";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
 
     # Needed for nix darwin for now as not all pkgs are within nixpkgs
     nix-homebrew.url = "github:zhaofengli-wip/nix-homebrew";
@@ -52,13 +55,10 @@
     hyprland,
     ...
   }: let
+    # Remove the custom nixpkgs and neovimNightlyFixed
     overlays = [
-      neovim-nightly-overlay.overlays.default
-      (final: prev: {
-        hyprland = prev.hyprland.override {
-          libgbm = prev.mesa;
-        };
-      })
+      # Temporarily disable neovim-nightly-overlay to allow the system to update
+      # neovim-nightly-overlay.overlays.default
     ];
 
     systemDarwin = "aarch64-darwin";

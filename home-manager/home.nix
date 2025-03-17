@@ -24,6 +24,12 @@ in {
   # Apply the overlay to nixpkgs
   nixpkgs.overlays = [
     aiderLatest
+    # Fix for tree-sitter-bundled-vendor hash mismatch
+    (final: prev: {
+      tree-sitter-bundled-vendor = prev.tree-sitter-bundled-vendor.overrideAttrs (oldAttrs: {
+        outputHash = "sha256-ie+/48dVU3r+tx/sQBWRIZEWSNWwMBANCqQLnv96JXs=";
+      });
+    })
   ];
 
   home = rec {
@@ -32,6 +38,13 @@ in {
       if isLinux
       then "/home/${username}/"
       else "/Users/${username}/";
+    sessionPath =
+      [
+        "${config.home.homeDirectory}/.config/scripts"
+      ]
+      ++ lib.optionals pkgs.stdenv.isDarwin [
+        "/Applications/Docker.app/Contents/Resources/bin/"
+      ];
     # This value determines the Home Manager release that your configuration is
     # compatible with. This helps avoid breakage when a new Home Manager release
     # introduces backwards incompatible changes.
@@ -183,11 +196,12 @@ in {
           p = "pnpm";
           hypr = "Hyprland -c /home/aloys/.config/hyprland/hyprland.conf";
         };
+        initExtraFirst = ''
+          source ${pkgs.zsh-powerlevel10k}/share/zsh-powerlevel10k/powerlevel10k.zsh-theme'';
         initExtra = ''
           export OPENROUTER_API_KEY=`pass show openrouter/api_key`
           export OLLAMA_API_BASE=http://127.0.0.1:11434
         '';
-        promptInit = "source ${pkgs.zsh-powerlevel10k}/share/zsh-powerlevel10k/powerlevel10k.zsh-theme";
         sessionVariables = {
           VISUAL = "nvim";
           EDITOR = "nvim";
@@ -197,7 +211,6 @@ in {
           COREPACK_ENABLE_AUTO_PIN = 0; # Sh
           CONF = "$HOME/.config/";
           DY = "$HOME/dylan/"; # SH
-          PATH = lib.mkBefore "${config.home.homeDirectory}/.config/scripts:/Applications/Docker.app/Contents/Resources/bin/";
         };
       };
       zoxide = {
