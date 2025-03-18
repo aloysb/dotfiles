@@ -39,9 +39,13 @@
       #url = "github:hyprwm/Hyprland/b74a56e2acce8fe88a575287a20ac196d8d01938";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+
+    stylix = {
+      url = "github:danth/stylix";
+    };
   };
 
-  outputs = inputs @ {
+  outputs = {
     self,
     nix-darwin,
     nixpkgs,
@@ -52,6 +56,7 @@
     homebrew-bundle,
     neovim-nightly-overlay,
     hyprland,
+    stylix,
     ...
   }: let
     overlays = [
@@ -103,6 +108,7 @@
             mutableTaps = false;
           };
         }
+        stylix.darwinModules.stylix
       ];
     };
 
