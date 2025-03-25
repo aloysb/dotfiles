@@ -97,6 +97,8 @@ in {
       uv
       ollama
       pre-commit
+      nordpass
+      thunderbird
     ]
     ++ lib.optionals pkgs.stdenv.isDarwin [
       colima # better docker daemon
