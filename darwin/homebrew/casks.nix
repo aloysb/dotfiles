@@ -1,4 +1,5 @@
 [
   "qutebrowser"
   "wezterm"
+  "alfred"
 ]
