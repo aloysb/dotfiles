@@ -1,4 +1,8 @@
-{self, ...}: {
+{
+  self,
+  pkgs,
+  ...
+}: {
   imports = [
     ./dock.nix
     ./homebrew/homebrew.nix
@@ -18,6 +22,162 @@
     };
     karabiner-elements = {
       enable = true;
+      package = pkgs.karabiner-elements.overrideAttrs (old: {
+        version = "14.13.0";
+        src = pkgs.fetchurl {
+          inherit (old.src) url;
+          hash = "sha256-gmJwoht/Tfm5qMecmq1N6PSAIfWOqsvuHU8VDJY8bLw=";
+        };
+      });
+    };
+    aerospace = {
+      enable = true;
+      settings = {
+        # 'startAtLogin' must be true for 'afterLoginCommand' to work
+        after-login-command = [];
+        # 'afterStartupCommand' runs after 'afterLoginCommand'
+        after-startup-command = [
+          "exec-and-forget borders active_color=0xffe1e3e4 inactive_color=0xff494d64 width=5.0"
+        ];
+
+        # Commands executed when the workspace changes
+        exec-on-workspace-change = [];
+
+        # Normalizations (see Aerospace guide)
+        enable-normalization-flatten-containers = true;
+        enable-normalization-opposite-orientation-for-nested-containers = true;
+
+        # Layout settings
+        accordion-padding = 60;
+        default-root-container-layout = "tiles";
+        default-root-container-orientation = "auto";
+
+        # Key mapping preset
+        key-mapping = {
+          preset = "qwerty";
+        };
+
+        # Gaps configuration
+        gaps = {
+          inner = {
+            horizontal = 16;
+            vertical = 16;
+          };
+          outer = {
+            left = 16;
+            bottom = 16;
+            top = 16;
+            right = 16;
+          };
+        };
+
+        # Execution environment settings
+        exec = {
+          inherit-env-vars = true;
+        };
+
+        # Binding modes configuration
+        mode = {
+          main = {
+            binding = {
+              "cmd-h" = [];
+
+              "alt-ctrl-shift-v" = "layout tiles horizontal vertical";
+              "alt-ctrl-shift-d" = "layout accordion horizontal vertical";
+
+              "alt-h" = "focus left";
+              "alt-j" = "focus down";
+              "alt-k" = "focus up";
+              "alt-l" = "focus right";
+
+              "alt-shift-h" = "move left";
+              "alt-shift-j" = "move down";
+              "alt-shift-k" = "move up";
+              "alt-shift-l" = "move right";
+
+              "alt-shift-minus" = "resize smart -200";
+              "alt-shift-equal" = "resize smart +200";
+
+              "ctrl-shift-alt-h" = "workspace 1";
+              "ctrl-shift-alt-comma" = "workspace 2";
+              "ctrl-shift-alt-period" = "workspace 3";
+              "ctrl-shift-alt-n" = "workspace 4";
+              "ctrl-shift-alt-e" = "workspace 5";
+              "ctrl-shift-alt-i" = "workspace 6";
+              "ctrl-shift-alt-l" = "workspace 7";
+              "ctrl-shift-alt-u" = "workspace 8";
+              "ctrl-shift-alt-y" = "workspace 9";
+
+              "ctrl-shift-alt-keypad1" = "move-node-to-workspace 1";
+              "ctrl-shift-alt-keypad2" = "move-node-to-workspace 2";
+              "ctrl-shift-alt-keypad3" = "move-node-to-workspace 3";
+              "ctrl-shift-alt-keypad4" = "move-node-to-workspace 4";
+              "ctrl-shift-alt-keypad5" = "move-node-to-workspace 5";
+              "ctrl-shift-alt-keypad6" = "move-node-to-workspace 6";
+              "ctrl-shift-alt-keypad7" = "move-node-to-workspace 7";
+              "ctrl-shift-alt-keypad8" = "move-node-to-workspace 8";
+              "ctrl-shift-alt-keypad9" = "move-node-to-workspace 9";
+
+              "shift-ctrl-alt-g" = "workspace-back-and-forth";
+              "shift-ctrl-alt-f" = "fullscreen";
+              "shift-ctrl-alt-q" = "enable toggle";
+              "shift-ctrl-alt-b" = "mode resize";
+            };
+          };
+
+          resize = {
+            binding = {
+              h = "resize width -50";
+              j = "resize height +50";
+              k = "resize height -50";
+              l = "resize width +50";
+              enter = "mode main";
+              esc = "mode main";
+            };
+          };
+        };
+
+        # On-window-detected rules
+
+        on-window-detected = [
+          {
+            "if" = {"app-id" = "com.github.wez.wezterm";};
+            run = ["layout tiling" "move-node-to-workspace 1"];
+          }
+          {
+            "if" = {"app-id" = "com.apple.Safari";};
+            run = ["layout tiling" "move-node-to-workspace 2"];
+          }
+          {
+            "if" = {"app-id" = "com.google.Chrome";};
+            run = ["layout tiling" "move-node-to-workspace 2"];
+          }
+          {
+            "if" = {"app-id" = "com.google.Chrome.dev";};
+            run = ["layout tiling" "move-node-to-workspace 2"];
+          }
+          {
+            "if" = {"app-id" = "com.linear";};
+            run = ["layout tiling" "move-node-to-workspace 5"];
+          }
+          {
+            "if" = {"app-id" = "com.apple.finder";};
+            run = ["layout floating"];
+          }
+          {
+            "if" = {"app-id" = "com.apple.iCal";};
+            run = ["layout floating"];
+          }
+          {
+            "if" = {"app-id" = "design.yugen.Flow";};
+            run = ["layout floating"];
+          }
+          # Catchall: send unmatched windows to workspace 9
+          {
+            run = ["layout tiling" "move-node-to-workspace 9"];
+          }
+        ];
+      };
     };
   };
 
@@ -53,7 +213,7 @@
   security.pam.services.sudo_local.touchIdAuth = true;
 
   system.keyboard.enableKeyMapping = true;
-  system.keyboard.remapCapsLockToEscape = true;
+  system.keyboard.remapCapsLockToEscape = false; #using karabiners intead
 
   system.startup.chime = false;
 
