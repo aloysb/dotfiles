@@ -10,8 +10,7 @@
   nix.settings.experimental-features = "nix-command flakes";
 
   programs.ssh.extraConfig = ''
-    AcceptEnv
-    WEZTERM_REMOTE_PANE
+    #AcceptEnv WEZTERM_REMOTE_PANE
   '';
   services.openssh = {
     enable = true;
@@ -26,10 +25,18 @@
   # $ darwin-rebuild changelog
   system.stateVersion = 5;
 
-  nix.extraOptions = ''
-    auto-optimise-store = true
-    extra-platforms = x86_64-darwin aarch64-darwin
-  '';
+  nix = {
+    settings = {
+      trusted-users = [
+        "root"
+        "aloys"
+      ];
+    };
+    extraOptions = ''
+      auto-optimise-store = true
+      extra-platforms = x86_64-darwin aarch64-darwin
+    '';
+  };
 
   # Declare the user that will be running `nix-darwin`
   users.users.aloys = {
@@ -44,6 +51,14 @@
 
   system.startup.chime = false;
 
+  system.defaults = {
+    finder = {
+      QuitMenuItem = true;
+      FXRemoveOldTrashItems = true;
+    };
+    NSGlobalDomain."com.apple.swipescrolldirection" = false; #non-natural scrolling
+  };
+
   nix = {
     gc = {
       automatic = true;
@@ -55,4 +70,15 @@
       options = "--delete-older-than 30d";
     };
   };
+
+  # options = {
+  #   virtualisation = {
+  #     docker = {
+  #       enable = true;
+  #       rootless = {
+  #         enable = true;
+  #       };
+  #     };
+  #   };
+  # };
 }
