@@ -21,6 +21,7 @@
     });
   };
 in {
+  nixpkgs.config.allowUnfree = true;
   # Apply the overlay to nixpkgs
   nixpkgs.overlays = [
     aiderLatest
@@ -92,20 +93,19 @@ in {
       aider-chat
       ffmpeg
       devenv
-      #kanata
+      kanata
       #nerd-fonts.monaspace
       uv
       ollama
       pre-commit
-      nordpass
       thunderbird
+      docker
+      docker-compose
+      postgresql
     ]
     ++ lib.optionals pkgs.stdenv.isDarwin [
       colima # better docker daemon
-      # SH
-      mkcert
-      awscli2
-      nodejs_20
+      _1password
     ]
     ++ lib.optionals pkgs.stdenv.isLinux [
       # hyprland related pkgs
@@ -152,12 +152,12 @@ in {
         };
         delta = {
           enable = true;
-          options = {
-            dark = true;
-            plus-style = false;
-            minus-style = false;
-            light = false;
-          };
+          #options = {
+          #  dark = true;
+          #  plus-style = false;
+          #  minus-style = false;
+          #  light = false;
+          #};
         };
         extraConfig = {
           pull.rebase = true;
@@ -170,6 +170,8 @@ in {
           rebase = {
             autostash = true;
           };
+          user.signingkey = "501A50921536CA05";
+          commit.gpgSign = true;
           diff = {
             algorithm = "histogram";
           };
@@ -210,7 +212,7 @@ in {
           EDITOR = "nvim";
           HM = "${config.home.homeDirectory}/.config/nix/home-manager/";
           DOTFILES = "${config.home.homeDirectory}/.config/nix/dotfiles/"; # Where I keep the source link of my dotfiles not managed within HM
-          DOCKER_HOST = "unix:///var/run/docker.sock"; # this is to be able to run docker rootless
+          DOCKER_HOST = "unix://$HOME/.colima/default/docker.sock";
           COREPACK_ENABLE_AUTO_PIN = 0; # Sh
           CONF = "$HOME/.config/";
           DY = "$HOME/dylan/"; # SH
@@ -247,6 +249,9 @@ in {
       yazi = {
         enable = true;
         enableZshIntegration = true;
+      };
+      gpg = {
+        enable = true;
       };
       fzf = {
         enable = true;
