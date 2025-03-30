@@ -114,7 +114,6 @@
         initialPassword = "password";
         packages = with pkgs; [
           gh
-          pinentry #needed for gpg key
         ];
         shell = pkgs.zsh;
       };
