@@ -93,7 +93,6 @@ in {
       aider-chat
       ffmpeg
       devenv
-      kanata
       #nerd-fonts.monaspace
       uv
       ollama
@@ -105,7 +104,7 @@ in {
     ]
     ++ lib.optionals pkgs.stdenv.isDarwin [
       colima # better docker daemon
-      _1password
+      _1password-cli
     ]
     ++ lib.optionals pkgs.stdenv.isLinux [
       # hyprland related pkgs
