@@ -12,9 +12,15 @@
   programs.ssh.extraConfig = ''
     #AcceptEnv WEZTERM_REMOTE_PANE
   '';
-  services.openssh = {
-    enable = true;
+  services = {
+    openssh = {
+      enable = true;
+    };
+    karabiner-elements = {
+      enable = true;
+    };
   };
+
   # Create /etc/zshrc that loads the nix-darwin environment.
   programs.zsh.enable = true; # default shell on catalina
 
