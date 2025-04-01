@@ -20,16 +20,6 @@
     openssh = {
       enable = true;
     };
-    karabiner-elements = {
-      enable = true;
-      package = pkgs.karabiner-elements.overrideAttrs (old: {
-        version = "14.13.0";
-        src = pkgs.fetchurl {
-          inherit (old.src) url;
-          hash = "sha256-gmJwoht/Tfm5qMecmq1N6PSAIfWOqsvuHU8VDJY8bLw=";
-        };
-      });
-    };
     aerospace = {
       enable = true;
       settings = {
@@ -37,7 +27,6 @@
         after-login-command = [];
         # 'afterStartupCommand' runs after 'afterLoginCommand'
         after-startup-command = [
-          "exec-and-forget borders active_color=0xffe1e3e4 inactive_color=0xff494d64 width=5.0"
         ];
 
         # Commands executed when the workspace changes
@@ -80,8 +69,6 @@
         mode = {
           main = {
             binding = {
-              "cmd-h" = [];
-
               "alt-ctrl-shift-v" = "layout tiles horizontal vertical";
               "alt-ctrl-shift-d" = "layout accordion horizontal vertical";
 
@@ -95,9 +82,21 @@
               "alt-shift-k" = "move up";
               "alt-shift-l" = "move right";
 
-              "alt-shift-minus" = "resize smart -200";
-              "alt-shift-equal" = "resize smart +200";
+              "ctrl-alt-shift-minus" = "resize smart -200";
+              "ctrl-alt-shift-equal" = "resize smart +200";
 
+              # We use keypads on the temper
+              "ctrl-shift-alt-1" = "workspace 1";
+              "ctrl-shift-alt-2" = "workspace 2";
+              "ctrl-shift-alt-3" = "workspace 3";
+              "ctrl-shift-alt-4" = "workspace 4";
+              "ctrl-shift-alt-5" = "workspace 5";
+              "ctrl-shift-alt-6" = "workspace 6";
+              "ctrl-shift-alt-7" = "workspace 7";
+              "ctrl-shift-alt-8" = "workspace 8";
+              "ctrl-shift-alt-9" = "workspace 9";
+
+              # We use keypads on the temper
               "ctrl-shift-alt-h" = "workspace 1";
               "ctrl-shift-alt-comma" = "workspace 2";
               "ctrl-shift-alt-period" = "workspace 3";
@@ -121,7 +120,20 @@
               "shift-ctrl-alt-g" = "workspace-back-and-forth";
               "shift-ctrl-alt-f" = "fullscreen";
               "shift-ctrl-alt-q" = "enable toggle";
-              "shift-ctrl-alt-b" = "mode resize";
+              "shift-ctrl-alt-b" = "balance-sizes";
+              "shift-ctrl-alt-r" = "mode resize";
+              "shift-ctrl-alt-x" = "mode quit";
+
+              "cmd-h" = []; # Disable "hide application"
+              "cmd-alt-h" = []; # Disable "hide others"
+            };
+          };
+
+          quit = {
+            binding = {
+              "shift-ctrl-alt-x" = "close-all-windows-but-current";
+              enter = "mode main";
+              esc = "mode main";
             };
           };
 
@@ -178,6 +190,12 @@
           }
         ];
       };
+    };
+    jankyborders = {
+      enable = true;
+      active_color = "0xffe1e3e4";
+      inactive_color = "0xff494d64";
+      width = 5.0;
     };
   };
 
