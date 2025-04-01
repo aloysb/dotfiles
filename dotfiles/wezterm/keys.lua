@@ -29,6 +29,8 @@ function M.setup(config)
     map("+", hyper, act.IncreaseFontSize),
     map("-", hyper, act.DecreaseFontSize),
     map("z", hyper, act.ShowDebugOverlay),
+    map("t", hyper, act.SpawnWindow),
+
 
     -- config.keys = {
     --   { key = 'V', mods = 'CTRL', action = act.PasteFrom 'Clipboard' },
@@ -44,7 +46,7 @@ function M.setup(config)
     map("x", hyper, act.CloseCurrentPane({ confirm = false })),
     map("d", hyper, act.SplitVertical),
     map("v", hyper, act.SplitHorizontal),
-    map("/", hyper, act.Search({ Regex = "[a-f0-9]{6,}" })),
+    map("|", hyper, act.Search({ Regex = "[a-f0-9]{6,}" })),
 
     -- resize mode
     map(
