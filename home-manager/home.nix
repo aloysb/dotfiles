@@ -6,25 +6,11 @@
 }: let
   isDarwin = pkgs.stdenv.isDarwin;
   isLinux = pkgs.stdenv.isLinux;
-
-  version = "0.74.0";
-  # Define the overlay for the latest version of Aider Chat
-  aiderLatest = final: prev: {
-    aider-chat = prev.python3.pkgs.aider-chat.overrideAttrs (old: {
-      version = version;
-      src = prev.fetchFromGitHub {
-        owner = "Aider-AI";
-        repo = "aider";
-        tag = "v${version}";
-        hash = "sha256-5dV1EW4qx2tXDlbzyS8CT3p0MXgdKVdIGVLDEQF/4Zc=";
-      };
-    });
-  };
 in {
   nixpkgs.config.allowUnfree = true;
   # Apply the overlay to nixpkgs
   nixpkgs.overlays = [
-    aiderLatest
+    (import ../overlay/aider-overlay.nix)
     # Fix for tree-sitter-bundled-vendor hash mismatch
     (final: prev: {
       tree-sitter-bundled-vendor = prev.tree-sitter-bundled-vendor.overrideAttrs (oldAttrs: {
