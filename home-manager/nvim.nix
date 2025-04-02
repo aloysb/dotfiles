@@ -1,7 +1,6 @@
 {pkgs, ...}: {
   programs.neovim = {
     enable = true;
-    package = pkgs.neovim; #this contains the nightly overlay
     plugins = with pkgs.vimPlugins; [
       nightfox-nvim # theme
       fzf-lua
