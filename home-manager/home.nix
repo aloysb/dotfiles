@@ -10,7 +10,7 @@ in {
   nixpkgs.config.allowUnfree = true;
   # Apply the overlay to nixpkgs
   nixpkgs.overlays = [
-    (import ../overlay/aider-overlay.nix)
+    (import ../overlays/aider-overlay.nix)
     # Fix for tree-sitter-bundled-vendor hash mismatch
     (final: prev: {
       tree-sitter-bundled-vendor = prev.tree-sitter-bundled-vendor.overrideAttrs (oldAttrs: {
