@@ -123,6 +123,7 @@
               "shift-ctrl-alt-b" = "balance-sizes";
               "shift-ctrl-alt-r" = "mode resize";
               "shift-ctrl-alt-x" = "mode quit";
+              "shift-ctrl-alt-0" = "mode sendToWorkspace";
 
               "cmd-h" = []; # Disable "hide application"
               "cmd-alt-h" = []; # Disable "hide others"
@@ -134,6 +135,22 @@
               "shift-ctrl-alt-x" = "close-all-windows-but-current";
               enter = "mode main";
               esc = "mode main";
+            };
+          };
+
+          sendToWorkspace = {
+            binding = {
+              enter = "mode main";
+              esc = "mode main";
+              "1" = "move-node-to-workspace 1";
+              "2" = "move-node-to-workspace 2";
+              "3" = "move-node-to-workspace 3";
+              "4" = "move-node-to-workspace 4";
+              "5" = "move-node-to-workspace 5";
+              "6" = "move-node-to-workspace 6";
+              "7" = "move-node-to-workspace 7";
+              "8" = "move-node-to-workspace 8";
+              "9" = "move-node-to-workspace 9";
             };
           };
 
