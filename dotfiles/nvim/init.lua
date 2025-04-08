@@ -7,6 +7,7 @@ vim.g.maplocalleader = ' '
 -- Set to true if you have a Nerd Font installed and selected in the terminal
 vim.g.have_nerd_font = true
 
+require('term')
 require("lsp")
 require("opts")
 require("autocmds")
@@ -27,3 +28,11 @@ vim.cmd [[
  highlight NonText guibg=none
  highlight NonText ctermbg=none
 ]]
+
+-- Testing tree sitter
+require 'nvim-treesitter.configs'.setup {
+  highlight = {
+    enable = true,
+    additional_vim_regex_highlighting = false,
+  }
+}

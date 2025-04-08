@@ -87,6 +87,10 @@ in {
       docker
       docker-compose
       postgresql
+      pm2
+      glow
+      nodejs_20
+      btop
     ]
     ++ lib.optionals pkgs.stdenv.isDarwin [
       colima # better docker daemon
@@ -184,6 +188,7 @@ in {
           fk = "fuck";
           p = "pnpm";
           hypr = "Hyprland -c /home/aloys/.config/hyprland/hyprland.conf";
+          aid = "aider -c ~/.aider.config.yml";
         };
         initExtraFirst = ''
           source ${pkgs.zsh-powerlevel10k}/share/zsh-powerlevel10k/powerlevel10k.zsh-theme'';
