@@ -13,9 +13,9 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
-    # Add neovim-nightly-overlay with a specific revision
-    neovim-nightly-overlay = {
-      url = "github:nix-community/neovim-nightly-overlay/c689a1c053b079dc95231ab4d800e7d3cf13c0ce";
+    nixvim = {
+      url = "github:nix-community/nixvim";
+      # If using a stable channel you can use `url = "github:nix-community/nixvim/nixos-<version>"`
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
@@ -54,13 +54,11 @@
     homebrew-core,
     homebrew-cask,
     homebrew-bundle,
-    neovim-nightly-overlay,
     hyprland,
     stylix,
     ...
   }: let
     overlays = [
-      neovim-nightly-overlay.overlays.default
     ];
 
     systemLinux = "aarch64-linux";

@@ -4,6 +4,8 @@ vim.lsp.enable("luals")
 vim.lsp.enable("biome")
 vim.lsp.enable("pyright")
 vim.lsp.enable("go")
+vim.lsp.enable("astro")
+vim.lsp.enable("elixir")
 
 local onLspAttach = vim.api.nvim_create_augroup("OnLSPAttach", {})
 vim.api.nvim_create_autocmd('LspAttach', {
