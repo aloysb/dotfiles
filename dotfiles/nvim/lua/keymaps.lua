@@ -48,5 +48,5 @@ for i = 0, 9 do
   vim.api.nvim_set_keymap('i', '<k' .. i .. '>', tostring(i), { noremap = true, silent = true })
 end
 
--- vim.keymap.set({ "n" }, '<leader>gg', function() vim.cmd.TermOnClose("lazygit") end, { desc = "open lazygit" })
+vim.keymap.set({ "n" }, '<leader>gg', function() vim.cmd.TermOnClose("lazygit") end, { desc = "open lazygit" })
 -- vim.keymap.set({ "n" }, '<leader>E', function() vim.cmd.TermOnClose("yazi") end, { desc = "open yazi" })

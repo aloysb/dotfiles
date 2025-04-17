@@ -45,4 +45,4 @@ function toggle_terminal()
 end
 
 vim.keymap.set("t", "<esc><esc>", "<c-\\><c-n>", { desc = "Close terminal" })
-vim.keymap.set("n", "<leader>tt", ":FloatTerminal<CR>", { desc = "Open floating terminal" })
+vim.keymap.set("n", "<leader>tt", toggle_terminal, { desc = "Open floating terminal" })

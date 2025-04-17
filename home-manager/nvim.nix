@@ -16,6 +16,10 @@
       mini-bracketed
       mini-bufremove
       nvim-web-devicons
+      nvim-dap
+      nvim-nio #needed for dap-ui
+      nvim-dap-ui
+      nvim-dap-go
     ];
   };
 }

@@ -10,5 +10,6 @@ with pkgs; [
   zls # zig
   ruff # python lint/format
   elixir-ls
+  emmet-language-server
   #  pylsp # python lsp
 ]
