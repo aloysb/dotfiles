@@ -46,8 +46,6 @@ in {
     ./nvim.nix # neovim pkgs
   ];
 
-  fonts.fontconfig.enable = true;
-
   wayland.windowManager.hyprland = {
     enable = false;
     package = pkgs.hyprland;
@@ -57,6 +55,7 @@ in {
     };
     extraConfig = builtins.readFile ../dotfiles/hypr/hyprland.conf;
   };
+
   home.packages = with pkgs;
     [
       curl
@@ -76,10 +75,11 @@ in {
       caddy # proxy (better ngingx)
       corepack # yarn/npm/pnpm
       go
+      delve
       aider-chat
       ffmpeg
       devenv
-      #nerd-fonts.monaspace
+      hurl
       uv
       ollama
       pre-commit
@@ -91,6 +91,7 @@ in {
       glow
       nodejs_20
       btop
+      wireguard-tools
     ]
     ++ lib.optionals pkgs.stdenv.isDarwin [
       colima # better docker daemon
@@ -189,6 +190,7 @@ in {
           p = "pnpm";
           hypr = "Hyprland -c /home/aloys/.config/hyprland/hyprland.conf";
           aid = "aider -c ~/.aider.config.yml";
+          aidcp = "aider -c ~/.aider.config.yml --copy-paste";
         };
         initExtraFirst = ''
           source ${pkgs.zsh-powerlevel10k}/share/zsh-powerlevel10k/powerlevel10k.zsh-theme'';

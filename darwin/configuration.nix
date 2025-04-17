@@ -210,8 +210,8 @@
     };
     jankyborders = {
       enable = true;
-      active_color = "0xffe1e3e4";
-      inactive_color = "0xff494d64";
+      active_color = "0xff81A1C1";
+      inactive_color = "0xff4C566A";
       width = 5.0;
     };
   };
@@ -271,6 +271,10 @@
       options = "--delete-older-than 30d";
     };
   };
+
+  fonts.packages = [
+    pkgs.nerd-fonts.fira-code
+  ];
 
   # options = {
   #   virtualisation = {

@@ -4,4 +4,7 @@
   "alfred"
   "karabiner-elements"
   "flameshot"
+  "google-chrome"
+  "thunderbird"
+  "tunnelblick"
 ]

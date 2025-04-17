@@ -23,6 +23,7 @@ function M.setup(config)
   config.keys = {
     -- general
     map("p", hyper, act.ActivateCommandPalette),
+    map("o", hyper, act.ShowLauncher),
     map("c", hyper, act.ActivateCopyMode),
     map("v", "SUPER", act.PasteFrom("Clipboard")),
     map(" ", hyper, act.QuickSelect),
@@ -46,7 +47,11 @@ function M.setup(config)
     map("x", hyper, act.CloseCurrentPane({ confirm = false })),
     map("d", hyper, act.SplitVertical),
     map("v", hyper, act.SplitHorizontal),
-    map("|", hyper, act.Search({ Regex = "[a-f0-9]{6,}" })),
+    map("|", hyper, act.Search({ Regex = "" })),
+
+    map("w", hyper, act.ShowLauncherArgs({ flags = "FUZZY|WORKSPACES" })),
+    map("[", hyper, act.SwitchWorkspaceRelative(-1)),
+    map("]", hyper, act.SwitchWorkspaceRelative(1)),
 
     -- resize mode
     map(
