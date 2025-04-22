@@ -5,12 +5,6 @@ dap.adapters.go =
   host = '127.0.0.1',
   port = '${port}',
 
-  -- -- **Add these two**:
-  -- localRoot  = vim.fn.getcwd(), -- e.g. /Users/aloys/.../http-api
-  -- remoteRoot = '/app',          -- path inside the container
-  --
-  -- -- optional, but can help:
-  -- cwd        = vim.fn.getcwd(),
 }
 
 dap.configurations.go = {
@@ -21,21 +15,26 @@ dap.configurations.go = {
     request = "attach",
     host = '127.0.0.1',
     port = 2345,
+    substitutePath = {
+      {
+        from = vim.fn.getcwd(), -- e.g. /Users/aloys/.../http-api
+        to   = '/app',          -- path inside the container
+      }
+    }
   }
 }
 
 require('dap-go').setup()
-
 require("dapui").setup()
-print("hello")
+require("nvim-dap-virtual-text").setup()
 
-dap.listeners.after.event_terminated['auto_attach'] = function()
-  print("hello")
-  vim.defer_fn(function()
-    dap.run(dap.configurations.go[1])
-  end, 300)
-end
-dap.listeners.after.event_exited['auto_attach'] = dap.listeners.after.event_terminated['auto_attach']
+-- dap.listeners.after.event_terminated['auto_attach'] = function()
+--   print("hello")
+--   vim.defer_fn(function()
+--     dap.run(dap.configurations.go[1])
+--   end, 300)
+-- end
+-- dap.listeners.after.event_exited['auto_attach'] = dap.listeners.after.event_terminated['auto_attach']
 
 
 vim.keymap.set('n', '<leader>dc', function() require('dap').continue() end)

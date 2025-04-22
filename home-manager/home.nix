@@ -191,6 +191,8 @@ in {
           hypr = "Hyprland -c /home/aloys/.config/hyprland/hyprland.conf";
           aid = "aider -c ~/.aider.config.yml";
           aidcp = "aider -c ~/.aider.config.yml --copy-paste";
+          paid = "aider -c ~/.aider.perso.config.yml";
+          paidcp = "aider -c ~/.aider.perso.config.yml --copy-paste";
         };
         initExtraFirst = ''
           source ${pkgs.zsh-powerlevel10k}/share/zsh-powerlevel10k/powerlevel10k.zsh-theme'';

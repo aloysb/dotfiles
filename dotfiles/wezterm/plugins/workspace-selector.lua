@@ -1,51 +1,47 @@
 local wezterm = require("wezterm")
-local act = wezterm.action
-local M = {}
+local act     = wezterm.action
+local mux     = wezterm.mux
+
+local M       = {}
+
+M.setup       = function()
+  wezterm.on('gui-startup', function(_)
+    -- FRONTEND workspace – one tab per app
+    local front_win, front_tab = mux.spawn_window {
+      workspace = 'frontend',
+      cwd       = '/home/you/code/frontend/app‑1',
+    }
+    local app_dirs = {
+      '/Users/aloys/code/dabble/apps.telescope.co/signal/',
+      '/Users/aloys/code/dabble/platform.telescope.co/'
+    }
+    for _, dir in ipairs(app_dirs) do
+      front_win:spawn_tab { cwd = dir }
+    end
+
+    -- API workspace – split pane (editor + server)
+    local api_win, api_tab = mux.spawn_window {
+      workspace = 'api',
+      cwd       = '/Users/aloys/code/dabble/api.telescope.co/http-api/',
+    }
+    api_tab:split { direction = 'Right', size = 0.50 }
+
+    -- Land in the frontend workspace by default
+    mux.set_active_workspace('frontend')
+  end)
+
+
+  wezterm.on('update-right-status', function(window, _)
+    window:set_right_status('󰒓 ' .. window:active_workspace())
+  end)
+end
 
 function M.get_keybinding(hyper)
-	return {
-		key = "S",
-		mods = hyper,
-		action = wezterm.action_callback(function(window, pane)
-			local home = wezterm.home_dir
-			local workspaces = {
-				{ id = home, label = "Home" },
-				{ id = home .. "/work", label = "Work" },
-				{ id = home .. "/personal", label = "Personal" },
-				{ id = home .. "/.config", label = "Config" },
-				{ id = home .. "/sknks", label = "SKNKS" },
-				{ id = home .. "/code/alonova", label = "Alonova" },
-			}
-
-			window:perform_action(
-				act.InputSelector({
-					action = wezterm.action_callback(function(inner_window, inner_pane, id, label)
-						if not id and not label then
-							wezterm.log_info("cancelled")
-						else
-							wezterm.log_info("id = " .. id)
-							wezterm.log_info("label = " .. label)
-							inner_window:perform_action(
-								act.SwitchToWorkspace({
-									name = label,
-									spawn = {
-										label = "Workspace: " .. label,
-										cwd = id,
-									},
-								}),
-								inner_pane
-							)
-						end
-					end),
-					title = "Choose Workspace",
-					choices = workspaces,
-					fuzzy = true,
-					fuzzy_description = "Fuzzy find and/or make a workspace: ",
-				}),
-				pane
-			)
-		end),
-	}
+  return {
+    key = "S",
+    mods = hyper,
+    action = act.ShowLauncherArgs { flags = 'FUZZY|WORKSPACES' },
+  }
 end
 
 return M
