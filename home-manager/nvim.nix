@@ -19,7 +19,9 @@
       nvim-dap
       nvim-nio #needed for dap-ui
       nvim-dap-ui
+      nvim-dap-virtual-text
       nvim-dap-go
+      supermaven-nvim
     ];
   };
 }

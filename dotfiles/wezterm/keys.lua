@@ -33,7 +33,9 @@ function M.setup(config)
     map("-", hyper, act.DecreaseFontSize),
     map("z", hyper, act.ShowDebugOverlay),
     map("n", hyper, act.SpawnWindow),
-    map("t", hyper, act.SpawnTab),
+    map("t", hyper, act.SpawnTab 'CurrentPaneDomain'),
+    map("[", "SUPER", act.ActivateTabRelative(-1)),
+    map("]", "SUPER", act.ActivateTabRelative(1)),
 
 
     -- config.keys = {
