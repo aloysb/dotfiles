@@ -6,6 +6,8 @@ local layout_selector = require("plugins.layout-selector")
 local docker = require("plugins.docker")
 local M = {}
 
+--workspace_selector.setup()
+
 local hyper = "SUPER|ALT|SHIFT|CTRL"
 
 local function map(key, mods, action)
@@ -30,7 +32,8 @@ function M.setup(config)
     map("+", hyper, act.IncreaseFontSize),
     map("-", hyper, act.DecreaseFontSize),
     map("z", hyper, act.ShowDebugOverlay),
-    map("t", hyper, act.SpawnWindow),
+    map("n", hyper, act.SpawnWindow),
+    --map("t", hyper, act.SpawnTab),
 
 
     -- config.keys = {
