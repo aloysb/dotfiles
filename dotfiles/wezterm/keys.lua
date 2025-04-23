@@ -34,8 +34,8 @@ function M.setup(config)
     map("z", hyper, act.ShowDebugOverlay),
     map("n", hyper, act.SpawnWindow),
     map("t", hyper, act.SpawnTab 'CurrentPaneDomain'),
-    map("[", "SUPER", act.ActivateTabRelative(-1)),
-    map("]", "SUPER", act.ActivateTabRelative(1)),
+    map("[", hyper, act.ActivateTabRelative(-1)),
+    map("]", hyper, act.ActivateTabRelative(1)),
 
 
     -- config.keys = {
@@ -54,9 +54,7 @@ function M.setup(config)
     map("v", hyper, act.SplitHorizontal),
     map("|", hyper, act.Search({ Regex = "" })),
 
-    map("w", hyper, act.ShowLauncherArgs({ flags = "FUZZY|WORKSPACES" })),
-    map("[", hyper, act.SwitchWorkspaceRelative(-1)),
-    map("]", hyper, act.SwitchWorkspaceRelative(1)),
+    map("s", hyper, act.ShowLauncherArgs({ flags = "FUZZY|WORKSPACES" })),
 
     -- resize mode
     map(

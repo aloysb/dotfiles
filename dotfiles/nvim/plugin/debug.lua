@@ -17,8 +17,8 @@ dap.configurations.go = {
     port = 2345,
     substitutePath = {
       {
-        from = vim.fn.getcwd(), -- e.g. /Users/aloys/.../http-api
-        to   = '/app',          -- path inside the container
+        from = '/Users/aloys/code/dabble/api.telescope.co/http-api/',
+        to = '/app', -- path inside the container
       }
     }
   }
