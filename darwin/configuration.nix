@@ -49,14 +49,14 @@
         # Gaps configuration
         gaps = {
           inner = {
-            horizontal = 16;
-            vertical = 16;
+            horizontal = 8;
+            vertical = 8;
           };
           outer = {
-            left = 16;
-            bottom = 16;
-            top = 16;
-            right = 16;
+            left = 8;
+            bottom = 8;
+            top = 8;
+            right = 8;
           };
         };
 
@@ -209,7 +209,7 @@
       };
     };
     jankyborders = {
-      enable = true;
+      enable = false;
       active_color = "0xff81A1C1";
       inactive_color = "0xff4C566A";
       width = 5.0;

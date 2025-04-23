@@ -5,6 +5,13 @@ function M.setup(config)
   config.window_background_opacity = 0.92
   config.text_background_opacity = .2
 
+  config.window_frame = {
+    -- when focused
+    active_titlebar_bg   = "rgba(0, 0, 0, 0)",
+    -- when unfocused
+    inactive_titlebar_bg = "rgba(0, 0, 0, 0)",
+  }
+
   -- Font and UI settings
   config.line_height = 1.3
   config.font_size = 13.0
@@ -14,8 +21,8 @@ function M.setup(config)
 
   config.color_scheme = "nordfox"
   --config.color_scheme = "nord-light"
-
   --	config.color_scheme = "Tokyo Night Light (Gogh)"
+  --
   config.adjust_window_size_when_changing_font_size = true
   config.inactive_pane_hsb = {
     saturation = 0.8,

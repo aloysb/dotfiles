@@ -13,12 +13,9 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
-    nixvim = {
-      url = "github:nix-community/nixvim";
-      # If using a stable channel you can use `url = "github:nix-community/nixvim/nixos-<version>"`
-      inputs.nixpkgs.follows = "nixpkgs";
+    nixCatsNvim = {
+      url = "path:./dotfiles/nvim/flake.nix";
     };
-
     # Needed for nix darwin for now as not all pkgs are within nixpkgs
     nix-homebrew.url = "github:zhaofengli-wip/nix-homebrew";
     homebrew-core = {
@@ -54,6 +51,7 @@
     homebrew-core,
     homebrew-cask,
     homebrew-bundle,
+    nixCatsNvim,
     hyprland,
     stylix,
     ...
@@ -73,6 +71,7 @@
         };
         modules = [
           ./home-manager/home.nix
+          nixCatsNvim.packages.${system}.nvim
           {nixpkgs.overlays = overlays;}
         ];
         extraSpecialArgs = {

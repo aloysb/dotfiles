@@ -92,6 +92,7 @@ in {
       nodejs_20
       btop
       wireguard-tools
+      devdocs-desktop
     ]
     ++ lib.optionals pkgs.stdenv.isDarwin [
       colima # better docker daemon
