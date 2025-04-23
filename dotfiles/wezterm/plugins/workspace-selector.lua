@@ -31,8 +31,20 @@ M.setup       = function()
   end)
 
 
-  wezterm.on('update-right-status', function(window, _)
-    window:set_right_status('󰒓 ' .. window:active_workspace())
+  wezterm.on("update-right-status", function(window, pane)
+    local ws = window:active_workspace()
+
+    -- build a FormatItem list:
+    local status = wezterm.format {
+      -- make it bold (optional)
+      { Attribute = { Intensity = "Bold" } },
+      -- the text itself
+      { Text = "WS: " .. ws },
+      -- you can reset attributes afterwards if needed:
+      { Attribute = "ResetAttributes" },
+    }
+
+    window:set_right_status(status)
   end)
 end
 

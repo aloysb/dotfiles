@@ -1,65 +1,65 @@
-local dap = require('dap')
-dap.adapters.go =
-{
-  type = 'server',
-  host = '127.0.0.1',
-  port = '${port}',
-
-}
-
-dap.configurations.go = {
+require("lze").load {
+  -- core dap
   {
-    type = "go",
-    name = "telescope API",
-    mode = "remote",
-    request = "attach",
-    host = '127.0.0.1',
-    port = 2345,
-    substitutePath = {
-      {
-        from = '/Users/aloys/code/dabble/api.telescope.co/http-api/',
-        to = '/app', -- path inside the container
+    "nvim-dap",
+    keys = {
+      { "<leader>dc",  "<cmd>lua require('dap').continue()<CR>",                                                    desc = "DAP: Continue" },
+      { "<leader>dn",  "<cmd>lua require('dap').step_over()<CR>",                                                   desc = "DAP: Step Over" },
+      { "<leader>di",  "<cmd>lua require('dap').step_into()<CR>",                                                   desc = "DAP: Step Into" },
+      { "<leader>do",  "<cmd>lua require('dap').step_out()<CR>",                                                    desc = "DAP: Step Out" },
+      { "<leader>db",  "<cmd>lua require('dap').toggle_breakpoint()<CR>",                                           desc = "DAP: Toggle Breakpoint" },
+      { "<leader>dlg", "<cmd>lua require('dap').set_breakpoint(nil, nil, vim.fn.input('Log point message: '))<CR>", desc = "DAP: Logpoint" },
+      { "<leader>dr",  "<cmd>lua require('dap').repl.open()<CR>",                                                   desc = "DAP: Open REPL" },
+      { "<leader>dl",  "<cmd>lua require('dap').run_last()<CR>",                                                    desc = "DAP: Run Last" },
+    },
+    config = function()
+      local dap = require("dap")
+      dap.adapters.go = {
+        type = "server",
+        host = "127.0.0.1",
+        port = "${port}",
       }
-    }
-  }
+      dap.configurations.go = {
+        {
+          type = "go",
+          name = "Telescope API",
+          mode = "remote",
+          request = "attach",
+          host = "127.0.0.1",
+          port = 2345,
+          substitutePath = {
+            {
+              from = "/Users/aloys/code/dabble/api.telescope.co/http-api/",
+              to   = "/app", -- inside container
+            },
+          },
+        },
+      }
+    end,
+  },
+  -- UI floating windows
+  {
+    "nvim-dap-ui",
+    on_plugin = "nvim-dap",
+    config = function()
+      require("dapui").setup()
+      vim.keymap.set("n", "<leader>du", function() require("dapui").toggle() end, { desc = "DAP UI Toggle" })
+    end,
+  },
+  -- Go-specific helpers (breakpoints, hover, etc)
+  {
+    "nvim-dap-go",
+    on_plugin = "nvim-dap",
+    config = function()
+      require("dap-go").setup()
+    end,
+  },
+  -- in-buffer virtual text for eval results
+  {
+    "nvim-dap-virtual-text",
+    on_plugin = "nvim-dap",
+    config = function()
+      require("nvim-dap-virtual-text").setup()
+    end,
+  },
 }
-
-require('dap-go').setup()
-require("dapui").setup()
-require("nvim-dap-virtual-text").setup()
-
--- dap.listeners.after.event_terminated['auto_attach'] = function()
---   print("hello")
---   vim.defer_fn(function()
---     dap.run(dap.configurations.go[1])
---   end, 300)
--- end
--- dap.listeners.after.event_exited['auto_attach'] = dap.listeners.after.event_terminated['auto_attach']
-
-
-vim.keymap.set('n', '<leader>dc', function() require('dap').continue() end)
-vim.keymap.set('n', '<leader>dn', function() require('dap').step_over() end)
-vim.keymap.set('n', '<leader>di', function() require('dap').step_into() end)
-vim.keymap.set('n', '<leader>do', function() require('dap').step_out() end)
-vim.keymap.set('n', '<Leader>db', function() require('dap').toggle_breakpoint() end)
-vim.keymap.set('n', '<Leader>dlg',
-  function() require('dap').set_breakpoint(nil, nil, vim.fn.input('Log point message: ')) end)
-vim.keymap.set('n', '<Leader>dr', function() require('dap').repl.open() end)
-vim.keymap.set('n', '<Leader>dl', function() require('dap').run_last() end)
-vim.keymap.set('n', '<leader>du', function() require("dapui").toggle() end)
--- vim.keymap.set({'n', 'v'}, '<Leader>dh', function()
---   require('dap.ui.widgets').hover()
--- end)
--- vim.keymap.set({'n', 'v'}, '<Leader>dp', function()
---   require('dap.ui.widgets').preview()
--- end)
--- vim.keymap.set('n', '<Leader>df', function()
---   local widgets = require('dap.ui.widgets')
---   widgets.centered_float(widgets.frames)
--- end)
--- vim.keymap.set('n', '<Leader>ds', function()
---   local widgets = require('dap.ui.widgets')
---   widgets.centered_float(widgets.scopes)
--- end)
---
---
