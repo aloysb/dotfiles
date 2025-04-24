@@ -70,10 +70,14 @@
           inherit overlays;
         };
         modules = [
-          ./home-manager/home.nix
-          nixCatsNvim.packages.${system}.nvim
-          {nixpkgs.overlays = overlays;}
+          nixCatsNvim.homeModules.default    # ← inject nixCats home module first
+          ./home-manager/home.nix            # ← then your own HM configuration
         ];
+        configuration = {
+          home.packages = [
+            nixCatsNvim.packages.${system}.nvim  # ← install your `nvim` flake package into home.packages
+          ];
+        };
         extraSpecialArgs = {
           inherit hyprland;
         };
