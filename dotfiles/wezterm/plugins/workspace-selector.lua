@@ -5,32 +5,6 @@ local mux     = wezterm.mux
 local M       = {}
 
 M.setup       = function()
-  wezterm.on('gui-startup', function(_)
-    -- FRONTEND workspace – one tab per app
-    local front_win, front_tab = mux.spawn_window {
-      workspace = 'frontend',
-      cwd       = '/home/you/code/frontend/app‑1',
-    }
-    local app_dirs = {
-      '/Users/aloys/code/dabble/apps.telescope.co/signal/',
-      '/Users/aloys/code/dabble/platform.telescope.co/'
-    }
-    for _, dir in ipairs(app_dirs) do
-      front_win:spawn_tab { cwd = dir }
-    end
-
-    -- API workspace – split pane (editor + server)
-    local api_win, api_tab = mux.spawn_window {
-      workspace = 'api',
-      cwd       = '/Users/aloys/code/dabble/api.telescope.co/http-api/',
-    }
-    api_tab:split { direction = 'Right', size = 0.50 }
-
-    -- Land in the frontend workspace by default
-    mux.set_active_workspace('frontend')
-  end)
-
-
   wezterm.on("update-right-status", function(window, pane)
     local ws = window:active_workspace()
 
@@ -49,10 +23,24 @@ M.setup       = function()
 end
 
 function M.get_keybinding(hyper)
-  return {
+  return { {
     key = "S",
     mods = hyper,
     action = act.ShowLauncherArgs { flags = 'FUZZY|WORKSPACES' },
+  },
+    {
+      key    = 'U',
+      mods   = hyper,
+      action = act.PromptInputLine {
+        description = 'Rename workspace',
+        action = wezterm.action_callback(function(win, _pane, line)
+          if line and #line > 0 then
+            mux.rename_workspace(win:mux_window():get_workspace(), line)
+            win:toast_notification('Workspace renamed to', line, nil, 3000)
+          end
+        end),
+      },
+    },
   }
 end
 

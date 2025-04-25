@@ -106,10 +106,14 @@
       # this includes LSPs
       lspsAndRuntimeDeps = {
         general = with pkgs; [
-          emmet-language-server
           typescript-language-server # TS/TSX
           lua-language-server # lua
           biome # a toolchain for JS, useful for formatting json files as well
+          typescript-language-server # TS/TSX
+          tailwindcss-language-server
+        ];
+        html = with pkgs; [
+          emmet-language-server
         ];
         nix = with pkgs; [
           nil # Nix language server
@@ -157,11 +161,6 @@
           mini-bufremove
           nvim-web-devicons
           supermaven-nvim
-          nvim-dap
-          nvim-nio #needed for dap-ui
-          nvim-dap-ui
-          nvim-dap-virtual-text
-          nvim-dap-go
         ];
       };
 
@@ -170,6 +169,11 @@
       optionalPlugins = {
         gitPlugins = with pkgs.neovimPlugins; [];
         general = with pkgs.vimPlugins; [
+          nvim-dap
+          nvim-nio #needed for dap-ui
+          nvim-dap-ui
+          nvim-dap-virtual-text
+          nvim-dap-go
         ];
         go = with pkgs.vimPlugins; [
         ];
@@ -249,6 +253,10 @@
           general = true;
           gitPlugins = true;
           customPlugins = true;
+          html = true;
+          elixir = true;
+          #go = true;
+          nix = true;
           test = true;
           example = {
             youCan = "add more than just booleans";

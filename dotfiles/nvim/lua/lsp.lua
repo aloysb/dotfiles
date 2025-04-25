@@ -8,6 +8,19 @@ vim.lsp.enable("astro")
 vim.lsp.enable("elixir")
 vim.lsp.enable("emmet")
 
+
+local found = vim.fn.glob("**/tailwind.config.js")
+if found ~= "" then
+  -- vim.lsp.config("tailwind", {
+  -- settings = {
+  -- experimental = {
+  -- configFile = vim.loop.cwd() .. "/" .. found,
+  -- }
+  -- }
+  -- })
+  vim.lsp.enable("tailwind")
+end
+
 local onLspAttach = vim.api.nvim_create_augroup("OnLSPAttach", {})
 vim.api.nvim_create_autocmd('LspAttach', {
   group = onLspAttach,
@@ -49,3 +62,24 @@ function ToggleDiagnostics()
     vim.diagnostic.config({ virtual_text = false })
   end
 end
+
+-- Enable auto sorting of tailwind classes on save
+-- -- in lua/plugins/tailwind-sort.lua (or wherever you load autocmds)
+vim.api.nvim_create_autocmd("BufWritePost", {
+  pattern = { "*.tsx", "*.jsx", "*.html", "*.templ", "*.heex" },
+  callback = function()
+    local bufnr   = vim.api.nvim_get_current_buf()
+    local clients = vim.lsp.get_clients({ bufnr = bufnr, name = "tailwindcss" })
+    local client  = clients[1]    -- we only need the first
+
+    if not client then return end -- Tailwind not attached yet
+
+    local params = {
+      command   = "_tailwindcss.sortClasses",
+      arguments = { vim.uri_from_bufnr(bufnr) },
+    }
+
+    -- 0.11+ preferred API
+    client:exec_cmd(params)
+  end,
+})

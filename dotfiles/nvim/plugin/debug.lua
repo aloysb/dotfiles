@@ -12,12 +12,12 @@ require("lze").load {
       { "<leader>dr",  "<cmd>lua require('dap').repl.open()<CR>",                                                   desc = "DAP: Open REPL" },
       { "<leader>dl",  "<cmd>lua require('dap').run_last()<CR>",                                                    desc = "DAP: Run Last" },
     },
-    config = function()
+    after = function()
       local dap = require("dap")
       dap.adapters.go = {
         type = "server",
         host = "127.0.0.1",
-        port = "${port}",
+        port = 2345,
       }
       dap.configurations.go = {
         {
@@ -41,16 +41,20 @@ require("lze").load {
   {
     "nvim-dap-ui",
     on_plugin = "nvim-dap",
-    config = function()
+    after = function()
       require("dapui").setup()
       vim.keymap.set("n", "<leader>du", function() require("dapui").toggle() end, { desc = "DAP UI Toggle" })
     end,
+  },
+  {
+    "nvim-nio",
+    dep_of = "nvim-dap-ui",
   },
   -- Go-specific helpers (breakpoints, hover, etc)
   {
     "nvim-dap-go",
     on_plugin = "nvim-dap",
-    config = function()
+    after = function()
       require("dap-go").setup()
     end,
   },
@@ -58,7 +62,7 @@ require("lze").load {
   {
     "nvim-dap-virtual-text",
     on_plugin = "nvim-dap",
-    config = function()
+    after = function()
       require("nvim-dap-virtual-text").setup()
     end,
   },

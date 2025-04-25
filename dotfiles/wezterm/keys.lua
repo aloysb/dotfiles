@@ -67,7 +67,7 @@ function M.setup(config)
     ),
 
     -- workspace and layout selectors
-    workspace_selector.get_keybinding(hyper),
+    table.unpack(workspace_selector.get_keybinding(hyper)),
     layout_selector.get_keybinding(hyper),
     docker.get_keybinding(hyper),
   }
