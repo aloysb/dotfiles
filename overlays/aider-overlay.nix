@@ -1,6 +1,6 @@
 # overlays/aider-overlay.nix
 final: prev: let
-  version = "0.80.0";
+  version = "0.82.0";
 in {
   aider-chat = prev.aider-chat.overrideAttrs (old: {
     version = version;

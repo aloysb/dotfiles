@@ -43,7 +43,6 @@ in {
 
   imports = [
     ./symlinks.nix # import non nix assets, such as lua config
-    ./nvim.nix # neovim pkgs
   ];
 
   wayland.windowManager.hyprland = {
@@ -92,7 +91,6 @@ in {
       nodejs_20
       btop
       wireguard-tools
-      devdocs-desktop
     ]
     ++ lib.optionals pkgs.stdenv.isDarwin [
       colima # better docker daemon
@@ -109,8 +107,7 @@ in {
       font-awesome
       impala # network TUI
       bluez
-    ]
-    ++ import ./lsp.nix {inherit pkgs;};
+    ];
 
   services =
     {}
@@ -184,8 +181,9 @@ in {
         shellAliases = {
           hms = "pushd ~/.config/nix > /dev/null && just hms && popd > /dev/null";
           nixsw = "pushd ~/.config/nix > /dev/null && just nix-switch && popd > /dev/null";
+          nvimsw = "pushd ~/.config/nix > /dev/null && just nvim-reload && popd > /dev/null";
+          vsw = "pushd ~/.config/nix/nvim > /dev/null && nix profile install && popd > /dev/null";
           gg = "lazygit";
-          v = "nvim";
           yy = "yazi";
           fk = "fuck";
           p = "pnpm";

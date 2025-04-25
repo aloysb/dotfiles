@@ -13,9 +13,6 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
-    nixCatsNvim = {
-      url = "path:./dotfiles/nvim/flake.nix";
-    };
     # Needed for nix darwin for now as not all pkgs are within nixpkgs
     nix-homebrew.url = "github:zhaofengli-wip/nix-homebrew";
     homebrew-core = {
@@ -51,7 +48,6 @@
     homebrew-core,
     homebrew-cask,
     homebrew-bundle,
-    nixCatsNvim,
     hyprland,
     stylix,
     ...
@@ -70,14 +66,8 @@
           inherit overlays;
         };
         modules = [
-          nixCatsNvim.homeModules.default    # ← inject nixCats home module first
-          ./home-manager/home.nix            # ← then your own HM configuration
+          ./home-manager/home.nix # your own HM config
         ];
-        configuration = {
-          home.packages = [
-            nixCatsNvim.packages.${system}.nvim  # ← install your `nvim` flake package into home.packages
-          ];
-        };
         extraSpecialArgs = {
           inherit hyprland;
         };

@@ -1,5 +1,5 @@
 return {
   cmd = { 'elixir-ls' },
   root_markers = { '.git' },
-  filetypes = { 'elixir' },
+  filetypes = { "elixir", "eelixir", "heex", "exs", "ex", "eex" },
 }
