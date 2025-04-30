@@ -1,4 +1,5 @@
 [
   "restic"
   "exercism"
+  "wireguard-tools"
 ]
