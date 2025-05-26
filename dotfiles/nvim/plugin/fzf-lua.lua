@@ -23,6 +23,17 @@ fzf.setup({
 local gitRoot = vim.fs.root(0, ".git")
 local opts = { cwd = gitRoot }
 
+vim.keymap.set({ 'n' }, "<leader><leader>", function()
+    fzf.buffers()
+  end,
+  { desc = "Fuzzy find buffers" })
+
+vim.keymap.set({ 'n' }, "<leader>m", function()
+    fzf.marks()
+  end,
+  { desc = "Fuzzy find marks" })
+
+
 vim.keymap.set({ 'n' }, "<leader>sf", function()
     fzf.files()
   end,
@@ -70,6 +81,11 @@ vim.keymap.set({ "n" }, "gd", function()
 
 vim.keymap.set({ "n" }, "grr", function()
     fzf.lsp_references()
+  end,
+  { desc = "LSP references" })
+
+vim.keymap.set({ "n" }, "<leader>d", function()
+    fzf.lsp_document_diagnostics()
   end,
   { desc = "LSP references" })
 

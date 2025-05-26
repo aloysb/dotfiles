@@ -7,6 +7,7 @@ vim.lsp.enable("go")
 vim.lsp.enable("astro")
 vim.lsp.enable("elixir")
 vim.lsp.enable("emmet")
+vim.lsp.enable("shopify")
 
 
 local found = vim.fn.glob("**/tailwind.config.js")

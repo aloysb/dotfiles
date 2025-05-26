@@ -1,0 +1,3 @@
+git:
+  disableForcePushing: true
+quitOnTopLevelReturn: true

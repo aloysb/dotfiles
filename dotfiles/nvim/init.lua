@@ -15,19 +15,19 @@ require("keymaps")
 require("term")
 
 -- colorscheme
-vim.cmd('colorscheme nordfox')
+require('onenord').setup()
 
 -- set neovim to transparent
-vim.cmd [[
- highlight Normal guibg=none
- highlight Normal ctermbg=none
- highlight NormalNC guibg=none
- highlight NormalNC ctermbg=none
- highlight EndOfBuffer guibg=none
- highlight EndOfBuffer ctermbg=none
- highlight NonText guibg=none
- highlight NonText ctermbg=none
-]]
+-- vim.cmd [[
+--  highlight Normal guibg=none
+--  highlight Normal ctermbg=none
+--  highlight NormalNC guibg=none
+--  highlight NormalNC ctermbg=none
+--  highlight EndOfBuffer guibg=none
+--  highlight EndOfBuffer ctermbg=none
+--  highlight NonText guibg=none
+--  highlight NonText ctermbg=none
+-- ]]
 
 -- Testing tree sitter
 require 'nvim-treesitter.configs'.setup {

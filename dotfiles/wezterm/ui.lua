@@ -1,18 +1,6 @@
 local M = {}
 
 
--- ~/.config/wezterm/colors.lua  (or just paste inside your wezterm.lua)
-
-local nordfox = {
-  bg0    = "#232831", -- darkest
-  bg1    = "#2e3440", -- main background
-  bg2    = "#39404f",
-  bg3    = "#444c5e", -- cursor-line – nice highlight
-  fg1    = "#cdcecf",
-  fg_dim = "#7e8188",
-  blue   = "#81a1c1",
-}
-
 
 function M.setup(config)
   -- Opacity settings
@@ -22,37 +10,8 @@ function M.setup(config)
   config.use_fancy_tab_bar = false
   config.tab_bar_at_bottom = true
 
-  config.colors = config.colors or {}
+  config.color_scheme = "OneNord"
 
-
-  config.colors = {
-    tab_bar = {
-      background = nordfox.bg1, -- strip along the bottom
-      active_tab = {            -- the tab you’re on
-        bg_color = nordfox.bg3,
-        fg_color = nordfox.fg1,
-        intensity = "Bold",
-      },
-      inactive_tab = { -- other tabs
-        bg_color = nordfox.bg1,
-        fg_color = nordfox.fg_dim,
-      },
-      inactive_tab_hover = { -- when mouse is over a tab
-        bg_color = nordfox.bg2,
-        fg_color = nordfox.fg1,
-        italic   = true,
-      },
-      new_tab = {
-        bg_color = nordfox.bg1,
-        fg_color = nordfox.blue,
-      },
-      new_tab_hover = {
-        bg_color = nordfox.bg2,
-        fg_color = nordfox.blue,
-        italic   = true,
-      }
-    }
-  }
 
   -- Font and UI settings
   config.line_height = 1.3

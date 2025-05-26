@@ -72,4 +72,7 @@ o.shiftwidth = 2
 o.expandtab = true
 
 -- highlight search
-vim.opt.hlsearch = true
+o.hlsearch = true
+
+-- Border light
+o.winborder = "rounded"
