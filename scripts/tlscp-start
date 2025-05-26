@@ -1,0 +1,4 @@
+#!/bin/bash
+
+cd ~/code/dabble/aloys || { echo "Directory not found: ~/code/dabble/perso" >&2; exit 1; }
+pm2 start ecosystem.config.js

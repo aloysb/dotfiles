@@ -13,6 +13,7 @@
     [
       "nvim"
       "wezterm"
+      "lazygit"
     ]
     ++ lib.optionals pkgs.stdenv.isDarwin [
       "aerospace"
