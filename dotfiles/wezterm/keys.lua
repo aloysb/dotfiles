@@ -52,8 +52,7 @@ function M.setup(config)
     map("x", hyper, act.CloseCurrentPane({ confirm = false })),
     map("d", hyper, act.SplitVertical),
     map("v", hyper, act.SplitHorizontal),
-    map("|", hyper, act.Search({ Regex = "" })),
-
+    map("/", hyper, act.Search({ Regex = "" })),
     map("s", hyper, act.ShowLauncherArgs({ flags = "FUZZY|WORKSPACES" })),
 
     -- resize mode
@@ -68,6 +67,7 @@ function M.setup(config)
 
     -- workspace and layout selectors
     table.unpack(workspace_selector.get_keybinding(hyper)),
+
     layout_selector.get_keybinding(hyper),
     docker.get_keybinding(hyper),
   }

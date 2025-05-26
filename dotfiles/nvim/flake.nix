@@ -75,7 +75,7 @@
         (utils.standardPluginOverlay inputs)
         # add any other flake overlays here.
 
-        # when other people mess up their overlays by wrapping them with system,
+        # when other people mess up their overlays by wrapping them
         # you may instead call this function on their overlay.
         # it will check if it has the system in the set, and if so return the desired overlay
         # (utils.fixSystemizedOverlay inputs.codeium.overlays
@@ -131,6 +131,9 @@
           go-tools
           go
         ];
+        js = with pkgs; [
+          eslint_d
+        ];
         elixir = with pkgs; [
           elixir_ls
         ];
@@ -146,11 +149,12 @@
         gitPlugins = with pkgs.neovimPlugins; [];
         general = with pkgs.vimPlugins; [
           lze
-          nightfox-nvim # theme
+          onenord-nvim # theme
           fzf-lua
           oil-nvim
           blink-cmp
           nvim-treesitter.withAllGrammars
+          nvim-treesitter-context
           diffview-nvim
           gitsigns-nvim
           mini-ai
@@ -255,9 +259,10 @@
           customPlugins = true;
           html = true;
           elixir = true;
-          #go = true;
+          go = true;
           nix = true;
           test = true;
+          js = true;
           example = {
             youCan = "add more than just booleans";
             toThisSet = [
