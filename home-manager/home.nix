@@ -91,6 +91,7 @@ in {
       nodejs_20
       btop
       wireguard-tools
+      go-task
     ]
     ++ lib.optionals pkgs.stdenv.isDarwin [
       colima # better docker daemon
@@ -209,6 +210,7 @@ in {
           COREPACK_ENABLE_AUTO_PIN = 0; # Sh
           CONF = "$HOME/.config/";
           DY = "$HOME/dylan/"; # SH
+          XDG_CONFIG_HOME = "$HOME/.config";
         };
         oh-my-zsh = {
           enable = true;
