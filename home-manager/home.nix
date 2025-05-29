@@ -6,6 +6,13 @@
 }: let
   isDarwin = pkgs.stdenv.isDarwin;
   isLinux = pkgs.stdenv.isLinux;
+  installOpencode = lib.mkForce ''
+    #    if ! command -v opencode >/dev/null 2>&1; then
+          #echo "⏳ Installing opencode…"
+          #curl -fsSL https://raw.githubusercontent.com/opencode-ai/opencode/refs/heads/main/install | bash
+          #export PATH=/Users/aloys/.opencode/bin:$PATH
+    #    fi
+  '';
 in {
   nixpkgs.config.allowUnfree = true;
   # Apply the overlay to nixpkgs
@@ -28,6 +35,7 @@ in {
     sessionPath =
       [
         "${config.home.homeDirectory}/.config/scripts"
+        "${config.home.homeDirectory}/.opencode/bin"
       ]
       ++ lib.optionals pkgs.stdenv.isDarwin [
         "/Applications/Docker.app/Contents/Resources/bin/"
@@ -39,6 +47,9 @@ in {
     # want to update the value, then make sure to first check the Home Manager
     # release notes.
     stateVersion = "24.11"; # Please read the comment before changing.
+    # activation = {
+    #   installOpenCode = installOpencode;
+    # };
   };
 
   imports = [
@@ -88,10 +99,12 @@ in {
       postgresql
       pm2
       glow
-      nodejs_20
+      nodejs_22
       btop
       wireguard-tools
       go-task
+      libgccjit # for emacs
+      emacs
     ]
     ++ lib.optionals pkgs.stdenv.isDarwin [
       colima # better docker daemon
@@ -150,7 +163,6 @@ in {
         };
         extraConfig = {
           pull.rebase = true;
-          log.abbrevCommit = true;
           push.default = "upstream";
           core = {
             editor = "nvim";
@@ -166,6 +178,10 @@ in {
           };
           rerere = {
             enabled = true;
+          };
+          log = {
+            abbrevCommit = true;
+            date = "iso"; # ← show ISO dates by default
           };
           url = {
             "git@github.com:" = {
