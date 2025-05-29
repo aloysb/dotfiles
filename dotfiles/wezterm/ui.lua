@@ -4,7 +4,7 @@ local M = {}
 
 function M.setup(config)
   -- Opacity settings
-  config.window_background_opacity = 0.92
+  config.window_background_opacity = 0.95
 
   config.text_background_opacity = .2
   config.use_fancy_tab_bar = false

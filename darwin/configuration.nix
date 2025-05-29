@@ -16,6 +16,9 @@
   programs.ssh.extraConfig = ''
     #AcceptEnv WEZTERM_REMOTE_PANE
   '';
+  environment.systemPackages = with pkgs; [
+    curl
+  ];
   services = {
     openssh = {
       enable = true;
