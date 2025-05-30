@@ -103,8 +103,6 @@ in {
       btop
       wireguard-tools
       go-task
-      libgccjit # for emacs
-      emacs
     ]
     ++ lib.optionals pkgs.stdenv.isDarwin [
       colima # better docker daemon
