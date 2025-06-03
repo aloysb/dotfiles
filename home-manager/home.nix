@@ -63,7 +63,7 @@ in {
     settings = {
       "$mod" = "SUPER";
     };
-    extraConfig = builtins.readFile ../dotfiles/hypr/hyprland.conf;
+    extraConfig = builtins.readFile ../hypr/hyprland.conf;
   };
 
   home.packages = with pkgs;
