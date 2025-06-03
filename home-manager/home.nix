@@ -99,7 +99,7 @@ in {
       postgresql
       pm2
       glow
-      nodejs_22
+      nodejs_20
       btop
       wireguard-tools
       go-task
@@ -197,7 +197,6 @@ in {
           hms = "pushd ~/.config/nix > /dev/null && just hms && popd > /dev/null";
           nixsw = "pushd ~/.config/nix > /dev/null && just nix-switch && popd > /dev/null";
           nvimsw = "pushd ~/.config/nix > /dev/null && just nvim-reload && popd > /dev/null";
-          vsw = "pushd ~/.config/nix/nvim > /dev/null && nix profile install && popd > /dev/null";
           gg = "lazygit";
           yy = "yazi";
           fk = "fuck";
@@ -207,6 +206,10 @@ in {
           aidcp = "aider -c ~/.aider.config.yml --copy-paste";
           paid = "aider -c ~/.aider.perso.config.yml";
           paidcp = "aider -c ~/.aider.perso.config.yml --copy-paste";
+          doomd = "emacs --daemon=\"doom\" --init-directory ~/.config/nix/dotfiles/emacs/doom";
+          d = "/Applications/Emacs.app/Contents/MacOS/bin/emacsclient -c -n -q -s 'doom'";
+          emacsd = "emacs --daemon=\"vanilla\" --init-directory ~/.config/nix/dotfiles/emacs/vanilla";
+          e = "/Applications/Emacs.app/Contents/MacOS/bin/emacsclient -c -n -q -s 'vanilla'";
         };
         initExtraFirst = ''
           source ${pkgs.zsh-powerlevel10k}/share/zsh-powerlevel10k/powerlevel10k.zsh-theme'';
@@ -225,6 +228,7 @@ in {
           CONF = "$HOME/.config/";
           DY = "$HOME/dylan/"; # SH
           XDG_CONFIG_HOME = "$HOME/.config";
+          DOOMDIR = "$HOME/.config/nix/dotfiles/emacs/doom";
         };
         oh-my-zsh = {
           enable = true;

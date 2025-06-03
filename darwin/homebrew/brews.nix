@@ -2,5 +2,5 @@
   "restic"
   "exercism"
   "wireguard-tools"
-  "emacs"
+  "emacs-plus"
 ]
