@@ -7,4 +7,5 @@
   "google-chrome"
   "thunderbird"
   "tunnelblick"
+  "emacs"
 ]

@@ -1,2 +1,16 @@
-.aider*
+# Emacs backup files
+*~
+# Emacs autosave files
+# (files that start and end with #)
+# (these are in the current dir, not just .emacs.d)
+# e.g., #foo.txt#
+# Also cover .#lockfiles
+# Emacs desktop save files
+*#
+.#*
+.emacs.desktop
+.emacs.desktop.lock
+
 .env
+
+dotfiles/emacs/vanilla/elpaca

@@ -117,6 +117,22 @@
         "type": "github"
       }
     },
+    "emacs-plus": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1743441558,
+        "narHash": "sha256-Eepinxv05Yl79AoPVJveGDZPKHhlAes7XtUvrssflrU=",
+        "owner": "d12frosted",
+        "repo": "homebrew-emacs-plus",
+        "rev": "3e95d573d5f13aba7808193b66312b38a7c66851",
+        "type": "github"
+      },
+      "original": {
+        "owner": "d12frosted",
+        "repo": "homebrew-emacs-plus",
+        "type": "github"
+      }
+    },
     "firefox-gnome-theme": {
       "flake": false,
       "locked": {
@@ -805,6 +821,7 @@
     },
     "root": {
       "inputs": {
+        "emacs-plus": "emacs-plus",
         "home-manager": "home-manager",
         "homebrew-bundle": "homebrew-bundle",
         "homebrew-cask": "homebrew-cask",
