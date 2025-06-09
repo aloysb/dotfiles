@@ -52,14 +52,14 @@
         # Gaps configuration
         gaps = {
           inner = {
-            horizontal = 8;
-            vertical = 8;
+            horizontal = 0;
+            vertical = 0;
           };
           outer = {
-            left = 8;
-            bottom = 8;
-            top = 8;
-            right = 8;
+            left = 0;
+            bottom = 0;
+            top = 0;
+            right = 0;
           };
         };
 

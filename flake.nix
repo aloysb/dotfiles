@@ -27,6 +27,10 @@
       url = "github:homebrew/homebrew-bundle";
       flake = false;
     };
+    emacs-plus = {
+      url = "github:d12frosted/homebrew-emacs-plus";
+      flake = false;
+    };
 
     hyprland = {
       url = "github:hyprwm/Hyprland/b1e5cc66bdb20b002c93479490c3a317552210b3";
@@ -51,7 +55,7 @@
     hyprland,
     stylix,
     ...
-  }: let
+  } @ inputs: let
     overlays = [
     ];
 
@@ -86,11 +90,11 @@
           nix-homebrew = {
             enable = true;
             user = "aloys";
-            # Optional: Declarative tap management
             taps = {
               "homebrew/homebrew-core" = homebrew-core;
               "homebrew/homebrew-cask" = homebrew-cask;
               "homebrew/homebrew-bundle" = homebrew-bundle;
+              "d12frosted/homebrew-emacs-plus" = inputs.emacs-plus;
             };
 
             # Optional: Enable fully-declarative tap management

@@ -208,8 +208,11 @@ in {
           paidcp = "aider -c ~/.aider.perso.config.yml --copy-paste";
           doomd = "emacs --daemon=\"doom\" --init-directory ~/.config/nix/dotfiles/emacs/doom";
           d = "/Applications/Emacs.app/Contents/MacOS/bin/emacsclient -c -n -q -s 'doom'";
+          dl = "emacs --init-dir $XDG_CONFIG_HOME/nix/dotfiles/emacs/doom";
           emacsd = "emacs --daemon=\"vanilla\" --init-directory ~/.config/nix/dotfiles/emacs/vanilla";
-          e = "/Applications/Emacs.app/Contents/MacOS/bin/emacsclient -c -n -q -s 'vanilla'";
+          e = "/Applications/Emacs.app/Contents/MacOS/bin/emacsclient -c -n -q -s 'vanilla' -a \"emacs --init-dir $XDG_CONFIG_HOME/nix/dotfiles/emacs/vanilla\"";
+          el = "emacs --init-dir $XDG_CONFIG_HOME/nix/dotfiles/emacs/vanilla";
+          t = "task";
         };
         initExtraFirst = ''
           source ${pkgs.zsh-powerlevel10k}/share/zsh-powerlevel10k/powerlevel10k.zsh-theme'';
