@@ -187,7 +187,7 @@ This required a bit of work to get emacsclient to respect the frame settings.
 
 *** Doom themes
 
-Contains 67 themes, probably the only one needed
+Contains 67 themes, probably the only one needed.
 #+begin_src elisp
   (use-package doom-themes
     :config
@@ -213,7 +213,7 @@ Contains 67 themes, probably the only one needed
 * Keymap
 
 ** Evil
-
+Evil emulates vim keybindings within emacs.
 #+begin_src elisp
   (use-package evil
     :ensure t
@@ -238,6 +238,66 @@ Contains 67 themes, probably the only one needed
     :config
     (evil-collection-init)
     )
+#+end_src
+
+** Bray
+
+Eventually I'd like to move to Bray for full control over my keymaps, but Evil is a quick way of switching to emacs with less pain.
+This is the example from the git directory
+
+#+begin_src elisp
+(use-package bray
+ :disabled t
+ :commands (bray-mode)
+
+ :config
+
+ ;; Typical normal/insert states.
+ (defvar my-bray-state-normal-map (make-keymap))
+ (defvar my-bray-state-insert-map (make-keymap))
+
+ (setq bray-state-default 'normal)
+ (setq bray-state-definitions
+       (list
+        (list
+         :id 'normal
+         :cursor-type 'hollow
+         :lighter "<N>"
+         :keymaps (list '(t . my-bray-state-normal-map)))
+
+        (list
+         :id 'insert
+         :cursor-type 'bar
+         :lighter "<I>"
+         :keymaps (list '(t . my-bray-state-insert-map))
+
+         ;; Optional.
+         :is-input t)))
+
+ ;; Optional, a quick way to mask insertion.
+ (define-key my-bray-state-normal-map [remap self-insert-command] 'ignore)
+
+ ;; HJKL & 'I' for insert mode.
+ (define-key my-bray-state-normal-map (kbd "h") 'backward-char)
+ (define-key my-bray-state-normal-map (kbd "j") 'next-line)
+ (define-key my-bray-state-normal-map (kbd "k") 'previous-line)
+ (define-key my-bray-state-normal-map (kbd "l") 'forward-char)
+
+ ;; Insert mode & escape to leave.
+ (define-key
+  my-bray-state-normal-map (kbd "i")
+  (lambda ()
+    (interactive)
+    (bray-state-stack-push 'insert)))
+
+ (define-key my-bray-state-insert-map (kbd "<escape>") 'bray-state-stack-pop))
+
+;; Enable bray for "typical" editing operation.
+(add-hook
+ 'after-change-major-mode-hook
+ (lambda ()
+   (when (and (not (minibufferp)) (not (derived-mode-p 'special-mode)))
+     (bray-mode))))
 #+end_src
 
 * Git
