@@ -67,21 +67,18 @@ Think of use-package + elpackage = lazyvim.
 #+end_src
 
 
-** Evil mode
-Vim bindings.
+** Recentf
+Helper for recently opened file. Core package of emacs.
 
 #+begin_src elisp
-  (setq evil-want-keybinding nil)
-  (use-package evil
-     :demand t
-     :config
-     (evil-mode 0)
-     )
-
-  (use-package evil-collection
-    :init (evil-collection-init)
-    :disabled
-  )
+  (use-package recentf
+  :ensure nil  ;; it's built-in
+  :init
+  (recentf-mode 1)
+  :custom
+  (recentf-max-menu-items 25)
+  (recentf-max-saved-items 100)
+  (recentf-auto-cleanup 'never)) ;; disables cleanup which can sometimes remove useful entries
 #+end_src
 
 ** Vertico
@@ -100,14 +97,33 @@ Vertical mini-buffer completion
 
 #+end_src
 
+** Orderless
+A better completion engine for vertico than the builtin one.
+#+begin_src elisp
+    ;; Optionally use the `orderless' completion style.
+  (use-package orderless
+    :custom
+    ;; Configure a custom style dispatcher (see the Consult wiki)
+    ;; (orderless-style-dispatchers '(+orderless-consult-dispatch orderless-affix-dispatch))
+    ;; (orderless-component-separator #'orderless-escapable-split-on-space)
+    (completion-styles '(orderless basic))
+    (completion-category-defaults nil)
+    (completion-category-overrides '((file (styles partial-completion))))
+  )
+#+end_src
+
 ** Consult
 The fzf of emacs
 #+begin_src elisp
-(use-package consult
-:bind ("C-x b" . consult-buffer)
-)
+  (use-package consult
+  :bind (
+  ("C-c b" . consult-buffer)
+  ("C-c o" . consult-recent-file)
+  )
+  )
+#+end_src
 
-* Utils
+* Utilsm
 
 ** Reload config
 
@@ -137,29 +153,34 @@ The fzf of emacs
 
 This required a bit of work to get emacsclient to respect the frame settings.
 #+begin_src elisp
-;; In your daemon's init.el or the config.org loaded by it
-;; Disable ring bell
-(setq ring-bell-function #'ignore)
+  ;; In your daemon's init.el or the config.org loaded by it
+  ;; Disable ring bell
 
-;; Disable menu, toolbar, scrollbar...
-(when (display-graphic-p)
-  ;; These commands affect the current state and set some defaults
-  (menu-bar-mode -1)
-  (tool-bar-mode -1)
-  (scroll-bar-mode -1)
+  (setq ring-bell-function #'ignore)
 
-  ;; These explicitly ensure ALL new frames adhere to these settings
-  (add-to-list 'default-frame-alist '(menu-bar-lines . 0))
-  (add-to-list 'default-frame-alist '(tool-bar-lines . 0))
-  (add-to-list 'default-frame-alist '(vertical-scroll-bars . nil)) ;; Use nil for scroll bars
+  ;; Turn on line numbers
+  (global-display-line-numbers-mode t)
+  (menu-bar--display-line-numbers-mode-relative)
 
-  ;; Your existing setting for undecorated frames (borderless)
-  ;; This is a separate aesthetic choice.
-  (add-to-list 'default-frame-alist '(undecorated . t))
+  ;; Disable menu, toolbar, scrollbar...
+  (when (display-graphic-p)
+    ;; These commands affect the current state and set some defaults
+    (menu-bar-mode -1)
+    (tool-bar-mode -1)
+    (scroll-bar-mode -1)
 
-  ;; add a hook to yet again, reload the config on new frames.
-)
-(add-hook 'server-after-make-frame-hook #'reload-config)
+    ;; These explicitly ensure ALL new frames adhere to these settings
+    (add-to-list 'default-frame-alist '(menu-bar-lines . 0))
+    (add-to-list 'default-frame-alist '(tool-bar-lines . 0))
+    (add-to-list 'default-frame-alist '(vertical-scroll-bars . nil)) ;; Use nil for scroll bars
+
+    ;; Your existing setting for undecorated frames (borderless)
+    ;; This is a separate aesthetic choice.
+    (add-to-list 'default-frame-alist '(undecorated . t))
+
+    ;; add a hook to yet again, reload the config on new frames.
+  )
+  (add-hook 'server-after-make-frame-hook #'reload-config)
 #+end_src
 
 ** Theme
@@ -187,6 +208,36 @@ Contains 67 themes, probably the only one needed
   ;; but you can use any other Nerd Font if you want
   ;; (nerd-icons-font-family "Symbols Nerd Font Mono")
   )
+#+end_src
+
+* Keymap
+
+** Evil
+
+#+begin_src elisp
+  (use-package evil
+    :ensure t
+    :init
+    (setq evil-want-integration t) ;; This is optional since it's already set to t by default.
+    (setq evil-want-keybinding nil)
+    (setq evil-want-C-u-scroll t) ;; C-u to scroll up, same as vim
+    (setq evil-want-Y-yank-to-eol t) ;; Y to yank line, same as vim
+    (setq evil-move-cursor-back nil) ;; Don't go back when exiting edit mode
+    (setq evil-want-C-i-jump t) ;; C-i to jump forward
+    :config
+    (evil-mode 1)
+    ;; Keymap ;;
+    (evil-set-leader nil (kbd "SPC"))
+    (evil-define-key 'normal 'global (kbd "<leader><leader>") 'consult-buffer)
+
+   )
+
+  (use-package evil-collection
+    :after evil
+    :ensure t
+    :config
+    (evil-collection-init)
+    )
 #+end_src
 
 * Git

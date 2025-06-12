@@ -46,17 +46,14 @@
       (require 'use-package-ensure)
       (setq use-package-always-ensure t)
 
-(setq evil-want-keybinding nil)
-(use-package evil
-   :demand t
-   :config
-   (evil-mode 0)
-   )
-
-(use-package evil-collection
-  :init (evil-collection-init)
-  :disabled
-)
+(use-package recentf
+:ensure nil  ;; it's built-in
+:init
+(recentf-mode 1)
+:custom
+(recentf-max-menu-items 25)
+(recentf-max-saved-items 100)
+(recentf-auto-cleanup 'never)) ;; disables cleanup which can sometimes remove useful entries
 
 (use-package vertico
         :init
@@ -69,6 +66,30 @@
 
   (marginalia-mode))
 
+;; Optionally use the `orderless' completion style.
+(use-package orderless
+  :custom
+  ;; Configure a custom style dispatcher (see the Consult wiki)
+  ;; (orderless-style-dispatchers '(+orderless-consult-dispatch orderless-affix-dispatch))
+  ;; (orderless-component-separator #'orderless-escapable-split-on-space)
+  (completion-styles '(orderless basic))
+  (completion-category-defaults nil)
+  (completion-category-overrides '((file (styles partial-completion))))
+)
+
+(use-package consult
+:bind (
+("C-c b" . consult-buffer)
+("C-c o" . consult-recent-file)
+)
+)
+
+(defun reload-config ()
+  "reload the configuration"
+  (interactive)
+  (load-file user-init-file)
+)
+
 (setq emacs-config-dir (file-name-directory user-init-file))
 (setq config-org (expand-file-name "config.org" emacs-config-dir))
 
@@ -80,7 +101,12 @@
 
 ;; In your daemon's init.el or the config.org loaded by it
 ;; Disable ring bell
+
 (setq ring-bell-function #'ignore)
+
+;; Turn on line numbers
+(global-display-line-numbers-mode t)
+(menu-bar--display-line-numbers-mode-relative)
 
 ;; Disable menu, toolbar, scrollbar...
 (when (display-graphic-p)
@@ -117,6 +143,27 @@
 ;; but you can use any other Nerd Font if you want
 ;; (nerd-icons-font-family "Symbols Nerd Font Mono")
 )
+
+(use-package evil
+  :ensure t
+  :init
+  (setq evil-want-integration t) ;; This is optional since it's already set to t by default.
+  (setq evil-want-keybinding nil)
+  (setq evil-want-C-u-scroll t) ;; C-u to scroll up, same as vim
+  (setq evil-want-Y-yank-to-eol t) ;; Y to yank line, same as vim
+  (setq evil-move-cursor-back nil) ;; Don't go back when exiting edit mode
+  :config
+  (evil-mode 1)
+  ;; Keymap ;;
+  (evil-set-leader nil "<SPC>")
+ )
+
+(use-package evil-collection
+  :after evil
+  :ensure t
+  :config
+  (evil-collection-init)
+  )
 
 (use-package transient)
 
