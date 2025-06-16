@@ -57,6 +57,7 @@
     ...
   } @ inputs: let
     overlays = [
+      (import ./overlays/claude-code.nix)
     ];
 
     systemLinux = "aarch64-linux";

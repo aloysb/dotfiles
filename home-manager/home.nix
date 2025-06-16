@@ -103,6 +103,7 @@ in {
       btop
       wireguard-tools
       go-task
+      claude-code
     ]
     ++ lib.optionals pkgs.stdenv.isDarwin [
       colima # better docker daemon
