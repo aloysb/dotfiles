@@ -12,7 +12,6 @@
     cursor,
   }: {
     nixosConfigurations.nixos = nixpkgs.lib.nixosSystem {
-      system = "aarm64-asahi-linux";
       modules = [
         ./configuration.nix
         ({pkgs, ...}: {

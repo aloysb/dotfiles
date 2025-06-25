@@ -8,8 +8,6 @@
   imports = [
     # Include the results of the hardware scan.
     ./hardware-configuration.nix
-    # Include the necessary packages and configuration for Apple Silicon support.
-    ./apple-silicon-support
     inputs.sops-nix.nixosModules.sops # Import sops-nix module
   ];
 
@@ -47,12 +45,6 @@
   #   wantedBy = ["sysinit.target"];
   # };
   # nixpkgs.overlays are now managed in flake.nix
-
-  hardware.asahi = {
-    peripheralFirmwareDirectory = ./firmware;
-    useExperimentalGPUDriver = true;
-    experimentalGPUInstallMode = "overlay";
-  };
 
   hardware.graphics.enable = true;
   services.libinput.enable = true;
