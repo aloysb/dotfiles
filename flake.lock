@@ -117,22 +117,6 @@
         "type": "github"
       }
     },
-    "emacs-plus": {
-      "flake": false,
-      "locked": {
-        "lastModified": 1743441558,
-        "narHash": "sha256-Eepinxv05Yl79AoPVJveGDZPKHhlAes7XtUvrssflrU=",
-        "owner": "d12frosted",
-        "repo": "homebrew-emacs-plus",
-        "rev": "3e95d573d5f13aba7808193b66312b38a7c66851",
-        "type": "github"
-      },
-      "original": {
-        "owner": "d12frosted",
-        "repo": "homebrew-emacs-plus",
-        "type": "github"
-      }
-    },
     "firefox-gnome-theme": {
       "flake": false,
       "locked": {
@@ -753,7 +737,6 @@
     },
     "root": {
       "inputs": {
-        "emacs-plus": "emacs-plus",
         "home-manager": "home-manager",
         "homebrew-bundle": "homebrew-bundle",
         "homebrew-cask": "homebrew-cask",
@@ -762,7 +745,28 @@
         "nix-darwin": "nix-darwin",
         "nix-homebrew": "nix-homebrew",
         "nixpkgs": "nixpkgs",
+        "sops-nix": "sops-nix",
         "stylix": "stylix"
+      }
+    },
+    "sops-nix": {
+      "inputs": {
+        "nixpkgs": [
+          "nixpkgs"
+        ]
+      },
+      "locked": {
+        "lastModified": 1750119275,
+        "narHash": "sha256-Rr7Pooz9zQbhdVxux16h7URa6mA80Pb/G07T4lHvh0M=",
+        "owner": "Mic92",
+        "repo": "sops-nix",
+        "rev": "77c423a03b9b2b79709ea2cb63336312e78b72e2",
+        "type": "github"
+      },
+      "original": {
+        "owner": "Mic92",
+        "repo": "sops-nix",
+        "type": "github"
       }
     },
     "stylix": {

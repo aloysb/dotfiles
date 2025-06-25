@@ -245,7 +245,9 @@
   };
 
   # Declare the user that will be running `nix-darwin`
-  users.users.${username} = { # Use abstracted username
+  system.primaryUser = username;
+  users.users.${username} = {
+    # Use abstracted username
     name = username; # Use abstracted username
     home = home-directory; # Use abstracted home-directory
   };
