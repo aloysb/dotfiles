@@ -2,13 +2,20 @@
 #+property: header-args :tangle config.el
 
 * Core
+** General
+
+#+begin_src elisp
+  ;; follow links without asking for confirmation
+  (setq vc-follow-symlinks nil)
+  (setq org-confirm-babel-evaluate nil)
+#+end_src
 
 ** Package manager: Elpaca
 
 All the code is issues directly from elpaca's documentation.
 I use elpaca to manage my packages because... reasons.
 #+begin_src elisp
-(defvar elpaca-installer-version 0.11)
+
 (defvar elpaca-directory (expand-file-name "elpaca/" user-emacs-directory))
 (defvar elpaca-builds-directory (expand-file-name "builds/" elpaca-directory))
 (defvar elpaca-repos-directory (expand-file-name "repos/" elpaca-directory))
@@ -122,8 +129,7 @@ The fzf of emacs
   )
 #+end_src
 
-* Utilsm
-
+* Utils
 ** Reload config
 
 #+begin_src elisp
@@ -147,11 +153,7 @@ The fzf of emacs
 #+end_src
 
 * UI
-
 ** General
-
-
-This required a bit of work to get emacsclient to respect the frame settings.
 #+begin_src elisp
   ;; In your daemon's init.el or the config.org loaded by it
   ;; Disable ring bell
@@ -215,6 +217,12 @@ Contains 67 themes, probably the only one needed.
   )
 #+end_src
 
+** Which-key
+Display keymap in a minibuffer after a second or so
+#+begin_src elisp
+(which-key-mode t)
+#+end_src
+
 * Keymap
 ** General
 I use general as I'm planning on jumping ship away from evil eventually, so I'd rather keep my "general" keybindings in "general".
@@ -233,202 +241,31 @@ I use general as I'm planning on jumping ship away from evil eventually, so I'd 
   )
 #+end_src
 
-** Meow
-
-#+begin_src elisp
-
-  (defun meow-setup-qwerty ()
-  (setq meow-cheatsheet-layout meow-cheatsheet-layout-qwerty)
-  (meow-motion-define-key
-   '("j" . meow-next)
-   '("k" . meow-prev)
-   '("<escape>" . ignore))
-  (meow-leader-define-key
-   ;; Use SPC (0-9) for digit arguments.
-   '("1" . meow-digit-argument)
-   '("2" . meow-digit-argument)
-   '("3" . meow-digit-argument)
-   '("4" . meow-digit-argument)
-   '("5" . meow-digit-argument)
-   '("6" . meow-digit-argument)
-   '("7" . meow-digit-argument)
-   '("8" . meow-digit-argument)
-   '("9" . meow-digit-argument)
-   '("0" . meow-digit-argument)
-   '("/" . meow-keypad-describe-key)
-   '("?" . meow-cheatsheet))
-  (meow-normal-define-key
-   '("0" . meow-expand-0)
-   '("9" . meow-expand-9)
-   '("8" . meow-expand-8)
-   '("7" . meow-expand-7)
-   '("6" . meow-expand-6)
-   '("5" . meow-expand-5)
-   '("4" . meow-expand-4)
-   '("3" . meow-expand-3)
-   '("2" . meow-expand-2)
-   '("1" . meow-expand-1)
-   '("-" . negative-argument)
-   '(";" . meow-reverse)
-   '("," . meow-inner-of-thing)
-   '("." . meow-bounds-of-thing)
-   '("[" . meow-beginning-of-thing)
-   '("]" . meow-end-of-thing)
-   '("a" . meow-append)
-   '("A" . meow-open-below)
-   '("b" . meow-back-word)
-   '("B" . meow-back-symbol)
-   '("c" . meow-change)
-   '("d" . meow-delete)
-   '("D" . meow-backward-delete)
-   '("w" . meow-next-word)
-   '("W" . meow-next-symbol)
-   '("f" . meow-find)
-   '("g" . meow-cancel-selection)
-   '("G" . meow-grab)
-   '("h" . meow-left)
-   '("H" . meow-left-expand)
-   '("i" . meow-insert)
-   '("I" . meow-open-above)
-   '("j" . meow-next)
-   '("J" . meow-next-expand)
-   '("k" . meow-prev)
-   '("K" . meow-prev-expand)
-   '("l" . meow-right)
-   '("L" . meow-right-expand)
-   '("m" . meow-join)
-   '("n" . meow-search)
-   '("o" . meow-block)
-   '("O" . meow-to-block)
-   '("p" . meow-yank)
-   '("q" . meow-quit)
-   '("Q" . meow-goto-line)
-   '("r" . meow-replace)
-   '("R" . meow-swap-grab)
-   '("s" . meow-kill)
-   '("t" . meow-till)
-   '("u" . meow-undo)
-   '("U" . meow-undo-in-selection)
-   '("v" . meow-visit)
-   '("w" . meow-mark-word)
-   '("W" . meow-mark-symbol)
-   '("x" . meow-line)
-   '("X" . meow-goto-line)
-   '("y" . meow-save)
-   '("Y" . meow-sync-grab)
-   '("z" . meow-pop-selection)
-   '("'" . repeat)
-   '("<escape>" . ignore)))
-
-  (defun meow-setup-colemak()
-   (setq meow-cheatsheet-layout meow-cheatsheet-layout-colemak-dh)
-   (meow-motion-define-key
-    ;; Use e to move up, n to move down.
-    ;; Since special modes usually use n to move down, we only overwrite e here.
-    '("e" . meow-prev)
-    '("<escape>" . ignore))
-   (meow-leader-define-key
-    '("?" . meow-cheatsheet)
-    '("1" . meow-digit-argument)
-    '("2" . meow-digit-argument)
-    '("3" . meow-digit-argument)
-    '("4" . meow-digit-argument)
-    '("5" . meow-digit-argument)
-    '("6" . meow-digit-argument)
-    '("7" . meow-digit-argument)
-    '("8" . meow-digit-argument)
-    '("9" . meow-digit-argument)
-    '("0" . meow-digit-argument))
-   (meow-normal-define-key
-    '("0" . meow-expand-0)
-    '("1" . meow-expand-1)
-    '("2" . meow-expand-2)
-    '("3" . meow-expand-3)
-    '("4" . meow-expand-4)
-    '("5" . meow-expand-5)
-    '("6" . meow-expand-6)
-    '("7" . meow-expand-7)
-    '("8" . meow-expand-8)
-    '("9" . meow-expand-9)
-    '("-" . negative-argument)
-    '(";" . meow-reverse)
-    '("," . meow-inner-of-thing)
-    '("." . meow-bounds-of-thing)
-    '("[" . meow-beginning-of-thing)
-    '("]" . meow-end-of-thing)
-    '("/" . meow-visit)
-    '("a" . meow-append)
-    '("A" . meow-open-below)
-    '("b" . meow-back-word)
-    '("B" . meow-back-symbol)
-    '("c" . meow-change)
-    '("e" . meow-prev)
-    '("E" . meow-prev-expand)
-    '("f" . meow-find)
-    '("g" . meow-cancel-selection)
-    '("G" . meow-grab)
-    '("m" . meow-left)
-    '("M" . meow-left-expand)
-    '("i" . meow-right)
-    '("I" . meow-right-expand)
-    '("j" . meow-join)
-    '("k" . meow-kill)
-    '("l" . meow-line)
-    '("L" . meow-goto-line)
-    '("h" . meow-mark-word)
-    '("H" . meow-mark-symbol)
-    '("n" . meow-next)
-    '("N" . meow-next-expand)
-    '("o" . meow-block)
-    '("O" . meow-to-block)
-    '("p" . meow-yank)
-    '("q" . meow-quit)
-    '("r" . meow-replace)
-    '("s" . meow-insert)
-    '("S" . meow-open-above)
-    '("t" . meow-till)
-    '("u" . meow-undo)
-    '("U" . meow-undo-in-selection)
-    '("v" . meow-search)
-    '("w" . meow-next-word)
-    '("W" . meow-next-symbol)
-    '("x" . meow-delete)
-    '("X" . meow-backward-delete)
-    '("y" . meow-save)
-    '("z" . meow-pop-selection)
-    '("'" . repeat)
-    '("<escape>" . ignore)))
-   
-    (use-package meow
-      :ensure t
-      :config
-      (meow-setup-qwerty)
-      (meow-global-mode 1)
-    )
-#+end_src
-
 ** Evil
 Evil emulates vim keybindings within emacs.
 #+begin_src elisp
-  (use-package evil
-    :ensure t
-    :init
-    (setq evil-want-integration t) ;; This is optional since it's already set to t by default.
-    (setq evil-want-keybinding nil)
-    (setq evil-want-C-u-scroll t) ;; C-u to scroll up, same as vim
-    (setq evil-want-Y-yank-to-eol t) ;; Y to yank line, same as vim
-    (setq evil-move-cursor-back nil) ;; Don't go back when exiting edit mode
-    (setq evil-want-C-i-jump t) ;; C-i to jump forward
-    :config
-    (evil-mode 0)
-   )
+    (use-package evil
+      :ensure t
+      :init
+      (setq evil-want-integration t) ;; This is optional since it's already set to t by default.
+      (setq evil-want-keybinding nil)
+      (setq evil-want-C-u-scroll t) ;; C-u to scroll up, same as vim
+      (setq evil-want-Y-yank-to-eol t) ;; Y to yank line, same as vim
+      (setq evil-move-cursor-back nil) ;; Don't go back when exiting edit mode
+      (setq evil-want-C-i-jump t) ;; C-i to jump forward
+      :config
+      (evil-mode 1)
+     )
 
-  (use-package evil-collection
-    :after evil
-    :ensure t
-    :config
-    (evil-collection-init)
-    )
+    (use-package evil-collection
+      :after evil
+      :ensure t
+      :config
+      (evil-collection-init)
+     )
+
+  ;; show the consult for evil ex (:) command
+    (setq completion-in-region-function #'consult-completion-in-region)
 #+end_src
 
 * Git
