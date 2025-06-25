@@ -1,6 +1,8 @@
 {
   self,
   pkgs,
+  username, # Injected from specialArgs
+  home-directory, # Injected from specialArgs
   ...
 }: {
   imports = [
@@ -233,7 +235,7 @@
     settings = {
       trusted-users = [
         "root"
-        "aloys"
+        username # Use abstracted username
       ];
     };
     extraOptions = ''
@@ -243,9 +245,9 @@
   };
 
   # Declare the user that will be running `nix-darwin`
-  users.users.aloys = {
-    name = "$USER";
-    home = "/Users/$USER";
+  users.users.${username} = { # Use abstracted username
+    name = username; # Use abstracted username
+    home = home-directory; # Use abstracted home-directory
   };
 
   security.pam.services.sudo_local.touchIdAuth = true;

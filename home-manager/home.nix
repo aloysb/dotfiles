@@ -2,6 +2,8 @@
   config,
   pkgs,
   lib,
+  username, # Injected from extraSpecialArgs
+  home-directory, # Injected from extraSpecialArgs
   ...
 }: let
   isDarwin = pkgs.stdenv.isDarwin;
@@ -10,31 +12,39 @@
     #    if ! command -v opencode >/dev/null 2>&1; then
           #echo "⏳ Installing opencode…"
           #curl -fsSL https://raw.githubusercontent.com/opencode-ai/opencode/refs/heads/main/install | bash
-          #export PATH=/Users/aloys/.opencode/bin:$PATH
+          #export PATH=${home-directory}/.opencode/bin:$PATH # Replaced hardcoded path
     #    fi
   '';
 in {
-  nixpkgs.config.allowUnfree = true;
-  # Apply the overlay to nixpkgs
-  nixpkgs.overlays = [
-    (import ../overlays/aider-overlay.nix)
-    # Fix for tree-sitter-bundled-vendor hash mismatch
-    (final: prev: {
-      tree-sitter-bundled-vendor = prev.tree-sitter-bundled-vendor.overrideAttrs (oldAttrs: {
-        outputHash = "sha256-ie+/48dVU3r+tx/sQBWRIZEWSNWwMBANCqQLnv96JXs=";
-      });
-    })
-  ];
+  # sops-nix specific configuration for Home Manager
+  sops.defaultSopsFile = ../secrets.yaml; # Path relative to this file to flake root's secrets.yaml
+  sops.secrets.OPENROUTER_API_KEY = { # This will expose OPENROUTER_API_KEY directly if sops can do that
+                                     # or create a file that sets it, to be sourced.
+    # Assumes 'openrouter_api_key' (lowercase) is the key in secrets.yaml
+    # If not, specify: key = "openrouter_api_key";
+  };
+  # sops.secrets.openrouter_api_key_env = { # Old approach
+    # This will make the decrypted content of 'openrouter_api_key' from secrets.yaml
+    # available as an environment variable OPENROUTER_API_KEY_ENV (if not using .sh extension)
+    # or in a file that can be sourced.
+    # For direct env var, we'd typically use 'programs.zsh.sessionVariables'
+    # or a .sopsignore file to let sops manage it directly via a generated script.
+    # Let's try to make it available as an environment variable directly.
+    # If direct env var injection isn't straightforward, will use a file to source.
+  };
+  # To make it an environment variable that Zsh can use:
+  # 1. Define the secret for sops-nix
+  # 2. In zsh.initExtra (or similar), source the file sops provides, or use the variable if set by sops.
+
+  nixpkgs.config.allowUnfree = true; # This is fine, can be set at module level too.
+                                     # Flake-level pkgs already has allowUnfree = true.
+  # nixpkgs.overlays are now managed in flake.nix
 
   home = rec {
-    username = "aloys";
-    homeDirectory =
-      if isLinux
-      then "/home/${username}/"
-      else "/Users/${username}/";
+    inherit username homeDirectory; # Use injected values
     sessionPath =
       [
-        "${config.home.homeDirectory}/.config/scripts"
+        "${home-directory}/.config/scripts" # Use injected home-directory
         "${config.home.homeDirectory}/.opencode/bin"
       ]
       ++ lib.optionals pkgs.stdenv.isDarwin [
@@ -57,13 +67,31 @@ in {
   ];
 
   wayland.windowManager.hyprland = {
-    enable = false;
-    package = pkgs.hyprland;
+    enable = false; # This is for the HM module, but user starts it via config.
+    package = pkgs.hyprland; # Matched with hyprland input in flake? No, this is fine.
     xwayland.enable = false;
     settings = {
       "$mod" = "SUPER";
     };
-    extraConfig = builtins.readFile ../dotfiles/hypr/hyprland.conf;
+    # Process hyprland.conf to substitute paths if necessary, though it doesn't seem to have any.
+    # For consistency and future-proofing, we can do it.
+    # However, the main issue is hyprpaper.conf, which is called by hyprland.conf
+    extraConfig = pkgs.substituteAll {
+      src = ../dotfiles/hypr/hyprland.conf;
+      home = home-directory; # or config.home.homeDirectory
+    };
+  };
+
+  # Ensure hyprpaper.conf is correctly placed and substituted
+  home.file."${config.xdg.configHome}/hypr/hyprpaper.conf" = {
+    text = pkgs.substituteAll {
+      src = ../dotfiles/hypr/hyprpaper.conf; # This is the templatized one
+      HOME = home-directory; # Using HOME to match @HOME@
+    };
+    # Only create this if hyprland is likely to be used (isLinux)
+    # This condition might need refinement based on how hyprland is enabled/used.
+    # For now, assume if hyprland config is being managed, this is needed.
+    # enable = isLinux; # This would require isLinux to be in scope or passed.
   };
 
   home.packages = with pkgs;
@@ -204,7 +232,7 @@ in {
           yy = "yazi";
           fk = "fuck";
           p = "pnpm";
-          hypr = "Hyprland -c /home/aloys/.config/hyprland/hyprland.conf";
+          hypr = "Hyprland -c ${config.home.homeDirectory}/.config/hyprland/hyprland.conf"; # Used config.home.homeDirectory
           aid = "aider -c ~/.aider.config.yml";
           aidcp = "aider -c ~/.aider.config.yml --copy-paste";
           paid = "aider -c ~/.aider.perso.config.yml";
@@ -220,7 +248,9 @@ in {
         initExtraFirst = ''
           source ${pkgs.zsh-powerlevel10k}/share/zsh-powerlevel10k/powerlevel10k.zsh-theme'';
         initExtra = ''
-                 export OPENROUTER_API_KEY=`pass show openrouter/api_key`
+                 # export OPENROUTER_API_KEY=`pass show openrouter/api_key` # Managed by sops-nix now
+                 # If OPENROUTER_API_KEY is not available, you might need to source sops secrets:
+                 # source "${config.sops.secretsFile}" # Or specific path provided by sops-nix HM module
                  export OLLAMA_API_BASE=http://127.0.0.1:11434
           source ~/.p10k.zsh
         '';

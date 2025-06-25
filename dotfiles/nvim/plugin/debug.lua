@@ -29,7 +29,7 @@ require("lze").load {
           port = 2345,
           substitutePath = {
             {
-              from = "/Users/aloys/code/dabble/api.telescope.co/http-api/",
+              from = os.getenv("HOME") .. "/code/dabble/api.telescope.co/http-api/",
               to   = "/app", -- inside container
             },
           },
