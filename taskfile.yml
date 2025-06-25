@@ -15,7 +15,7 @@ tasks:
   darwin-switch:
     desc: "Run nix-darwin rebuild switch for the current macOS system ({{.USER_SYSTEM}})"
     cmds:
-      - nix run nix-darwin/master#darwin-rebuild -- switch --flake .#{{.USER_SYSTEM}}
+      - sudo nix run nix-darwin/master#darwin-rebuild -- switch --flake .#{{.USER_SYSTEM}}
     preconditions:
       - sh: "[ \"{{.USER_SYSTEM}}\" = \"darwin\" ]"
         msg: "This task is only for darwin systems."
