@@ -1,12 +1,19 @@
-# Copy my scripts in a "script" dir
-# TODO: clean this up
-{config}: let
-  # Define the folders you want to symlink explicitly
-  pathToFolder = "${config.home.homeDirectory}/.config/nix/scripts";
-in {
-  ".config/scripts" = {
-    source = config.lib.file.mkOutOfStoreSymlink pathToFolder;
+# Symlinks the content of ./scripts from flake root to ~/.config/scripts
+{
+  config,
+  userScripts, # Injected from symlinks.nix (originally from flake.nix)
+  ...
+}:
+# let
+  # pathToFolder = "${config.home.homeDirectory}/.config/nix/scripts"; # Old way
+# in
+{
+  # This will create a symlink from ~/.config/scripts to the ./scripts directory in the Nix store.
+  # All files from ./scripts will then be available under ~/.config/scripts/
+  # For example, REPO_ROOT/scripts/backup -> /nix/store/...-scripts/backup -> ~/.config/scripts/backup
+  home.file.".config/scripts" = {
+    source = userScripts; # userScripts is the path to the ./scripts directory from flake root
     force = true;
-    recursive = true;
+    recursive = true; # Ensures the directory is linked
   };
 }

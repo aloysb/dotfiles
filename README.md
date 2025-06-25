@@ -15,6 +15,33 @@ Key components:
 *   **`home-manager/`**: Shared Home Manager configurations applicable to both macOS and NixOS.
 *   **`taskfile.yml`**: A task runner file to simplify common operations like applying configurations.
 
+## Secrets Management
+
+This configuration uses [sops-nix](https://github.com/Mic92/sops-nix) for managing secrets like API keys and passwords declaratively and securely.
+
+**Prerequisites:**
+*   You need `sops` installed and configured on your system. Typically, this involves setting up a GPG key.
+    ```bash
+    # Example: Install sops (macOS with Homebrew)
+    brew install sops
+    # Example: Install sops (Nix)
+    # nix-env -iA nixpkgs.sops
+    ```
+*   Ensure your GPG key is available and configured for sops. You might need a `.sops.yaml` file in the repository root to specify default encryption rules (e.g., your GPG key fingerprint). Example `.sops.yaml`:
+    ```yaml
+    creation_rules:
+      - pgp: 'YOUR_GPG_FINGERPRINT_HERE'
+    ```
+
+**Working with Secrets:**
+1.  Secrets are defined in `secrets.yaml` at the root of the repository.
+2.  **Important:** This file should be encrypted using `sops`.
+    *   To edit secrets: `sops secrets.yaml`
+    *   After editing and saving, `sops` will automatically re-encrypt the file if your environment is set up correctly (e.g., GPG agent).
+    *   To encrypt an existing plaintext `secrets.yaml`: `sops --encrypt --in-place secrets.yaml`
+3.  The Nix configurations (`NixOS` and `Home Manager`) will automatically decrypt these secrets at build time when applying the configuration.
+4.  Refer to `secrets.yaml` for the structure of expected secrets (e.g., `restic_password`, `openrouter_api_key`).
+
 ## Using Tasks with `task`
 
 This repository uses [Task](https://taskfile.dev/) as a command runner, similar to `make` or `just`. It helps automate common development and system management workflows.

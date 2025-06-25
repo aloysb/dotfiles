@@ -27,10 +27,11 @@
       url = "github:homebrew/homebrew-bundle";
       flake = false;
     };
-    emacs-plus = {
-      url = "github:d12frosted/homebrew-emacs-plus";
-      flake = false;
-    };
+    # emacs-plus input removed as per review (unused/broken)
+    # emacs-plus = {
+    #   url = "github:d12frosted/homebrew-emacs-plus";
+    #   flake = false;
+    # };
 
     hyprland = {
       url = "github:hyprwm/Hyprland/b1e5cc66bdb20b002c93479490c3a317552210b3";
@@ -40,6 +41,10 @@
 
     stylix = {
       url = "github:danth/stylix";
+    };
+    sops-nix = { # Added sops-nix input
+      url = "github:Mic92/sops-nix";
+      inputs.nixpkgs.follows = "nixpkgs"; # Ensure it uses the same nixpkgs
     };
   };
 
@@ -54,26 +59,67 @@
     homebrew-bundle,
     hyprland,
     stylix,
+    sops-nix, # Added sops-nix to function arguments
     ...
   } @ inputs: let
-    overlays = [
+    # Define all overlays here
+    customOverlays = [
+      # Overlay from home-manager/home.nix
+      (import ./overlays/aider-overlay.nix)
+      (final: prev: { # tree-sitter fix
+        tree-sitter-bundled-vendor = prev.tree-sitter-bundled-vendor.overrideAttrs (oldAttrs: {
+          outputHash = "sha256-ie+/48dVU3r+tx/sQBWRIZEWSNWwMBANCqQLnv96JXs=";
+        });
+      })
+      # Overlay from nixos/configuration.nix
+      (final: prev: { # Hyprland fix
+        hyprland = prev.hyprland.override { # Corrected typo hyrpland -> hyprland
+          libgbm = prev.mesa; # Assuming mesa is correctly available in prev scope
+        };
+      })
     ];
 
+    username = "aloys";
     systemLinux = "aarch64-linux";
     systemDarwin = "aarch64-darwin";
+    homeDirectory = system:
+      if system == systemLinux
+      then "/home/${username}"
+      else "/Users/${username}";
+
+    # Centralized pkgs definition for a given system
+    pkgsForSystem = system: import nixpkgs {
+      inherit system;
+      overlays = customOverlays;
+      config.allowUnfree = true;
+    };
+
+    # Helper function for creating NixOS systems
+    mkNixOsSystem = modulesPath: system:
+      nixpkgs.lib.nixosSystem {
+        inherit system;
+        pkgs = pkgsForSystem system; # Use centralized pkgs
+        specialArgs = {
+          inherit inputs self username;
+          home-directory = homeDirectory system;
+          # pkgs can also be passed here if modules expect it explicitly instead of using the top-level pkgs
+        };
+        modules = [ modulesPath ];
+      };
 
     # A helper function for the home manager configuration.
     mkHomeConfig = system:
       home-manager.lib.homeManagerConfiguration {
-        pkgs = import nixpkgs {
-          inherit system;
-          inherit overlays;
-        };
+        pkgs = pkgsForSystem system; # Use centralized pkgs
         modules = [
           ./home-manager/home.nix # your own HM config
+          inputs.sops-nix.homeManagerModules.sops # Added sops-nix HM module
         ];
         extraSpecialArgs = {
-          inherit hyprland;
+          inherit inputs self username hyprland sops-nix;
+          home-directory = homeDirectory system;
+          dotfiles = ./dotfiles; # Pass the path to the dotfiles directory
+          userScripts = ./scripts; # Pass the path to the user scripts directory
         };
       };
   in {
@@ -82,19 +128,22 @@
     ##########################################
     darwinConfigurations.darwin = nix-darwin.lib.darwinSystem {
       system = systemDarwin;
-      specialArgs = {inherit self;};
+      specialArgs = {
+        inherit self inputs username; # Added username
+        home-directory = homeDirectory systemDarwin; # Added home-directory
+      };
       modules = [
         ./darwin/configuration.nix
         nix-homebrew.darwinModules.nix-homebrew
         {
           nix-homebrew = {
             enable = true;
-            user = "aloys";
+            user = username; # Use abstracted username
             taps = {
               "homebrew/homebrew-core" = homebrew-core;
               "homebrew/homebrew-cask" = homebrew-cask;
               "homebrew/homebrew-bundle" = homebrew-bundle;
-              "d12frosted/homebrew-emacs-plus" = inputs.emacs-plus;
+              # "d12frosted/homebrew-emacs-plus" = inputs.emacs-plus; # Removed
             };
 
             # Optional: Enable fully-declarative tap management
@@ -110,21 +159,16 @@
     ##########################################
     # NixOS configuration
     ##########################################
-    nixosConfigurations.myNixOS = nixpkgs.lib.nixosSystem {
-      system = systemLinux;
-      modules = [
-        ./nixos/configuration.nix
-      ];
-    };
+    nixosConfigurations.myNixOS = mkNixOsSystem ./nixos/configuration.nix systemLinux;
 
     ##########################################
     # Home manager configuration
     ##########################################
     homeConfigurations = {
       # For Linux systems
-      linux = mkHomeConfig systemLinux;
-      # For macOS systems (if you want a separate Home Manager config)
-      darwin = mkHomeConfig systemDarwin;
+      "aloys@${systemLinux}" = mkHomeConfig systemLinux; # Changed key format for clarity
+      # For macOS systems
+      "aloys@${systemDarwin}" = mkHomeConfig systemDarwin; # Changed key format for clarity
     };
   };
 }
