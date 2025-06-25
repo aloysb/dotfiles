@@ -86,12 +86,10 @@ in {
       corepack # yarn/npm/pnpm
       go
       delve
-      aider-chat
       ffmpeg
       devenv
       hurl
       uv
-      ollama
       pre-commit
       thunderbird
       docker
@@ -103,7 +101,11 @@ in {
       btop
       wireguard-tools
       go-task
+      # ai
       claude-code
+      repomix
+      ollama
+      aider-chat
     ]
     ++ lib.optionals pkgs.stdenv.isDarwin [
       colima # better docker daemon
