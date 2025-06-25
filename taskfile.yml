@@ -1,0 +1,46 @@
+version: '3'
+
+vars:
+  USER_SYSTEM:
+    sh: uname | tr '[:upper:]' '[:lower:]'
+
+tasks:
+  hms:
+    desc: "Run home-manager switch for the current system ({{.USER_SYSTEM}})"
+    cmds:
+      - nix run home-manager/master -- switch --flake .#{{.USER_SYSTEM}}
+    requires:
+      vars: [USER_SYSTEM]
+
+  darwin-switch:
+    desc: "Run nix-darwin rebuild switch for the current macOS system ({{.USER_SYSTEM}})"
+    cmds:
+      - nix run nix-darwin/master#darwin-rebuild -- switch --flake .#{{.USER_SYSTEM}}
+    preconditions:
+      - sh: "[ \"{{.USER_SYSTEM}}\" = \"darwin\" ]"
+        msg: "This task is only for darwin systems."
+    requires:
+      vars: [USER_SYSTEM]
+
+  nvim-reload:
+    desc: "Reload nvim configuration by reinstalling the nix profile"
+    cmds:
+      - nix profile remove dotfiles/nvim
+      - nix profile install git+file:///Users/aloys/.config/nix?dir=dotfiles/nvim#nvim
+      # Using the absolute path as it was in the justfile.
+      # Consider making this path relative or configurable if needed elsewhere.
+
+  default:
+    desc: "Show available tasks"
+    cmds:
+      - task --list-all
+
+  nixos-switch:
+    desc: "Run nixos-rebuild switch for the current system ({{.USER_SYSTEM}})"
+    cmds:
+      - sudo nixos-rebuild switch --flake .#{{.USER_SYSTEM}}
+    preconditions:
+      - sh: "[ \"$(uname)\" = \"Linux\" ]"
+        msg: "This task is only for Linux systems."
+    requires:
+      vars: [USER_SYSTEM]
