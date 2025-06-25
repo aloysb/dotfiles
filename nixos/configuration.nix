@@ -1,10 +1,32 @@
-{pkgs, ...}: {
+{
+  pkgs,
+  inputs, # Injected from specialArgs
+  username, # Injected from specialArgs
+  home-directory, # Injected from specialArgs
+  ...
+}: {
   imports = [
     # Include the results of the hardware scan.
     ./hardware-configuration.nix
     # Include the necessary packages and configuration for Apple Silicon support.
     ./apple-silicon-support
+    inputs.sops-nix.nixosModules.sops # Import sops-nix module
   ];
+
+  # sops-nix configuration
+  sops.defaultSopsFile = ../../secrets.yaml; # Path to the secrets file from flake root
+  sops.secrets.restic_password = { # Example secret
+    # No need to specify sopsFile if defaultSopsFile is set and key matches
+    # This will make the decrypted content of 'restic_password' from secrets.yaml
+    # available as a file at /run/secrets/restic_password
+    # The actual file path can be customized if needed.
+  };
+  # If you want to use it for user password:
+  # sops.secrets.user_password_aloys = {
+  #   key = "userPasswords/aloys"; # Assumes 'userPasswords.aloys: <hashed_password_ENC>' in secrets.yaml
+  # };
+  # users.users.${username}.passwordFile = config.sops.secrets.user_password_aloys.path;
+
 
   # Use the systemd-boot EFI boot loader.
   boot.loader.systemd-boot.enable = true;
@@ -24,13 +46,7 @@
   #   };
   #   wantedBy = ["sysinit.target"];
   # };
-  nixpkgs.overlays = [
-    (final: prev: {
-      hyrpland = prev.hyrpland.override {
-        libgbm = prev.mesa;
-      };
-    })
-  ];
+  # nixpkgs.overlays are now managed in flake.nix
 
   hardware.asahi = {
     peripheralFirmwareDirectory = ./firmware;
@@ -108,10 +124,11 @@
   users = {
     groups.uinput = {};
     users = {
-      aloys = {
+      ${username} = { # Use abstracted username
         isNormalUser = true;
         extraGroups = ["wheel" "nixos" "docker" "uinput" "input"];
-        initialPassword = "password";
+        initialPassword = "password"; # This should be managed by sops-nix or removed
+        home = home-directory; # Ensure home directory is set
         packages = with pkgs; [
           gh
         ];

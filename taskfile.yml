@@ -25,10 +25,9 @@ tasks:
   nvim-reload:
     desc: "Reload nvim configuration by reinstalling the nix profile"
     cmds:
-      - nix profile remove dotfiles/nvim
-      - nix profile install git+file:///Users/aloys/.config/nix?dir=dotfiles/nvim#nvim
-      # Using the absolute path as it was in the justfile.
-      # Consider making this path relative or configurable if needed elsewhere.
+      # This assumes the task is run from the repo root.
+      - nix profile remove dotfiles/nvim # The profile name is 'dotfiles/nvim'
+      - nix profile install .?dir=dotfiles/nvim#nvim # Builds from ./dotfiles/nvim directory in the current repo
 
   default:
     desc: "Show available tasks"
