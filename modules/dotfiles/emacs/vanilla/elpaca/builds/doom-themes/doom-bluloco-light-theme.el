@@ -1,0 +1,1 @@
+/Users/aloys/.config/nix/dotfiles/emacs/vanilla/elpaca/repos/themes/themes/doom-bluloco-light-theme.el

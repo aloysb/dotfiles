@@ -25,13 +25,6 @@
       git.enable = true;
       #      zsh.enable = true;
       nvim.enable = true;
-      # fzf.enable = true;
-      # bat.enable = true;
-      # zoxide.enable = true;
-      # direnv.enable = true;
-      # gpg.enable = true;
-      # pass.enable = true;
-      #packages.enable = true;
     };
     desktop = {
       #firefox.enable = true; # If you use Firefox and have a module for it
@@ -40,10 +33,20 @@
   };
 
   modulesHM = {
+    hm = {
+      core.enable = true;
+    };
     programs = {
       git.enable = true;
       lazygit.enable = true;
       dotfiles.enable = true;
+      zsh.enable = true;
+      fzf.enable = true;
+      bat.enable = true;
+      zoxide.enable = true;
+      direnv.enable = true;
+      gpg.enable = true;
+      #pass.enable = true;
     };
   };
 in {
@@ -79,7 +82,7 @@ in {
     backupFileExtension = "bk";
     users.${username} = {config, ...}: {
       imports = [
-        ../../modules/home-manager.nix # A new file to bridge host enables to HM module imports
+        ../../modules/home-manager/default.nix
       ];
       config = {
         modules = modulesHM;

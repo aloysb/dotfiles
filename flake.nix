@@ -77,7 +77,7 @@
     commonSpecialArgs = system: {
       inherit inputs self username sops-nix; # sops-nix might be needed by HM modules
       home-directory = homeDirectory system;
-      dotfiles = ./dotfiles;
+      dotfiles = ./modules/dotfiles;
       userScripts = ./scripts;
       isLinux = system == systemLinux;
       isDarwin = system == systemDarwin;

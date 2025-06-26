@@ -1,0 +1,1 @@
+/Users/aloys/.config/nix/dotfiles/emacs/vanilla/elpaca/repos/llama/llama.el

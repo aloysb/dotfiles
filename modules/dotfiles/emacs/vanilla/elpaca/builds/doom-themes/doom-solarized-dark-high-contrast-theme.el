@@ -1,0 +1,1 @@
+/Users/aloys/.config/nix/dotfiles/emacs/vanilla/elpaca/repos/themes/themes/doom-solarized-dark-high-contrast-theme.el

@@ -60,21 +60,24 @@ in {
           source "${homeDir}/.p10k.zsh"
         fi
       '';
-      sessionVariables = {
-        VISUAL = "nvim"; # Assuming nvim is preferred editor
-        EDITOR = "nvim";
-        HM = "${homeDir}/.config/nix/home-manager/"; # Path to HM config
-        DOTFILES = "${homeDir}/.config/nix/dotfiles/"; # Path to non-HM dotfiles source
-        # DOCKER_HOST specific to colima on Darwin, might need conditional logic
-        # or to be set by a colima module if one exists.
-        DOCKER_HOST = lib.mkIf pkgs.stdenv.isDarwin "unix://${homeDir}/.colima/default/docker.sock";
-        COREPACK_ENABLE_AUTO_PIN = "0";
-        CONF = "$HOME/.config/"; # Standard XDG
-        DY = "$HOME/dylan/"; # User specific
-        # XDG_CONFIG_HOME is automatically set by HM if not mistaken, but doesn't hurt
-        XDG_CONFIG_HOME = "$HOME/.config";
-        DOOMDIR = "${dotfilesDir}/emacs/doom"; # Path to doom emacs config
-      };
+      sessionVariables =
+        {
+          VISUAL = "nvim"; # Assuming nvim is preferred editor
+          EDITOR = "nvim";
+          HM = "${homeDir}/.config/nix/home-manager/"; # Path to HM config
+          DOTFILES = "${homeDir}/.config/nix/dotfiles/"; # Path to non-HM dotfiles source
+          COREPACK_ENABLE_AUTO_PIN = "0";
+          CONF = "$HOME/.config/"; # Standard XDG
+          DY = "$HOME/dylan/"; # User specific
+          # XDG_CONFIG_HOME is automatically set by HM if not mistaken, but doesn't hurt
+          XDG_CONFIG_HOME = "$HOME/.config";
+          DOOMDIR = "${dotfilesDir}/emacs/doom"; # Path to doom emacs config
+        }
+        // lib.optionalAttrs pkgs.stdenv.isDarwin {
+          # DOCKER_HOST specific to colima on Darwin, conditionally added here.
+          DOCKER_HOST = "unix://${homeDir}/.colima/default/docker.sock";
+        };
+
       oh-my-zsh = {
         enable = true;
         plugins = [
