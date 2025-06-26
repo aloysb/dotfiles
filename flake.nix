@@ -94,81 +94,77 @@
       config.allowUnfree = true;
     };
 
-    # Helper function for creating NixOS systems
-    mkNixOsSystem = modulesPath: system:
-      nixpkgs.lib.nixosSystem {
-        inherit system;
-        pkgs = pkgsForSystem system; # Use centralized pkgs
-        specialArgs = {
-          inherit inputs self username;
-          home-directory = homeDirectory system;
-          # pkgs can also be passed here if modules expect it explicitly instead of using the top-level pkgs
-        };
-        modules = [ modulesPath ];
-      };
+    # Common specialArgs for all systems
+    commonSpecialArgs = system: {
+      inherit inputs self username hyprland sops-nix; # sops-nix might be needed by HM modules
+      home-directory = homeDirectory system;
+      dotfiles = ./dotfiles;
+      userScripts = ./scripts;
+      pkgs = pkgsForSystem system; # Make pkgs available in specialArgs for modules if they need it directly
+                                   # though typically modules receive pkgs as a top-level argument.
+    };
 
-    # A helper function for the home manager configuration.
-    mkHomeConfig = system:
-      home-manager.lib.homeManagerConfiguration {
-        pkgs = pkgsForSystem system; # Use centralized pkgs
-        modules = [
-          ./home-manager/home.nix # your own HM config
-          inputs.sops-nix.homeManagerModules.sops # Added sops-nix HM module
-        ];
-        extraSpecialArgs = {
-          inherit inputs self username hyprland sops-nix;
-          home-directory = homeDirectory system;
-          dotfiles = ./dotfiles; # Pass the path to the dotfiles directory
-          userScripts = ./scripts; # Pass the path to the user scripts directory
-        };
-      };
   in {
     ##########################################
     # Nix Darwin
     ##########################################
-    darwinConfigurations.darwin = nix-darwin.lib.darwinSystem {
+    darwinConfigurations."darwin-macbook-m1" = nix-darwin.lib.darwinSystem {
       system = systemDarwin;
-      specialArgs = {
-        inherit self inputs username; # Added username
-        home-directory = homeDirectory systemDarwin; # Added home-directory
-      };
+      specialArgs = commonSpecialArgs systemDarwin;
       modules = [
-        ./darwin/configuration.nix
-        nix-homebrew.darwinModules.nix-homebrew
-        {
-          nix-homebrew = {
-            enable = true;
-            user = username; # Use abstracted username
-            taps = {
-              "homebrew/homebrew-core" = homebrew-core;
-              "homebrew/homebrew-cask" = homebrew-cask;
-              "homebrew/homebrew-bundle" = homebrew-bundle;
-              # "d12frosted/homebrew-emacs-plus" = inputs.emacs-plus; # Removed
-            };
-
-            # Optional: Enable fully-declarative tap management
-            #
-            # With mutableTaps disabled, taps can no longer be added imperatively with `brew tap`.
-            mutableTaps = false;
-          };
-        }
-        stylix.darwinModules.stylix
+        ./hosts/darwin-macbook-m1/default.nix
+        # The home-manager configuration is now managed within hosts/darwin-macbook-m1/default.nix
       ];
     };
 
     ##########################################
     # NixOS configuration
     ##########################################
-    nixosConfigurations.myNixOS = mkNixOsSystem ./nixos/configuration.nix systemLinux;
+    nixosConfigurations."linux-homelab-x86" = nixpkgs.lib.nixosSystem {
+      system = systemLinux;
+      specialArgs = commonSpecialArgs systemLinux;
+      modules = [
+        ./hosts/linux-homelab-x86/default.nix
+        # The home-manager configuration is now managed within hosts/linux-homelab-x86/default.nix
+      ];
+    };
 
     ##########################################
-    # Home manager configuration
+    # Home manager configurations (now part of host configurations)
     ##########################################
-    homeConfigurations = {
-      # For Linux systems
-      "aloys@${systemLinux}" = mkHomeConfig systemLinux; # Changed key format for clarity
-      # For macOS systems
-      "aloys@${systemDarwin}" = mkHomeConfig systemDarwin; # Changed key format for clarity
-    };
+    # Home Manager configurations are now integrated into the darwinConfigurations
+    # and nixosConfigurations respectively.
+    # The `home-manager` block within each host's default.nix will define the HM setup.
+    # If you still need to build standalone HM configs, you could do so like this:
+    # homeConfigurations."${username}@${systemLinux}" = home-manager.lib.homeManagerConfiguration {
+    #   pkgs = pkgsForSystem systemLinux;
+    #   extraSpecialArgs = commonSpecialArgs systemLinux;
+    #   modules = [
+    #     # Import the HM setup from the Linux host, or a dedicated HM profile if preferred
+    #     # This assumes hosts/linux-homelab-x86/default.nix defines a top-level 'home-manager' attribute
+    #     # which might not be directly consumable here.
+    #     # A more robust way is to have the host file itself configure HM.
+    #     ./hosts/linux-homelab-x86/home.nix # If you were to extract HM config to a separate file per host
+    #     # or directly:
+    #     # ({ config, ... }: {
+    #     #   imports = [ ./modules/home-manager.nix ]; # The bridge
+    #     #   home.username = username;
+    #     #   home.homeDirectory = homeDirectory systemLinux;
+    #     #   # ... other HM global settings ...
+    #     #   # Enable modules as done in the host file
+    #     #   modules = { programs.zsh.enable = true; ... };
+    #     # })
+    #   ];
+    # };
+    # homeConfigurations."${username}@${systemDarwin}" = home-manager.lib.homeManagerConfiguration {
+    #   pkgs = pkgsForSystem systemDarwin;
+    #   extraSpecialArgs = commonSpecialArgs systemDarwin;
+    #   modules = [
+    #     # Similar to above, for Darwin
+    #     # ./hosts/darwin-macbook-m1/home.nix
+    #   ];
+    # };
+    # For now, we assume home manager is primarily configured as part of the system configurations.
+    # The host files already set up home-manager.users.${username} which is the standard way.
   };
 }
