@@ -21,6 +21,5 @@
 
     # General packages & dotfiles management
     #./packages.nix # For home.packages
-    #./dotfiles.nix # For symlinks
   ];
 }

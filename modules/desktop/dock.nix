@@ -6,7 +6,7 @@
 }: let
   cfg = config.modules.desktop.dock;
 in {
-  options.modules.desktop.dock = lib.mkEnableOption "macOS Dock settings (Darwin-specific)";
+  options.modules.desktop.dock.enable = lib.mkEnableOption "macOS Dock settings (Darwin-specific)";
 
   config = lib.mkIf (cfg.enable && pkgs.stdenv.isDarwin) {
     # Configuration based on the original darwin/dock.nix

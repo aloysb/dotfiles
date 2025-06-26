@@ -1,5 +1,10 @@
 # System modules
-{ lib, config, pkgs, ... }: {
+{
+  lib,
+  config,
+  pkgs,
+  ...
+}: {
   imports = [
     ./core.nix # Should be empty or removed if not used
     ./nix-settings.nix

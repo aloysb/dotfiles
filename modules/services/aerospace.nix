@@ -1,11 +1,14 @@
-{ lib, config, pkgs, specialArgs, ... }:
-
-let
+{
+  lib,
+  config,
+  pkgs,
+  specialArgs,
+  ...
+}: let
   cfg = config.modules.services.aerospace;
   dotfilesDir = specialArgs.dotfiles; # To potentially load config from dotfiles if not hardcoded
-in
-{
-  options.modules.services.aerospace = lib.mkEnableOption "Aerospace window manager (Darwin-specific)";
+in {
+  options.modules.services.aerospace.enable = lib.mkEnableOption "Aerospace window manager (Darwin-specific)";
 
   config = lib.mkIf (cfg.enable && pkgs.stdenv.isDarwin) {
     services.aerospace = {
@@ -26,8 +29,16 @@ in
         default-root-container-orientation = "auto";
         key-mapping.preset = "qwerty";
         gaps = {
-          inner = { horizontal = 0; vertical = 0; };
-          outer = { left = 0; bottom = 0; top = 0; right = 0; };
+          inner = {
+            horizontal = 0;
+            vertical = 0;
+          };
+          outer = {
+            left = 0;
+            bottom = 0;
+            top = 0;
+            right = 0;
+          };
         };
         exec.inherit-env-vars = true;
         mode = {
@@ -94,29 +105,62 @@ in
             binding = {
               enter = "mode main";
               esc = "mode main";
-              "1" = "move-node-to-workspace 1"; "2" = "move-node-to-workspace 2"; "3" = "move-node-to-workspace 3";
-              "4" = "move-node-to-workspace 4"; "5" = "move-node-to-workspace 5"; "6" = "move-node-to-workspace 6";
-              "7" = "move-node-to-workspace 7"; "8" = "move-node-to-workspace 8"; "9" = "move-node-to-workspace 9";
+              "1" = "move-node-to-workspace 1";
+              "2" = "move-node-to-workspace 2";
+              "3" = "move-node-to-workspace 3";
+              "4" = "move-node-to-workspace 4";
+              "5" = "move-node-to-workspace 5";
+              "6" = "move-node-to-workspace 6";
+              "7" = "move-node-to-workspace 7";
+              "8" = "move-node-to-workspace 8";
+              "9" = "move-node-to-workspace 9";
             };
           };
           resize = {
             binding = {
-              h = "resize width -50"; j = "resize height +50";
-              k = "resize height -50"; l = "resize width +50";
-              enter = "mode main"; esc = "mode main";
+              h = "resize width -50";
+              j = "resize height +50";
+              k = "resize height -50";
+              l = "resize width +50";
+              enter = "mode main";
+              esc = "mode main";
             };
           };
         };
         on-window-detected = [
-          { "if" = {"app-id" = "com.github.wez.wezterm";}; run = ["layout tiling" "move-node-to-workspace 1"]; }
-          { "if" = {"app-id" = "com.apple.Safari";}; run = ["layout tiling" "move-node-to-workspace 2"]; }
-          { "if" = {"app-id" = "com.google.Chrome";}; run = ["layout tiling" "move-node-to-workspace 2"]; }
-          { "if" = {"app-id" = "com.google.Chrome.dev";}; run = ["layout tiling" "move-node-to-workspace 2"]; }
-          { "if" = {"app-id" = "com.linear";}; run = ["layout tiling" "move-node-to-workspace 5"]; }
-          { "if" = {"app-id" = "com.apple.finder";}; run = ["layout floating"]; }
-          { "if" = {"app-id" = "com.apple.iCal";}; run = ["layout floating"]; }
-          { "if" = {"app-id" = "design.yugen.Flow";}; run = ["layout floating"]; }
-          { run = ["layout tiling" "move-node-to-workspace 9"]; } # Catchall
+          {
+            "if" = {"app-id" = "com.github.wez.wezterm";};
+            run = ["layout tiling" "move-node-to-workspace 1"];
+          }
+          {
+            "if" = {"app-id" = "com.apple.Safari";};
+            run = ["layout tiling" "move-node-to-workspace 2"];
+          }
+          {
+            "if" = {"app-id" = "com.google.Chrome";};
+            run = ["layout tiling" "move-node-to-workspace 2"];
+          }
+          {
+            "if" = {"app-id" = "com.google.Chrome.dev";};
+            run = ["layout tiling" "move-node-to-workspace 2"];
+          }
+          {
+            "if" = {"app-id" = "com.linear";};
+            run = ["layout tiling" "move-node-to-workspace 5"];
+          }
+          {
+            "if" = {"app-id" = "com.apple.finder";};
+            run = ["layout floating"];
+          }
+          {
+            "if" = {"app-id" = "com.apple.iCal";};
+            run = ["layout floating"];
+          }
+          {
+            "if" = {"app-id" = "design.yugen.Flow";};
+            run = ["layout floating"];
+          }
+          {run = ["layout tiling" "move-node-to-workspace 9"];} # Catchall
         ];
       };
     };

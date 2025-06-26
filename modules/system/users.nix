@@ -1,34 +1,46 @@
-{ lib, config, pkgs, specialArgs, ... }: # Added specialArgs
-
+{
+  lib,
+  config,
+  pkgs,
+  specialArgs,
+  ...
+}:
+# Added specialArgs
 let
   cfg = config.modules.system.users;
   # It's better to get username and homeDirectory from specialArgs
   # as they are passed down from the flake and are consistent.
   username = specialArgs.username;
   homeDirectory = specialArgs.home-directory;
-in
-{
-  options.modules.system.users = lib.mkEnableOption "User accounts and groups";
+in {
+  options.modules.system.users.enable = lib.mkEnableOption "User accounts and groups";
 
   config = lib.mkIf cfg.enable {
     users.users.${username} = {
       name = username;
       home = homeDirectory;
       # Common group for sudo access, typically 'wheel'
-      extraGroups = lib.mkIf pkgs.stdenv.isLinux [ "wheel" ]
-                 ++ lib.mkIf pkgs.stdenv.isDarwin [ "admin" ]; # 'admin' for macOS sudo
+      #extraGroups = [];
+      # lib.mkMerge [
+
+      # lib.mkIf
+      # pkgs.stdenv.isLinux
+      # ["wheel"]
+      # lib.mkIf
+      # pkgs.stdenv.isDarwin
+      # ["admin"] # 'admin' for macOS sudo
     };
 
     # NixOS specific user settings
-    users.users.${username} = lib.mkIf pkgs.stdenv.isLinux {
-      isNormalUser = true;
-      # initialPassword = "password"; # WARNING: Insecure. Manage with sops or imperatively.
-                                    # This should be removed or handled by sops.
-      # shell = pkgs.zsh; # This will be handled by the ZSH module via Home Manager
-      extraGroups = [ "nixos" "docker" "uinput" "input" ]; # From original nixos/configuration.nix
-                                                          # "wheel" is already added above.
-      # packages = with pkgs; [ gh ]; # User packages better handled by Home Manager
-    };
+    # users.users.${username} = lib.mkIf pkgs.stdenv.isLinux {
+    #   isNormalUser = true;
+    #   # initialPassword = "password"; # WARNING: Insecure. Manage with sops or imperatively.
+    #   # This should be removed or handled by sops.
+    #   # shell = pkgs.zsh; # This will be handled by the ZSH module via Home Manager
+    #   extraGroups = ["nixos" "docker" "uinput" "input"]; # From original nixos/configuration.nix
+    #   # "wheel" is already added above.
+    #   # packages = with pkgs; [ gh ]; # User packages better handled by Home Manager
+    # };
 
     # Darwin specific user settings
     system.primaryUser = lib.mkIf pkgs.stdenv.isDarwin username;

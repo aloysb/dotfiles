@@ -6,7 +6,7 @@
 }: let
   isLinux = specialArgs.isLinux;
 in {
-  options.modules.services.openssh = lib.mkEnableOption "OpenSSH server";
+  options.modules.services.openssh.enable = lib.mkEnableOption "OpenSSH server";
 
   config = lib.mkIf config.modules.services.openssh.enable (lib.mkMerge [
     {

@@ -1,0 +1,2578 @@
+This file is a merged representation of a subset of the codebase, containing files not matching ignore patterns, combined into a single document by Repomix.
+
+<file_summary>
+This section contains a summary of this file.
+
+<purpose>
+This file contains a packed representation of the entire repository's contents.
+It is designed to be easily consumable by AI systems for analysis, code review,
+or other automated processes.
+</purpose>
+
+<file_format>
+The content is organized as follows:
+1. This summary section
+2. Repository information
+3. Directory structure
+4. Repository files (if enabled)
+5. Multiple file entries, each consisting of:
+  - File path as an attribute
+  - Full contents of the file
+</file_format>
+
+<usage_guidelines>
+- This file should be treated as read-only. Any changes should be made to the
+  original repository files, not this packed version.
+- When processing this file, use the file path to distinguish
+  between different files in the repository.
+- Be aware that this file may contain sensitive information. Handle it with
+  the same level of security as you would the original repository.
+</usage_guidelines>
+
+<notes>
+- Some files may have been excluded based on .gitignore rules and Repomix's configuration
+- Binary files are not included in this packed representation. Please refer to the Repository Structure section for a complete list of file paths, including binary files
+- Files matching these patterns are excluded: dotfiles/
+- Files matching patterns in .gitignore are excluded
+- Files matching default ignore patterns are excluded
+- Files are sorted by Git change count (files with more changes are at the bottom)
+</notes>
+
+</file_summary>
+
+<directory_structure>
+hosts/
+  darwin-macbook-m1/
+    default.nix
+  linux-homelab-x86/
+    default.nix
+modules/
+  desktop/
+    core.nix
+    default.nix
+    dock.nix
+    firefox.nix
+    hyprland.nix
+    rofi.nix
+    waybar.nix
+  programs/
+    dotfiles/
+      system.nix
+      user.nix
+    git/
+      system.nix
+      user.nix
+    lazygit/
+      system.nix
+      user.nix
+    nvim/
+      system.nix
+      user.nix
+    template/
+      system.nix
+      user.nix
+    bat.nix
+    core.nix
+    default.nix
+    direnv.nix
+    dotfiles.nix
+    fzf.nix
+    gpg.nix
+    packages.nix
+    pass.nix
+    zoxide.nix
+    zsh.nix
+  services/
+    aerospace.nix
+    core.nix
+    default.nix
+    docker.nix
+    openssh.nix
+  system/
+    core.nix
+    default.nix
+    homebrew.nix
+    nix-settings.nix
+    sops.nix
+    users.nix
+  default.nix
+  home-manager.nix
+overlays/
+  aider-overlay.nix
+scripts/
+  backup
+  bundleid
+  compress_gh
+  psc
+  sc
+  tlscp-start
+.gitignore
+flake.lock
+flake.nix
+README.md
+secrets.yaml
+taskfile.yml
+</directory_structure>
+
+<files>
+This section contains the contents of the repository's files.
+
+<file path="modules/programs/dotfiles/system.nix">
+{
+  lib,
+  config,
+  pkgs,
+  ...
+}: let
+  cfg = config.modules.programs.dotfiles.enable;
+in {
+  options.modules.programs.dotfiles.enable = lib.mkEnableOption "link my dotfiles";
+
+  config = lib.mkIf cfg.enable {
+    #something = TODO;
+  };
+}
+</file>
+
+<file path="modules/programs/dotfiles/user.nix">
+{
+  lib,
+  config,
+  specialArgs,
+  builtins,
+  ...
+}: let
+  dotfiles = specialArgs.dotfiles; # ./dotfiles  (flake root)
+  scripts = specialArgs.userScripts; # ./scripts   (flake root)
+  isDarwin = specialArgs.isDarwin;
+  cfg = config.modules.programs.dotfiles;
+
+  # helper: link one file/dir under $HOME
+  link = target: source: {
+    "${target}" = {source = "${dotfiles}/${source}";};
+  };
+
+  # helper: link an executable script under ~/.config/scripts
+  linkScript = name: {
+    ".config/scripts/${name}" = {
+      source = "${scripts}/${name}";
+      executable = true;
+    };
+  };
+  _ = builtins.trace ">>> dotfiles module reached" null;
+in {
+  options.modules.programs.dotfiles.enable = lib.mkEnableOption "link my dotfiles";
+
+  config = lib.mkIf cfg.enable {
+    # makes sure ~/.config exists (harmless on every OS)
+    #home.xdg.enable = true;
+
+    # all links collected in one attr-set
+    home.file = lib.mkMerge [
+      # -------- always ----------
+      #(link ".config/doom" "emacs/doom")
+      (link ".config/wezterm" "wezterm")
+      (link ".config/lazygit/config.yml" "lazygit/config.yml")
+      (link ".config/nvim" "nvim")
+      #(link ".config/wallpapers" "wallpapers")
+      #(link ".aider.config.yml" "aider/.aider.config.yml")
+      #(link ".aider.perso.config.yml" "aider/.aider.perso.config.yml")
+
+      # -------- macOS only -------
+      (isDarwin (link ".config/aerospace/aerospace.toml"
+          "aerospace/aerospace.toml"))
+
+      # -------- Linux only -------
+      # (linuxOnly {
+      #   ".config/hypr/hyprland.conf" = {source = "${dotfiles}/hypr/hyprland.conf";};
+      #   ".config/hypr/hyprpaper.conf" = {source = "${dotfiles}/hypr/hyprpaper.conf";};
+      #   ".config/rofi/config.rasi" = {source = "${dotfiles}/rofi/config.rasi";};
+      #   ".config/rofi/nord.rasi" = {source = "${dotfiles}/rofi/nord.rasi";};
+      #   ".config/waybar/config.jsonc" = {source = "${dotfiles}/waybar/config.jsonc";};
+      #   ".config/waybar/style.css" = {source = "${dotfiles}/waybar/style.css";};
+      # })
+
+      # -------- scripts ----------
+      # (linkScript "backup")
+      # (linkScript "bundleid")
+      # (linkScript "compress_gh")
+      # (linkScript "psc")
+      # (linkScript "sc")
+      # (linkScript "tlscp-start")
+    ];
+
+    # guarantee the scripts directory exists before links are made
+    home.activation.makeScriptsDir = lib.hm.dag.entryAfter ["writeBoundary"] ''
+      mkdir -p "$HOME/.config/scripts"
+    '';
+  };
+}
+</file>
+
+<file path="modules/programs/lazygit/system.nix">
+{
+  lib,
+  config,
+  ...
+}: let
+  cfg = config.modules.programs.lazygit;
+in {
+  options.modules.programs.lazygit.enable = lib.mkEnableOption "Lazygit the awesome git TUI";
+
+  config = lib.mkIf cfg.enable {
+    # Do nothing
+  };
+}
+</file>
+
+<file path="modules/programs/lazygit/user.nix">
+{
+  lib,
+  config,
+  ...
+}: let
+  cfg = config.modules.programs.lazygit;
+in {
+  options.modules.programs.lazygit.enable = lib.mkEnableOption "Lazygit the awesome git TUI";
+
+  config = lib.mkIf cfg.enable {
+    programs.lazygit = {
+      enable = true;
+      settings = {
+        gui.theme = {
+          lightTheme = true;
+          activeBorderColor = ["blue" "bold"];
+          inactiveBorderColor = ["black"];
+          selectedLineBgColor = ["default"];
+        };
+      };
+    };
+  };
+}
+</file>
+
+<file path="modules/programs/template/system.nix">
+{
+  lib,
+  config,
+  pkgs,
+  ...
+}: let
+  cfg = config.modules.TODO
+in {
+  options.modules.TODO = lib.mkEnableOption "description here";
+
+  config = lib.mkIf cfg.enable {
+    #something = TODO;
+  };
+}
+</file>
+
+<file path="modules/programs/template/user.nix">
+{
+  lib,
+  config,
+  pkgs,
+  specialArgs,
+  ...
+}: let
+  cfg = config.modules.TODO;
+in {
+  config = lib.mkIf cfg.enable {
+    # TODO;
+  };
+}
+</file>
+
+<file path="modules/desktop/core.nix">
+# Placeholder for core desktop module
+{ lib, config, pkgs, ... }: {
+}
+</file>
+
+<file path="modules/desktop/rofi.nix">
+{ lib, config, pkgs, specialArgs, ... }:
+
+let
+  cfg = config.modules.desktop.rofi;
+  homeDir = specialArgs.home-directory;
+  dotfilesDir = specialArgs.dotfiles; # ./dotfiles from flake root
+in
+{
+  options.modules.desktop.rofi = lib.mkEnableOption "Rofi application launcher (Linux-specific)";
+
+  config = lib.mkIf (cfg.enable && pkgs.stdenv.isLinux && config.modules.home-manager.enable) {
+    home-manager.users.${specialArgs.username} = {
+      programs.rofi = {
+        enable = true;
+        package = pkgs.rofi-wayland; # Ensure Wayland compatible version
+        # Themes and configs are symlinked by the dotfiles module.
+        # Example of setting themes directly if not using files:
+        # theme = "nord"; # If a nord theme is built-in or provided
+        # themes = [
+        #   { name = "nord"; src = pkgs.fetchurl { ... }; }
+        # ];
+        # extraConfig = { modi = "drun,run,window"; };
+      };
+
+      # Ensure Rofi config files are symlinked
+      # This is handled by the dotfiles.nix module:
+      # home.file.".config/rofi/config.rasi".source = "${dotfilesDir}/rofi/config.rasi";
+      # home.file.".config/rofi/nord.rasi".source = "${dotfilesDir}/rofi/nord.rasi";
+
+      # Packages that Rofi might need for its plugins or modi
+      home.packages = with pkgs; [
+        # rofi-plugins # If you use specific plugins not bundled
+        # networkmanager_dmenu # For a Rofi-based network manager
+        # Add other Rofi related tools/scripts here
+      ];
+    };
+  };
+}
+</file>
+
+<file path="modules/programs/git/system.nix">
+{
+  lib,
+  config,
+  pkgs,
+  ...
+}: let
+  cfg = config.modules.programs.git;
+in {
+  options.modules.programs.git.enable = lib.mkEnableOption "Git version control";
+
+  config = lib.mkIf cfg.enable {
+    environment.systemPackages = with pkgs; [
+      git
+    ];
+  };
+}
+</file>
+
+<file path="modules/programs/git/user.nix">
+{
+  lib,
+  config,
+  pkgs,
+  specialArgs,
+  ...
+}: let
+  cfg = config.modules.programs.git;
+  username = specialArgs.username; # Get username from specialArgs passed from flake
+  userEmail = "aloysberger@gmail.com"; # As per original config, can be made an option
+in {
+  options.modules.programs.git.enable = lib.mkEnableOption "Git version control";
+
+  config = lib.mkIf cfg.enable {
+    programs.git = {
+      enable = true;
+      userName = username; # Use the abstracted username
+      userEmail = userEmail; # Use the defined email
+      aliases = {
+        oops = "commit --amend --no-edit";
+      };
+      delta = {
+        enable = true;
+        # Options for delta can be set here if needed
+        # options = {
+        #   dark = true; # Example, if your terminal is dark
+        # };
+      };
+      extraConfig = {
+        pull.rebase = true;
+        push.default = "upstream"; # Or "current" or other preferred default
+        core = {
+          editor = "nvim"; # Assuming nvim is the editor of choice
+          whitespace = "trailing-space,space-before-tab";
+        };
+        rebase = {
+          autostash = true;
+        };
+        # GPG signing key - this should ideally be configured dynamically
+        # or through sops if the key itself is sensitive or varies by machine.
+        # For now, using the hardcoded one from your config.
+        user.signingkey = "501A50921536CA05";
+        commit.gpgSign = true; # Enable commit signing
+        diff = {
+          algorithm = "histogram";
+        };
+        rerere = {
+          enabled = true;
+        };
+        log = {
+          abbrevCommit = true;
+          date = "iso";
+        };
+        url = {
+          "git@github.com:" = {
+            insteadOf = "gh:";
+          };
+        };
+      };
+    };
+
+    # Ensure GPG agent is set up if commit signing is enabled
+    # This is often handled by a gpg module or system-level gpg agent setup
+    # For Home Manager, it could be:
+    # programs.gnupg.agent = lib.mkIf config.programs.git.extraConfig.commit.gpgSign {
+    #   enable = true;
+    #   enableSSHSupport = true; # Common to enable this as well
+    # };
+  };
+}
+</file>
+
+<file path="modules/programs/nvim/system.nix">
+{
+  lib,
+  config,
+  pkgs,
+  specialArgs,
+  ...
+}: let
+  cfg = config.modules.programs.nvim;
+in {
+  options.modules.programs.nvim.enable = lib.mkEnableOption "Neovim editor configuration";
+
+  config = lib.mkIf cfg.enable {
+    environment.systemPackages = [pkgs.neovim]; # Barebone Neovim
+  };
+}
+</file>
+
+<file path="modules/programs/nvim/user.nix">
+{
+  lib,
+  config,
+  pkgs,
+  specialArgs,
+  ...
+}: let
+  cfg = config.modules.programs.nvim;
+  dotfilesDir = specialArgs.dotfiles; # Path to ./dotfiles from flake root
+in {
+  options.modules.programs.nvim.enable = lib.mkEnableOption "Neovim editor configuration";
+
+  config = lib.mkIf cfg.enable {
+    # Neovim is primarily configured by its own Lua files,
+    # so the main thing Home Manager does is install it and symlink configs.
+    # The existing `home-manager/symlinks.nix` handles the config linking.
+    # We'll replicate that logic in the `dotfiles.nix` module later.
+
+    # Ensure Neovim is installed
+    home.packages = [pkgs.neovim];
+
+    # If you had specific `programs.neovim` options in Home Manager, they would go here.
+    # For example:
+    # programs.neovim = {
+    #   enable = true; # This is implicit if we are in this module and it's enabled.
+    #   package = pkgs.neovim; # Or a specific version/overlay
+    #   defaultEditor = true; # Sets EDITOR, VISUAL if not already set
+    #   viAlias = true;
+    #   vimAlias = true;
+    # };
+
+    # The actual nvim config is at `dotfiles/nvim/`
+    # This will be symlinked by the `dotfiles` module to `~/.config/nvim`
+    # No specific nvim settings were in the original home-manager/home.nix programs.neovim section,
+    # it relied on symlinks.
+  };
+}
+</file>
+
+<file path="modules/programs/direnv.nix">
+{ lib, config, pkgs, ... }:
+
+let
+  cfg = config.modules.programs.direnv;
+in
+{
+  options.modules.programs.direnv = lib.mkEnableOption "direnv per-directory environments";
+
+  config = lib.mkIf (config.modules.home-manager.enable && cfg.enable) {
+    programs.direnv = {
+      enable = true;
+      enableZshIntegration = config.modules.programs.zsh.enable; # If zsh module is active
+      # enableBashIntegration = true;
+      # enableFishIntegration = true;
+      nix-direnv.enable = true; # Enable nix-direnv integration for use with .envrc files
+                               # that use `use flake` or `use nix`.
+      # You can specify a standard library for direnv if needed
+      # stdlib = ''
+      #   # custom direnv functions
+      # '';
+    };
+  };
+}
+</file>
+
+<file path="modules/programs/fzf.nix">
+{ lib, config, pkgs, ... }:
+
+let
+  cfg = config.modules.programs.fzf;
+in
+{
+  options.modules.programs.fzf = lib.mkEnableOption "fzf fuzzy finder";
+
+  config = lib.mkIf (config.modules.home-manager.enable && cfg.enable) {
+    programs.fzf = {
+      enable = true;
+      enableZshIntegration = config.modules.programs.zsh.enable; # Only if zsh module is also enabled
+      # enableBashIntegration = true; # If you use bash
+      # enableFishIntegration = true; # If you use fish
+
+      historyWidgetOptions = [
+        "--bind 'ctrl-y:execute-silent(echo -n {2..} | pbcopy)+abort'" # pbcopy is macOS specific
+                                                                     # For Linux, use xclip or wl-copy
+        "--color header:italic"
+        "--header 'Press CTRL-Y to copy command into clipboard'"
+      ];
+      changeDirWidgetOptions = [
+        "--walker-skip .git,node_modules,target"
+        "--preview 'eza -T'" # Assumes eza is installed and on PATH
+      ];
+      # Default options for fzf command itself
+      # defaultOptions = [ "--height 40%" "--layout=reverse" ];
+    };
+
+    # Adjust pbcopy for Linux if possible, or make it conditional
+    # This is a bit tricky as pbcopy is a command, not a fzf option directly.
+    # The binding itself is fine, but the command inside needs to be cross-platform.
+    # One way is to define a script that handles clipboard copy based on OS.
+    # For now, will leave as is and assume user has a `pbcopy` equivalent on Linux if needed,
+    # or this feature might only fully work on macOS.
+  };
+}
+</file>
+
+<file path="modules/programs/gpg.nix">
+{ lib, config, pkgs, ... }:
+
+let
+  cfg = config.modules.programs.gpg;
+in
+{
+  options.modules.programs.gpg = lib.mkEnableOption "GnuPG for encryption and signing";
+
+  config = lib.mkIf (config.modules.home-manager.enable && cfg.enable) {
+    programs.gpg = {
+      enable = true;
+      # This enables the gpg-agent through home-manager's interface for it
+      # which is different from programs.gnupg.agent
+    };
+
+    # Configure GPG agent separately for more control, if needed,
+    # especially for system-wide implications or specific settings not covered by programs.gpg.
+    # The original nixos/configuration.nix and home-manager/home.nix had gnupg agent settings.
+    # For Home Manager context:
+    programs.gnupg.agent = {
+      enable = true;
+      enableSSHSupport = true; # From original nixos/configuration.nix and implied by home.nix's git config
+      # pinentryFlavor = "curses"; # Example: if you want a specific pinentry
+    };
+
+    # For NixOS systems, the system-level GPG agent might also be configured.
+    # This module primarily handles the Home Manager aspect.
+    # If system-level GPG agent settings are needed (from nixos/configuration.nix),
+    # they would go into a system-level module, e.g., modules/services/gpg-agent.nix
+    # services.gnupg.agent.enable = lib.mkIf pkgs.stdenv.isLinux true;
+    # services.gnupg.agent.enableSSHSupport = lib.mkIf pkgs.stdenv.isLinux true;
+  };
+}
+</file>
+
+<file path="modules/programs/pass.nix">
+{ lib, config, pkgs, ... }:
+
+let
+  cfg = config.modules.programs.pass;
+in
+{
+  options.modules.programs.pass = lib.mkEnableOption "Password Store (pass)";
+
+  config = lib.mkIf (config.modules.home-manager.enable && cfg.enable) {
+    programs.password-store = {
+      enable = true;
+      # settings = {
+      #   PASSWORD_STORE_DIR = "${config.home.homeDirectory}/.password-store";
+      # };
+      # Ensure GPG support is configured if not already handled by the gpg module
+      # package = pkgs.pass.withExtensions (ext: [ ext.pass-otp ]); # Example with OTP extension
+    };
+
+    # If GPG module is enabled, it should already set up the agent.
+    # If not, you might need basic gpg agent settings here.
+    # programs.gpg.enable = lib.mkIf (!config.modules.programs.gpg.enable) true;
+  };
+}
+</file>
+
+<file path="modules/programs/zoxide.nix">
+{ lib, config, pkgs, ... }:
+
+let
+  cfg = config.modules.programs.zoxide;
+in
+{
+  options.modules.programs.zoxide = lib.mkEnableOption "zoxide (smarter cd)";
+
+  config = lib.mkIf (config.modules.home-manager.enable && cfg.enable) {
+    programs.zoxide = {
+      enable = true;
+      enableZshIntegration = config.modules.programs.zsh.enable; # If zsh module is active
+      # enableBashIntegration = true;
+      # enableFishIntegration = true;
+      # options = [ "--cmd cd" ]; # Example options if needed
+    };
+  };
+}
+</file>
+
+<file path="modules/services/aerospace.nix">
+{
+  lib,
+  config,
+  pkgs,
+  specialArgs,
+  ...
+}: let
+  cfg = config.modules.services.aerospace;
+  dotfilesDir = specialArgs.dotfiles; # To potentially load config from dotfiles if not hardcoded
+in {
+  options.modules.services.aerospace.enable = lib.mkEnableOption "Aerospace window manager (Darwin-specific)";
+
+  config = lib.mkIf (cfg.enable && pkgs.stdenv.isDarwin) {
+    services.aerospace = {
+      enable = true;
+      # The settings were extensive in the original darwin/configuration.nix.
+      # These can be directly translated here.
+      # Alternatively, if aerospace.toml is preferred, this module could symlink it
+      # from dotfilesDir/aerospace/aerospace.toml using home.file or similar.
+      # For now, translating the direct Nix configuration:
+      settings = {
+        after-login-command = [];
+        after-startup-command = [];
+        exec-on-workspace-change = [];
+        enable-normalization-flatten-containers = true;
+        enable-normalization-opposite-orientation-for-nested-containers = true;
+        accordion-padding = 60;
+        default-root-container-layout = "tiles";
+        default-root-container-orientation = "auto";
+        key-mapping.preset = "qwerty";
+        gaps = {
+          inner = {
+            horizontal = 0;
+            vertical = 0;
+          };
+          outer = {
+            left = 0;
+            bottom = 0;
+            top = 0;
+            right = 0;
+          };
+        };
+        exec.inherit-env-vars = true;
+        mode = {
+          main = {
+            binding = {
+              "alt-ctrl-shift-v" = "layout tiles horizontal vertical";
+              "alt-ctrl-shift-d" = "layout accordion horizontal vertical";
+              "alt-h" = "focus left";
+              "alt-j" = "focus down";
+              "alt-k" = "focus up";
+              "alt-l" = "focus right";
+              "alt-shift-h" = "move left";
+              "alt-shift-j" = "move down";
+              "alt-shift-k" = "move up";
+              "alt-shift-l" = "move right";
+              "ctrl-alt-shift-minus" = "resize smart -200";
+              "ctrl-alt-shift-equal" = "resize smart +200";
+              "ctrl-shift-alt-1" = "workspace 1";
+              "ctrl-shift-alt-2" = "workspace 2";
+              "ctrl-shift-alt-3" = "workspace 3";
+              "ctrl-shift-alt-4" = "workspace 4";
+              "ctrl-shift-alt-5" = "workspace 5";
+              "ctrl-shift-alt-6" = "workspace 6";
+              "ctrl-shift-alt-7" = "workspace 7";
+              "ctrl-shift-alt-8" = "workspace 8";
+              "ctrl-shift-alt-9" = "workspace 9";
+              "ctrl-shift-alt-h" = "workspace 1"; # Temper keypads
+              "ctrl-shift-alt-comma" = "workspace 2";
+              "ctrl-shift-alt-period" = "workspace 3";
+              "ctrl-shift-alt-n" = "workspace 4";
+              "ctrl-shift-alt-e" = "workspace 5";
+              "ctrl-shift-alt-i" = "workspace 6";
+              "ctrl-shift-alt-l" = "workspace 7";
+              "ctrl-shift-alt-u" = "workspace 8";
+              "ctrl-shift-alt-y" = "workspace 9";
+              "ctrl-shift-alt-keypad1" = "move-node-to-workspace 1";
+              "ctrl-shift-alt-keypad2" = "move-node-to-workspace 2";
+              "ctrl-shift-alt-keypad3" = "move-node-to-workspace 3";
+              "ctrl-shift-alt-keypad4" = "move-node-to-workspace 4";
+              "ctrl-shift-alt-keypad5" = "move-node-to-workspace 5";
+              "ctrl-shift-alt-keypad6" = "move-node-to-workspace 6";
+              "ctrl-shift-alt-keypad7" = "move-node-to-workspace 7";
+              "ctrl-shift-alt-keypad8" = "move-node-to-workspace 8";
+              "ctrl-shift-alt-keypad9" = "move-node-to-workspace 9";
+              "shift-ctrl-alt-g" = "workspace-back-and-forth";
+              "shift-ctrl-alt-f" = "fullscreen";
+              "shift-ctrl-alt-q" = "enable toggle";
+              "shift-ctrl-alt-b" = "balance-sizes";
+              "shift-ctrl-alt-r" = "mode resize";
+              "shift-ctrl-alt-x" = "mode quit";
+              "shift-ctrl-alt-0" = "mode sendToWorkspace";
+              "cmd-h" = [];
+              "cmd-alt-h" = [];
+            };
+          };
+          quit = {
+            binding = {
+              "shift-ctrl-alt-x" = "close-all-windows-but-current";
+              enter = "mode main";
+              esc = "mode main";
+            };
+          };
+          sendToWorkspace = {
+            binding = {
+              enter = "mode main";
+              esc = "mode main";
+              "1" = "move-node-to-workspace 1";
+              "2" = "move-node-to-workspace 2";
+              "3" = "move-node-to-workspace 3";
+              "4" = "move-node-to-workspace 4";
+              "5" = "move-node-to-workspace 5";
+              "6" = "move-node-to-workspace 6";
+              "7" = "move-node-to-workspace 7";
+              "8" = "move-node-to-workspace 8";
+              "9" = "move-node-to-workspace 9";
+            };
+          };
+          resize = {
+            binding = {
+              h = "resize width -50";
+              j = "resize height +50";
+              k = "resize height -50";
+              l = "resize width +50";
+              enter = "mode main";
+              esc = "mode main";
+            };
+          };
+        };
+        on-window-detected = [
+          {
+            "if" = {"app-id" = "com.github.wez.wezterm";};
+            run = ["layout tiling" "move-node-to-workspace 1"];
+          }
+          {
+            "if" = {"app-id" = "com.apple.Safari";};
+            run = ["layout tiling" "move-node-to-workspace 2"];
+          }
+          {
+            "if" = {"app-id" = "com.google.Chrome";};
+            run = ["layout tiling" "move-node-to-workspace 2"];
+          }
+          {
+            "if" = {"app-id" = "com.google.Chrome.dev";};
+            run = ["layout tiling" "move-node-to-workspace 2"];
+          }
+          {
+            "if" = {"app-id" = "com.linear";};
+            run = ["layout tiling" "move-node-to-workspace 5"];
+          }
+          {
+            "if" = {"app-id" = "com.apple.finder";};
+            run = ["layout floating"];
+          }
+          {
+            "if" = {"app-id" = "com.apple.iCal";};
+            run = ["layout floating"];
+          }
+          {
+            "if" = {"app-id" = "design.yugen.Flow";};
+            run = ["layout floating"];
+          }
+          {run = ["layout tiling" "move-node-to-workspace 9"];} # Catchall
+        ];
+      };
+    };
+
+    # Jankyborders - was in original darwin/configuration.nix under services
+    # Assuming it's related to Aerospace or general window management on Darwin
+    services.jankyborders = {
+      enable = false; # As per original config
+      active_color = "0xff81A1C1";
+      inactive_color = "0xff4C566A";
+      width = 5.0;
+    };
+
+    # If aerospace.toml is preferred, the dotfiles module should symlink:
+    # home.file.".config/aerospace/aerospace.toml".source = "${dotfilesDir}/aerospace/aerospace.toml";
+    # And the above `services.aerospace.settings` would be removed or reduced.
+    # The `dotfiles` module already has an entry for this.
+  };
+}
+</file>
+
+<file path="modules/services/core.nix">
+# Placeholder for core services module
+{ lib, config, pkgs, ... }: {
+}
+</file>
+
+<file path="modules/system/core.nix">
+# Placeholder for core system module
+{
+  lib,
+  config,
+  pkgs,
+  ...
+}: {
+  environment.systemPackages = with pkgs; [
+    git
+  ];
+}
+</file>
+
+<file path="modules/system/default.nix">
+# System modules
+{
+  lib,
+  config,
+  pkgs,
+  ...
+}: {
+  imports = [
+    ./core.nix # Should be empty or removed if not used
+    ./nix-settings.nix
+    ./users.nix
+    ./homebrew.nix # homebrew module (Darwin only)
+    ./sops.nix # sops module - system parts & HM integration aid
+  ];
+}
+</file>
+
+<file path="modules/system/nix-settings.nix">
+{
+  lib,
+  config,
+  pkgs,
+  ...
+}: let
+  cfg = config.modules.system.nix-settings;
+  username = config.users.users.${config.system.primaryUser}.name; # Get username from config
+in {
+  options.modules.system.nix-settings.enable = lib.mkEnableOption "Nix settings (GC, trusted users, etc.)";
+
+  config = lib.mkIf cfg.enable {
+    nix.settings = {
+      experimental-features = ["nix-command" "flakes"];
+      trusted-users = ["root"] ++ (lib.optional (username != null) username);
+    };
+
+    nix.optimise.automatic = true;
+
+    nix.gc = {
+      automatic = true;
+      interval = {
+        Weekday = 0; # Changed from Day to Weekday for NixOS compatibility
+        Hour = 2;
+        Minute = 0;
+      };
+      options = "--delete-older-than 30d";
+    };
+
+    # Darwin specific nix settings
+    nix.extraOptions = lib.mkIf pkgs.stdenv.isDarwin ''
+      extra-platforms = x86_64-darwin aarch64-darwin
+    '';
+
+    # environment.systemPackages for things that should be globally available on the system
+    # This is a common place, but specific packages might be better in their own modules
+    # or under home.packages for user-specific tools.
+    # For now, let's add curl as it was in darwin/configuration.nix
+    environment.systemPackages = lib.mkIf pkgs.stdenv.isDarwin [pkgs.curl];
+  };
+}
+</file>
+
+<file path="modules/system/users.nix">
+{
+  lib,
+  config,
+  pkgs,
+  specialArgs,
+  ...
+}:
+# Added specialArgs
+let
+  cfg = config.modules.system.users;
+  # It's better to get username and homeDirectory from specialArgs
+  # as they are passed down from the flake and are consistent.
+  username = specialArgs.username;
+  homeDirectory = specialArgs.home-directory;
+in {
+  options.modules.system.users.enable = lib.mkEnableOption "User accounts and groups";
+
+  config = lib.mkIf cfg.enable {
+    users.users.${username} = {
+      name = username;
+      home = homeDirectory;
+      # Common group for sudo access, typically 'wheel'
+      #extraGroups = [];
+      # lib.mkMerge [
+
+      # lib.mkIf
+      # pkgs.stdenv.isLinux
+      # ["wheel"]
+      # lib.mkIf
+      # pkgs.stdenv.isDarwin
+      # ["admin"] # 'admin' for macOS sudo
+    };
+
+    # NixOS specific user settings
+    # users.users.${username} = lib.mkIf pkgs.stdenv.isLinux {
+    #   isNormalUser = true;
+    #   # initialPassword = "password"; # WARNING: Insecure. Manage with sops or imperatively.
+    #   # This should be removed or handled by sops.
+    #   # shell = pkgs.zsh; # This will be handled by the ZSH module via Home Manager
+    #   extraGroups = ["nixos" "docker" "uinput" "input"]; # From original nixos/configuration.nix
+    #   # "wheel" is already added above.
+    #   # packages = with pkgs; [ gh ]; # User packages better handled by Home Manager
+    # };
+
+    # Darwin specific user settings
+    system.primaryUser = lib.mkIf pkgs.stdenv.isDarwin username;
+
+    # environment.variables can be set here if they are truly system-wide
+    # For user-specific EDITOR/VISUAL, Home Manager is preferred.
+    environment.variables = lib.mkIf pkgs.stdenv.isLinux {
+      EDITOR = "vim"; # From original nixos/configuration.nix
+      VISUAL = "vim"; # From original nixos/configuration.nix
+    };
+
+    # Security settings from Darwin config
+    security.pam.services.sudo_local.touchIdAuth = lib.mkIf pkgs.stdenv.isDarwin true;
+
+    # Keyboard settings from Darwin config (can be a separate module if it grows)
+    system.keyboard.enableKeyMapping = lib.mkIf pkgs.stdenv.isDarwin true;
+    system.keyboard.remapCapsLockToEscape = lib.mkIf pkgs.stdenv.isDarwin false; # using karabiners instead
+
+    # Startup sound from Darwin config
+    system.startup.chime = lib.mkIf pkgs.stdenv.isDarwin false;
+
+    # System defaults from Darwin config
+    system.defaults = lib.mkIf pkgs.stdenv.isDarwin {
+      finder.QuitMenuItem = true;
+      finder.FXRemoveOldTrashItems = true;
+      NSGlobalDomain."com.apple.swipescrolldirection" = false; # non-natural scrolling
+    };
+
+    # Fonts (example from Darwin, can be common)
+    fonts.packages = lib.mkIf pkgs.stdenv.isDarwin [
+      pkgs.nerd-fonts.fira-code
+    ];
+    # For Linux, fonts are often managed differently or as part of DE setup.
+    # If common fonts are needed for both, this can be unconditional.
+
+    # Base packages that were in nixos/configuration.nix environment.systemPackages
+    # This is distinct from home.packages.
+    # environment.systemPackages = lib.mkIf pkgs.stdenv.isLinux (with pkgs; [
+    #   # vim # Handled by programs.vim.enable or HM
+    #   # wget
+    # ]);
+  };
+}
+</file>
+
+<file path="scripts/backup">
+#!/bin/bash
+
+# Define variables
+REPO="s3:s3.amazonaws.com/your-bucket-name"
+PASSWORD_FILE="/path/to/password-file"
+BACKUP_PATH="/path/to/backup"
+RESTIC_PASSWORD_FILE=$PASSWORD_FILE
+
+# Set date variables
+DATE=$(date +"%Y-%m-%d_%H-%M-%S")
+DAY=$(date +"%Y-%m-%d")
+WEEK=$(date +"%Y-W%U")
+MONTH=$(date +"%Y-%m")
+
+# Perform backup
+restic -r $REPO backup $BACKUP_PATH --password-file $PASSWORD_FILE
+
+# Prune old backups with combined retention rules
+restic -r $REPO forget \
+  --keep-last 24 \
+  --keep-daily 1 \
+  --keep-weekly 1 \
+  --keep-monthly 1 \
+  --prune \
+  --password-file $PASSWORD_FILE
+
+# Optionally, send a notification (email, log, etc.) on success or failure
+echo "Backup completed for $DATE" >> /var/log/restic_backup.log
+</file>
+
+<file path="scripts/bundleid">
+#!/bin/sh
+bundleid=$(osascript -e "id of app \"$1\"")
+echo "Bundle ID: \"$bundleid\" (copied to clipboard)"
+echo $bundleid | pbcopy
+</file>
+
+<file path="scripts/compress_gh">
+#!/bin/bash
+
+# Select file using fzf
+input_file=$(find . -type f \( -iname "*.mov" -o -iname "*.mp4" \) | fzf)
+
+# Exit if no file is selected
+[ -z "$input_file" ] && echo "No file selected." && exit 1
+
+# Define output file name
+output_file="compressed.mp4"
+
+# Run ffmpeg
+ffmpeg -i "$input_file" -vcodec libx264 -crf 28 -preset fast -acodec aac -b:a 128k "$output_file"
+</file>
+
+<file path="scripts/psc">
+#!/bin/bash
+# Display the list of npm scripts in a fuzzy finder to execute
+
+jq -r '.scripts | keys[]' package.json | fzf \
+  --header "Select a script to execute" \
+  --bind "enter:become(pnpm run {})"
+</file>
+
+<file path="scripts/sc">
+#!/bin/bash
+# A fuzzy finder to execute custom scripts
+
+ls $HOME/scripts/ | fzf \
+  --header 'Select a script to execute' \
+  --height 40% \
+  --border \
+  --preview "bat --color=always $HOME/scripts/{}"
+</file>
+
+<file path="scripts/tlscp-start">
+#!/bin/bash
+
+cd ~/code/dabble/aloys || { echo "Directory not found: ~/code/dabble/perso" >&2; exit 1; }
+pm2 start ecosystem.config.js
+</file>
+
+<file path="secrets.yaml">
+# This is a placeholder secrets file.
+# It should be encrypted with sops using a GPG key or other KMS.
+# Example structure:
+#
+# restic_password: "ENC[...]"
+# openrouter_api_key: "ENC[...]"
+#
+# To encrypt this file:
+# sops --encrypt --in-place secrets.yaml
+#
+# Ensure your .sops.yaml configuration specifies the correct key(s) for encryption.
+# For example, if using a GPG key:
+# creation_rules:
+#  - pgp: '<YOUR_GPG_FINGERPRINT>'
+
+# Placeholder values (these are NOT encrypted)
+# Replace with actual encrypted values using sops
+restic_password: "replace_with_encrypted_restic_password"
+openrouter_api_key: "replace_with_encrypted_openrouter_api_key"
+</file>
+
+<file path="hosts/linux-homelab-x86/default.nix">
+{
+  inputs,
+  system,
+  specialArgs,
+  ...
+}: let
+  username = specialArgs.username;
+  home-directory = specialArgs.home-directory;
+in
+  inputs.nixpkgs.lib.nixosSystem {
+    inherit system;
+    specialArgs = specialArgs; # Pass along all specialArgs
+
+    modules = [
+      ../../modules/default.nix # Common modules
+
+      # Import sops-nix NixOS module
+      inputs.sops-nix.nixosModules.sops # For system-level secrets
+
+      # Hardware configuration for this specific host
+      ../../nixos/hardware-configuration.nix # Keep this as it's machine-specific
+
+      # Host-specific configurations
+      ({
+        lib,
+        config,
+        pkgs,
+        ...
+      }: {
+        # Bootloader (example, keep your original or move to a system module if very generic)
+        boot.loader.systemd-boot.enable = true;
+        boot.loader.efi.canTouchEfiVariables = false; # As per your original
+
+        # Networking (example, keep your original or move to a module if generic enough)
+        # For now, kept here as it can be quite host-specific.
+        networking.wireless.iwd.enable = true; # As per your original
+        networking.networkmanager.enable = false; # Explicitly disable if iwd is used.
+        networking.hostName = "linux-homelab"; # Or derive from specialArgs if needed, e.g. specialArgs.hostName
+
+        # System state version
+        system.stateVersion = "25.05"; # As per your original nixos/configuration.nix
+
+        # Enable Home Manager integration (custom option from modules/default.nix)
+        modules.home-manager.enable = true;
+
+        # Enable desired modules for this host using the structure in modules/default.nix
+        config.modules = {
+          system = {
+            nix-settings.enable = true;
+            users.enable = true; # This will pull user setup from modules/system/users.nix
+            sops.enable = true; # Module to be created/populated
+          };
+          services = {
+            openssh.enable = true; # Module to be created/populated
+            docker.enable = true; # Module to be created/populated
+          };
+          programs = {
+            git.enable = true;
+            zsh.enable = true;
+            nvim.enable = true;
+            fzf.enable = true;
+            bat.enable = true;
+            eza.enable = true;
+            zoxide.enable = true;
+            direnv.enable = true;
+            gpg.enable = true;
+            pass.enable = true;
+            packages.enable = true;
+            dotfiles.enable = true;
+          };
+          desktop = {
+            #hyprland.enable = true; # Module to be created/populated
+            waybar.enable = true; # Module to be created/populated
+            rofi.enable = true; # Module to be created/populated
+            firefox.enable = true; # Module to be created/populated
+            # dunst.enable = true;    # Module to be created/populated
+            # foot.enable = true;     # Module to be created/populated
+            # eww.enable = true;      # Module to be created/populated
+          };
+        };
+
+        # Home Manager configuration for this host
+        home-manager = {
+          useGlobalPkgs = true;
+          useUserPackages = true;
+          extraSpecialArgs = specialArgs; # Pass username, home-directory, inputs, self, dotfiles, userScripts
+          users.${username} = {...}: {
+            # The ... is for args like pkgs, config, lib
+            imports = [
+              ../../modules/home-manager.nix # A new file to bridge host enables to HM module imports
+              inputs.sops-nix.homeManagerModules.sops # For user-level secrets
+            ];
+            home.homeDirectory = home-directory;
+            home.username = username;
+            home.stateVersion = "24.11"; # As per your original home.nix
+          };
+        };
+      })
+    ];
+  }
+</file>
+
+<file path="modules/desktop/dock.nix">
+{
+  lib,
+  config,
+  pkgs,
+  ...
+}: let
+  cfg = config.modules.desktop.dock;
+in {
+  options.modules.desktop.dock.enable = lib.mkEnableOption "macOS Dock settings (Darwin-specific)";
+
+  config = lib.mkIf (cfg.enable && pkgs.stdenv.isDarwin) {
+    # Configuration based on the original darwin/dock.nix
+    system.defaults.dock = {
+      autohide = true;
+      dashboard-in-overlay = false; # Though dashboard is gone, setting might exist
+      mru-spaces = false;
+      show-process-indicators = true; # Redundant with system.dock.showindicators, but harmless
+      # static-only = false; # Not directly in system.dock, might be useful
+      launchanim = true;
+      expose-group-by-app = true;
+      scroll-to-open = true;
+      minimize-to-application = true;
+      # autohideDelay = 2.0; # Optional: delay before hiding
+      # autohideSpeed = 0.5; # Optional: speed of hide/show animation
+      mineffect = "scale"; # "genie" or "scale"
+      orientation = "bottom"; # "left", "bottom", "right"
+      showhidden = true; # Show translucent icons for hidden apps
+      tilesize = 48; # Size of icons in pixels
+
+      # Persistent apps in the Dock
+      # The list of apps needs to be exact bundle identifiers or paths to .app bundles
+      # Example: persistentApps = [ "/Applications/Safari.app" "com.apple.Terminal" ];
+      # From original dock.nix:
+      persistent-apps = [
+        "/Applications/WezTerm.app"
+        "/Applications/Google Chrome Dev.app"
+        "/Applications/Safari Technology Preview.app"
+        # "/Applications/Emacs.app" # Assuming Emacs is installed via Homebrew cask or similar
+        # "/Applications/Firefox.app"
+        # "/Applications/Zed.app"
+        "/Applications/Obsidian.md"
+        "/System/Applications/System Settings.app"
+        "/System/Applications/Utilities/Activity Monitor.app"
+        # "/Applications/Spotify.app"
+        # "/Applications/Discord.app"
+        # "/Applications/Telegram.app"
+        # "/Applications/WhatsApp.app"
+        # "/Applications/Signal.app"
+        # "/Applications/Notion.app"
+        # "/Applications/Linear.app"
+        # "/Applications/Cron.app"
+        # "/Applications/Spark Desktop.app"
+        # "/Applications/Superhuman.app"
+        # "/Applications/Things3.app"
+        # "/Applications/Tailscale.app" # If installed as an app
+        # "/Applications/Parcel.app"
+      ];
+
+      # Persistent others (folders, URLs)
+      # Example: persistentOthers = [ "~/Downloads" ];
+      # From original dock.nix (empty, but structure is there):
+      persistent-others = [];
+
+      # Other dock settings from `system.defaults.dock` in original configuration
+      # These are now part of `services.dock` in nix-darwin
+      # "dashboard-in-overlay" = false; # Dashboard is deprecated
+      # "show-process-indicators" = true; # Covered by showindicators
+      # "static-only" = false; # Allow non-apps in dock (folders, etc.)
+      # "launchanim" = true; # Launch animation for apps
+      # "expose-group-by-app" = true; # Group windows by app in Mission Control
+      # "scroll-to-open" = true; # Scroll on Dock icon to open Exposé/Cycle windows
+      # "minimize-to-application" = true; # Minimize windows into their app icon
+    };
+  };
+}
+</file>
+
+<file path="modules/desktop/firefox.nix">
+{
+  lib,
+  config,
+  pkgs,
+  ...
+}: let
+  cfg = config.modules.desktop.firefox;
+in {
+  options.modules.desktop.firefox.enable = lib.mkEnableOption "Firefox web browser";
+
+  config = lib.mkIf cfg.enable {
+    # This is a standard Home Manager module.
+    # We configure `programs.firefox` and `home.packages` directly.
+    programs.firefox = {
+      enable = true;
+      # You can add more detailed profile configuration here later
+    };
+
+    #home.packages = [pkgs.firefox];
+  };
+}
+</file>
+
+<file path="modules/desktop/hyprland.nix">
+{
+  lib,
+  config,
+  pkgs,
+  specialArgs,
+  ...
+}: let
+  cfg = config.modules.desktop.hyprland;
+  homeDir = specialArgs.home-directory;
+  dotfilesDir = specialArgs.dotfiles; # ./dotfiles from flake root
+in {
+  options.modules.desktop.hyprland = lib.mkEnableOption "Hyprland Wayland compositor (Linux-specific)";
+  config = lib.mkIf (cfg.enable && pkgs.stdenv.isLinux) {
+    # Environment variables specific to Hyprland sessions (if any) environment.sessionVariables = { XCURSOR_THEME = "Adwaita"; # Example XCURSOR_SIZE = "24"; }; # Home Manager Hyprland settings from home-manager/home.nix This part applies if home-manager is enabled for the user home-manager.users.${specialArgs.username} = lib.mkIf (config.modules.home-manager.enable) { # wayland.windowManager.hyprland was how it was structured in home.nix However, programs.hyprland.enable = true is the system NixOS option. For HM, we'd typically symlink configs or set env vars. The original home.nix had wayland.windowManager.hyprland.enable = false but set package and extraConfig. This suggests it was mainly for config management. # The actual hyprland.conf is symlinked by the dotfiles module: home.file.".config/hypr/hyprland.conf".source = "${dotfilesDir}/hypr/hyprland.conf"; The pkgs.substituteAll for hyprland.conf was in home.nix, let's replicate that logic here if needed. However, the original hyprland.conf doesn't seem to have substitutions. The hyprpaper.conf DID have substitutions. # If Hyprland itself needs specific XDG Desktop Portal xdg.portal = { enable = true; extraPortals = [ pkgs.xdg-desktop-portal-hyprland ]; # Default portal can be set if needed # default = "hyprland"; }; # Ensure related packages for Hyprland ecosystem are available Some of these might be dependencies pulled by programs.hyprland.enable automatically. Others are for user experience within Hyprland (launchers, bars, etc.) These will be handled by their own modules (rofi, waybar) or general packages. environment.systemPackages = with pkgs; [ # hyprpaper # Handled by its own module/service or as a package # rofi-wayland # Handled by rofi module # wl-clipboard # waybar # Handled by waybar module # mako or dunst for notifications # grim slurp for screenshots ]; # Font for hyprland/wayland if not covered by a general font module fonts.packages = with pkgs; [ noto-fonts noto-fonts-cjk noto-fonts-emoji # Good defaults font-awesome # For icons (nerdfonts.override {fonts = ["FiraCode" "JetBrainsMono"];}) # Nerd Fonts ]; # Systemd services related to Hyprland environment, e.g., pipewire, polkit agent services.pipewire = { enable = true; alsa.enable = true; pulse.enable = true; # jack.enable = true; # If JACK support is needed }; # services.power-profiles-daemon.enable = true; # For power management on laptops security.rtkit.enable = true; # For PipeWire real-time audio # Polkit agent for authentication in Wayland sessions systemd.user.services.polkit-gnome-authentication-agent-1 = { description = "polkit-gnome-authentication-agent-1"; wantedBy = ["graphical-session.target"]; wants = ["graphical-session.target"]; after = ["graphical-session.target"]; serviceConfig = { Type = "simple"; ExecStart = "${pkgs.polkit_gnome}/libexec/polkit-gnome-authentication-agent-1"; Restart = "on-failure"; RestartSec = 1; TimeoutStopSec = 10; }; }; }; # Ensure uinput is available for advanced input device handling if needed by specific tools boot.kernelModules = ["uinput"]; services.udev.extraRules = '' KERNEL=="uinput", MODE="0660", GROUP="uinput", OPTIONS+="static_node=uinput" ''; users.groups.uinput = {}; # User needs to be in this group (handled by users.nix)
+  };
+}
+</file>
+
+<file path="modules/desktop/waybar.nix">
+{
+  lib,
+  config,
+  pkgs,
+  specialArgs,
+  ...
+}: let
+  cfg = config.modules.desktop.waybar;
+  homeDir = specialArgs.home-directory;
+  dotfilesDir = specialArgs.dotfiles; # ./dotfiles from flake root
+in {
+  options.modules.desktop.waybar = lib.mkEnableOption "Waybar status bar (Linux-specific)";
+
+  config = lib.mkIf (cfg.enable && pkgs.stdenv.isLinux && config.modules.home-manager.enable) {
+    # Waybar is typically a Home Manager program
+    home-manager.users.${specialArgs.username} = {
+      programs.waybar = {
+        enable = true;
+        package = pkgs.waybar; # Or a specific variant if needed
+        # Settings and style are managed by config files symlinked by the dotfiles module.
+        # config = {}; # Raw config options if not using external files
+        # style = "";  # Raw style options if not using external files
+      };
+
+      # Ensure Waybar config files are symlinked from dotfiles
+      # This is handled by the dotfiles.nix module:
+      # home.file.".config/waybar/config.jsonc".source = "${dotfilesDir}/waybar/config.jsonc";
+      # home.file.".config/waybar/style.css".source = "${dotfilesDir}/waybar/style.css";
+
+      # Include packages that Waybar might need for its modules, if not dependencies of Waybar itself
+      home.packages = with pkgs; [
+        playerctl # For MPRIS module (music player control)
+        pavucontrol # For PulseAudio module (if using it, or use pipewire tools)
+        networkmanagerapplet # For network applet in systray (if using systray and NM)
+        libappindicator-gtk3 # For systray icons
+        gnome.gnome-tweaks # For fontconfig settings that Waybar might respect
+        font-awesome # Icons
+        (nerdfonts.override {fonts = ["FiraCode" "JetBrainsMono"];}) # Also in hyprland.nix
+      ];
+    };
+  };
+}
+</file>
+
+<file path="modules/programs/bat.nix">
+{
+  lib,
+  config,
+  pkgs,
+  ...
+}: let
+  cfg = config.modules.programs.bat;
+in {
+  options.modules.programs.bat = lib.mkEnableOption "bat (cat clone with syntax highlighting)";
+
+  config = lib.mkIf (config.modules.home-manager.enable && cfg.enable) {
+    programs.bat = {
+      enable = true;
+      # Configuration options for bat can be added here if needed
+      # e.g., theme, style, etc.
+      # config = {
+      #   theme = "Nord"; # Example theme
+      # };
+      extraPackages = with pkgs.bat-extras; [
+        batman # man page viewer using bat
+        batgrep # grep using bat for highlighting
+        # batdiff # diff with bat, though git delta is used for git diffs
+      ];
+    };
+  };
+}
+</file>
+
+<file path="modules/programs/core.nix">
+# Placeholder for core programs module
+{
+  lib,
+  config,
+  pkgs,
+  ...
+}: {
+}
+</file>
+
+<file path="modules/programs/default.nix">
+# Programs modules
+{
+  lib,
+  config,
+  pkgs,
+  ...
+}: {
+  imports = [
+    ./core.nix # Should be empty or removed
+
+    # CLI Tools
+    #./zsh.nix
+    ./nvim/system.nix
+    ./git/system.nix
+    ./lazygit/system.nix
+    # ./fzf.nix
+    # ./bat.nix
+    # ./zoxide.nix
+    # ./direnv.nix
+    # ./gpg.nix
+    # ./pass.nix # password-store
+
+    # General packages & dotfiles management
+    #./packages.nix # For home.packages
+    ./dotfiles/system.nix # For symlinks
+  ];
+}
+</file>
+
+<file path="modules/programs/dotfiles.nix">
+{
+  lib,
+  config,
+  specialArgs,
+  ...
+}: let
+  dotfiles = specialArgs.dotfiles; # ./dotfiles  (flake root)
+  scripts = specialArgs.userScripts; # ./scripts   (flake root)
+  isDarwin = specialArgs.isDarwin;
+  cfg = config.modules.programs.dotfiles;
+
+  # helper: link one file/dir under $HOME
+  link = target: source: {
+    "${target}" = {source = "${dotfiles}/${source}";};
+  };
+
+  # helper: link an executable script under ~/.config/scripts
+  linkScript = name: {
+    ".config/scripts/${name}" = {
+      source = "${scripts}/${name}";
+      executable = true;
+    };
+  };
+in {
+  options.modules.programs.dotfiles.enable = lib.mkEnableOption "link my dotfiles";
+
+  config = lib.mkIf cfg.enable {
+    # makes sure ~/.config exists (harmless on every OS)
+    home.xdg.enable = true;
+
+    # all links collected in one attr-set
+    home.file = lib.mkMerge [
+      # -------- always ----------
+      #(link ".config/doom" "emacs/doom")
+      (link ".config/wezterm" "wezterm")
+      (link ".config/lazygit/config.yml" "lazygit/config.yml")
+      (link ".config/nvim" "nvim")
+      #(link ".config/wallpapers" "wallpapers")
+      #(link ".aider.config.yml" "aider/.aider.config.yml")
+      #(link ".aider.perso.config.yml" "aider/.aider.perso.config.yml")
+
+      # -------- macOS only -------
+      (isDarwin (link ".config/aerospace/aerospace.toml"
+          "aerospace/aerospace.toml"))
+
+      # -------- Linux only -------
+      # (linuxOnly {
+      #   ".config/hypr/hyprland.conf" = {source = "${dotfiles}/hypr/hyprland.conf";};
+      #   ".config/hypr/hyprpaper.conf" = {source = "${dotfiles}/hypr/hyprpaper.conf";};
+      #   ".config/rofi/config.rasi" = {source = "${dotfiles}/rofi/config.rasi";};
+      #   ".config/rofi/nord.rasi" = {source = "${dotfiles}/rofi/nord.rasi";};
+      #   ".config/waybar/config.jsonc" = {source = "${dotfiles}/waybar/config.jsonc";};
+      #   ".config/waybar/style.css" = {source = "${dotfiles}/waybar/style.css";};
+      # })
+
+      # -------- scripts ----------
+      # (linkScript "backup")
+      # (linkScript "bundleid")
+      # (linkScript "compress_gh")
+      # (linkScript "psc")
+      # (linkScript "sc")
+      # (linkScript "tlscp-start")
+    ];
+
+    # guarantee the scripts directory exists before links are made
+    home.activation.makeScriptsDir = lib.hm.dag.entryAfter ["writeBoundary"] ''
+      mkdir -p "$HOME/.config/scripts"
+    '';
+  };
+}
+</file>
+
+<file path="modules/programs/packages.nix">
+{
+  lib,
+  config,
+  pkgs,
+  specialArgs,
+  ...
+}: let
+  cfg = config.modules.programs.packages;
+  isDarwin = pkgs.stdenv.isDarwin;
+  isLinux = pkgs.stdenv.isLinux;
+in {
+  options.modules.programs.packages = lib.mkEnableOption "General suite of user packages";
+
+  config = lib.mkIf (config.modules.home-manager.enable && cfg.enable) {
+    home.packages = with pkgs;
+      [
+        # Common packages from original home.nix
+        curl
+        gh
+        wezterm # Assuming this is preferred over foot for now, or can be conditional
+        ripgrep
+        just
+        fd
+        jq
+        tree
+        lazygit
+        lazydocker
+        zig
+        entr
+        neofetch
+        delta # Git delta is also configured in the git module, this ensures it's in packages
+        caddy
+        corepack
+        go
+        delve
+        ffmpeg
+        devenv
+        hurl
+        uv
+        pre-commit
+        thunderbird
+        docker # Docker CLI tools
+        docker-compose
+        postgresql # Client tools
+        pm2
+        glow # Markdown reader
+        nodejs_20 # Or a more generic nodejs latest/lts
+        btop
+        wireguard-tools # For VPN
+        go-task # Task runner
+
+        # AI related tools
+        # claude-code # This seems to be a custom package, ensure it's available via overlays if used
+        # repomix # Custom package?
+        ollama
+        aider-chat # This is in an overlay, ensure overlay is active
+
+        # Yazi - was enabled separately, but can be part of general packages too
+        yazi
+
+        # The Fuck - was disabled, can be added here if re-enabled
+        # thefuck
+      ]
+      ++ lib.optionals isDarwin [
+        colima
+        _1password-cli # Ensure this package name is correct
+      ]
+      ++ lib.optionals isLinux [
+        # hyprland related pkgs - some of these might be dependencies of hyprland module itself
+        # or system-level packages rather than home.packages
+        # hyprpaper # often a service or system package for hyprland
+        # rofi-wayland # if rofi module doesn't provide it
+        # wl-clipboard
+        # waybar # if waybar module doesn't provide it
+
+        # others for Linux
+        brightnessctl
+        font-awesome # For icons in waybar etc.
+        # impala # network TUI - check if still needed/used
+        bluez # Bluetooth utilities, often system-level but sometimes user tools are useful
+      ];
+
+    # Programs that were enabled via `programs.<name>.enable` but are essentially just packages
+    # if their modules don't do much more than install them + basic config.
+    # Example: yazi was `programs.yazi.enable`. If its module only installs and adds zsh integration
+    # (which is often default or covered by zsh plugin managers), it could just be in home.packages.
+    # For now, assuming specific modules like yazi, eza, etc., handle their own package installation.
+
+    programs.yazi = {
+      enable = true; # Keep explicit yazi program enable for now
+      enableZshIntegration = config.modules.programs.zsh.enable;
+    };
+
+    programs.thefuck = {
+      enable = false; # As per original config
+      enableInstantMode = true;
+      enableZshIntegration = config.modules.programs.zsh.enable;
+    };
+
+    # home-manager itself, if it needs to be in packages (usually not)
+    # programs.home-manager.enable = true; # This is for the HM module itself
+  };
+}
+</file>
+
+<file path="modules/programs/zsh.nix">
+{
+  lib,
+  config,
+  pkgs,
+  specialArgs,
+  ...
+}: let
+  cfg = config.modules.programs.zsh;
+  homeDir = specialArgs.home-directory; # Use specialArgs for home-directory
+  dotfilesDir = specialArgs.dotfiles; # Path to ./dotfiles from flake root
+in {
+  options.modules.programs.zsh = lib.mkEnableOption "Zsh shell and configuration";
+
+  config = lib.mkIf (config.modules.home-manager.enable && cfg.enable) {
+    programs.zsh = {
+      enable = true;
+      shellAliases = {
+        hms = "pushd ${homeDir}/.config/nix > /dev/null && just hms && popd > /dev/null"; # Assuming just is installed
+        nixsw = "pushd ${homeDir}/.config/nix > /dev/null && just nix-switch && popd > /dev/null";
+        nvimsw = "pushd ${homeDir}/.config/nix > /dev/null && just nvim-reload && popd > /dev/null";
+        gg = "lazygit"; # Assuming lazygit is installed
+        yy = "yazi"; # Assuming yazi is installed
+        fk = "fuck"; # Assuming thefuck is installed
+        p = "pnpm"; # Assuming pnpm (via corepack) is available
+        hypr = "Hyprland -c ${homeDir}/.config/hyprland/hyprland.conf"; # Path to hyprland config
+        aid = "aider -c ~/.aider.config.yml";
+        aidcp = "aider -c ~/.aider.config.yml --copy-paste";
+        paid = "aider -c ~/.aider.perso.config.yml";
+        paidcp = "aider -c ~/.aider.perso.config.yml --copy-paste";
+        # Emacs aliases might need adjustment based on how Emacs is installed/configured
+        doomd = "emacs --daemon=\"doom\" --init-directory ${dotfilesDir}/emacs/doom";
+        d =
+          if pkgs.stdenv.isDarwin
+          then "/Applications/Emacs.app/Contents/MacOS/bin/emacsclient -c -n -q -s 'doom'"
+          else "emacsclient -c -n -q -s 'doom'";
+        dl = "emacs --init-dir ${dotfilesDir}/emacs/doom";
+        emacsd = "emacs --daemon=\"vanilla\" --init-directory ${dotfilesDir}/emacs/vanilla";
+        e =
+          if pkgs.stdenv.isDarwin
+          then "/Applications/Emacs.app/Contents/MacOS/bin/emacsclient -c -n -q -s 'vanilla' -a \"emacs --init-dir ${dotfilesDir}/emacs/vanilla\""
+          else "emacsclient -c -n -q -s 'vanilla' -a \"emacs --init-dir ${dotfilesDir}/emacs/vanilla\"";
+        el = "emacs --init-dir ${dotfilesDir}/emacs/vanilla";
+        t = "task"; # Assuming taskwarrior is installed
+      };
+      initExtraFirst = ''
+        # Powerlevel10k theme sourcing
+        if [ -f "${pkgs.zsh-powerlevel10k}/share/zsh-powerlevel10k/powerlevel10k.zsh-theme" ]; then
+          source "${pkgs.zsh-powerlevel10k}/share/zsh-powerlevel10k/powerlevel10k.zsh-theme"
+        fi
+      '';
+      initExtra = ''
+        # Secrets (e.g., OPENROUTER_API_KEY) should be handled by sops-nix module if enabled
+        # export OPENROUTER_API_KEY=$(pass show openrouter/api_key) # Old way
+
+        export OLLAMA_API_BASE=http://127.0.0.1:11434
+
+        # Source Powerlevel10k configuration if it exists
+        # Assuming .p10k.zsh is symlinked or managed by dotfiles module
+        if [ -f "${homeDir}/.p10k.zsh" ]; then
+          source "${homeDir}/.p10k.zsh"
+        fi
+      '';
+      sessionVariables = {
+        VISUAL = "nvim"; # Assuming nvim is preferred editor
+        EDITOR = "nvim";
+        HM = "${homeDir}/.config/nix/home-manager/"; # Path to HM config
+        DOTFILES = "${homeDir}/.config/nix/dotfiles/"; # Path to non-HM dotfiles source
+        # DOCKER_HOST specific to colima on Darwin, might need conditional logic
+        # or to be set by a colima module if one exists.
+        DOCKER_HOST = lib.mkIf pkgs.stdenv.isDarwin "unix://${homeDir}/.colima/default/docker.sock";
+        COREPACK_ENABLE_AUTO_PIN = "0";
+        CONF = "$HOME/.config/"; # Standard XDG
+        DY = "$HOME/dylan/"; # User specific
+        # XDG_CONFIG_HOME is automatically set by HM if not mistaken, but doesn't hurt
+        XDG_CONFIG_HOME = "$HOME/.config";
+        DOOMDIR = "${dotfilesDir}/emacs/doom"; # Path to doom emacs config
+      };
+      oh-my-zsh = {
+        enable = true;
+        plugins = [
+          "git"
+          "docker"
+          "docker-compose"
+        ];
+        # theme = "powerlevel10k/powerlevel10k"; # p10k handles its own theme loading
+      };
+      plugins = [
+        {
+          name = "powerlevel10k";
+          src = pkgs.zsh-powerlevel10k;
+          # file = "share/zsh-powerlevel10k/powerlevel10k.zsh-theme"; # Not needed if sourced in initExtraFirst
+        }
+        # Add other zsh plugins here if needed, e.g., zsh-autosuggestions, zsh-syntax-highlighting
+        # { name = "zsh-autosuggestions"; src = pkgs.zsh-autosuggestions; }
+        # { name = "zsh-syntax-highlighting"; src = pkgs.zsh-syntax-highlighting; }
+      ];
+    };
+
+    # Ensure zsh is the default shell for the user on NixOS
+    users.defaultUserShell = lib.mkIf pkgs.stdenv.isLinux pkgs.zsh;
+
+    # Ensure .p10k.zsh is symlinked if it's part of the dotfiles repo
+    # This would typically be handled by the dotfiles module.
+    # home.file.".p10k.zsh" = {
+    #   source = ../../dotfiles/.p10k.zsh; # Adjust path as needed
+    #   enable = true; # Or some condition
+    # };
+  };
+}
+</file>
+
+<file path="modules/services/default.nix">
+# Services modules
+{...}: {
+  imports = [
+    ./core.nix # Should be empty or removed
+
+    # NixOS Services
+    ./docker.nix
+
+    # Darwin Services
+    ./aerospace.nix
+    ./openssh.nix
+  ];
+}
+</file>
+
+<file path="modules/services/docker.nix">
+{
+  lib,
+  config,
+  specialArgs,
+  pkgs,
+  ...
+}: let
+  cfg = config.modules.services.docker;
+in {
+  options.modules.services.docker = lib.mkEnableOption "Docker daemon configuration";
+
+  config = lib.mkIf (cfg.enable) (lib.mkMerge [
+    # Docker daemon primarily for Linux
+    {}
+    (lib.optionalAttrs specialArgs.isLinux {
+      virtualisation.docker = {
+        enable = true;
+        enableOnBoot = true; # Explicitly ensure it starts on boot
+        autoPrune = {
+          enable = true;
+          # flags = ["--all"]; # Example: prune everything
+          # dates = "daily";   # Example: prune daily
+        };
+        # Rootless Docker setup from original nixos/configuration.nix
+        rootless = {
+          enable = true;
+          setSocketVariable = true; # Sets DOCKER_HOST for rootless Docker user sessions
+        };
+        # Add current user to the docker group if not using rootless or for admin tasks
+        # This is handled by the users module: users.users.<name>.extraGroups = [ "docker" ];
+      };
+
+      # Ensure the user is part of the 'docker' group if this module is enabled.
+      # This is now handled in modules/system/users.nix by adding "docker" to extraGroups.
+      # users.users.${config.system.primaryUser}.extraGroups = lib.mkIf (config.users.users.${config.system.primaryUser} != null) [ "docker" ];
+    })
+  ]);
+}
+</file>
+
+<file path="modules/services/openssh.nix">
+{
+  lib,
+  config,
+  specialArgs,
+  ...
+}: let
+  isLinux = specialArgs.isLinux;
+in {
+  options.modules.services.openssh.enable = lib.mkEnableOption "OpenSSH server";
+
+  config = lib.mkIf config.modules.services.openssh.enable (lib.mkMerge [
+    {
+      services.openssh = {
+        enable = true;
+        extraConfig = ''
+          AcceptEnv WEZTERM_REMOTE_PANE
+        '';
+      };
+    }
+
+    (lib.optionalAttrs isLinux {
+      # Only NixOS has this option, so no guards needed inside the file.
+      networking.firewall.allowedTCPPorts = [22];
+    })
+  ]);
+}
+</file>
+
+<file path="modules/system/homebrew.nix">
+{
+  lib,
+  config,
+  pkgs,
+  inputs,
+  ...
+}: let
+  cfg = config.modules.system.homebrew;
+in {
+  options.modules.system.homebrew.enable = lib.mkEnableOption "Homebrew setup (Darwin-specific)";
+
+  config = lib.mkIf (cfg.enable && pkgs.stdenv.isDarwin) {
+    homebrew = {
+      enable = true;
+      #onActivation.cleanup = "uninstall";
+      # taps = import ./taps.nix;
+      # brews = import ./brews.nix;
+      # casks = import ./casks.nix;
+    };
+  };
+}
+</file>
+
+<file path="modules/system/sops.nix">
+{
+  lib,
+  config,
+  pkgs,
+  inputs,
+  specialArgs,
+  ...
+}: let
+  cfg = config.modules.system.sops;
+  # Define the path to the main secrets file relative to the flake's root.
+  # This assumes your flake.nix is at the root of your repository.
+  # `specialArgs.self` would typically point to the flake's outputs,
+  # and `specialArgs.self.path` (if available and set up in flake.nix) could point to the flake's root directory.
+  # Alternatively, and more simply for module imports, use a relative path from this module file
+  # to the flake root, assuming a known directory structure.
+  # If this module is at modules/system/sops.nix, then ../../secrets.yaml points to <flake-root>/secrets.yaml
+  secretsFile = ../../secrets.yaml;
+  username = specialArgs.username;
+in {
+  options.modules.system.sops = lib.mkEnableOption "Sops integration for secrets management";
+
+  config = lib.mkIf cfg.enable {
+    # ====== NixOS System-Level Sops Configuration ======
+    # sops = lib.mkIf pkgs.stdenv.isLinux {
+    #   # sops NixOS module is for NixOS
+    #   enable = true; # Enable the sops-nix module for NixOS
+    #   defaultSopsFile = secretsFile;
+    #   # age.keyFile = "/var/lib/sops/age/keys.txt"; # Default location for NixOS system age key
+    #   # age.sshKeyPaths = [ "/etc/ssh/ssh_host_ed25519_key" ]; # Example: use SSH host key for decryption
+    #   # Or specify your age public keys that can decrypt the secrets.yaml
+    #   # age.publicKeys = [ "age1..." ];
+    #
+    #   # Define system-level secrets that sops-nix should manage
+    #   # These were in the original nixos/configuration.nix
+    #   secrets.restic_password = {
+    #     # mode = "0440"; # Example: set permissions
+    #     # user = config.users.users.restic.name; # Example: set owner if a restic user exists
+    #     # group = config.users.groups.restic.name; # Example: set group
+    #     # No need to specify sopsFile if defaultSopsFile is set and key matches in YAML
+    #   };
+    #
+    #   # Example for user password if managed this way (from original nixos/configuration.nix)
+    #   # Ensure 'userPasswords.aloys' (or similar based on username) exists in secrets.yaml
+    #   # secrets."user_password_${username}" = {
+    #   #   key = "userPasswords/${username}"; # Path in YAML: userPasswords.<username>
+    #   # };
+    #   # users.users.${username}.passwordFile = lib.mkIf (config.sops.secrets."user_password_${username}" != null)
+    #   #   config.sops.secrets."user_password_${username}".path;
+    # };
+    #
+    # # ====== Home Manager Sops Configuration ======
+    # # This applies if home-manager itself is enabled for the user.
+    # # The sops-nix homeManagerModule should be imported in the host's HM config.
+    # # hosts/.../default.nix -> home-manager.users.xxx.imports = [ inputs.sops-nix.homeManagerModules.sops ];
+    # # home-manager.users.${username} = lib.mkIf (config.modules.home-manager.enable) {
+    # #   sops = {
+    # #     defaultSopsFile = secretsFile; # Relative to where HM config is evaluated, or use absolute path.
+    # #                                    # The host HM config should pass this correctly.
+    # #     # age.keyFile = "${config.home.homeDirectory}/.sops/key.txt"; # Example user-specific age key
+    # #     # age.sshKeyPaths = [ "${config.home.homeDirectory}/.ssh/id_ed25519" ]; # User's SSH key
+    # #     # Or specify public keys:
+    # #     # age.publicKeys = [ "age1..." ];
+    # #
+    # #     # Define user-level secrets
+    # #     # From original home-manager/home.nix
+    # #     secrets.OPENROUTER_API_KEY = {
+    # #       # This will make the decrypted content available as a file.
+    # #       # To use it as an environment variable, Zsh/Bash init scripts need to source it.
+    # #       # Or, sops-nix might have mechanisms to directly expose it as an env var to certain programs.
+    # #       # For Zsh, you might have:
+    # #       # programs.zsh.initExtra = "export OPENROUTER_API_KEY=$(cat ${config.sops.secrets.OPENROUTER_API_KEY.path})";
+    # #     };
+    # #     # If you want sops-nix to generate a script that exports variables:
+    # #     # secrets."openrouter_api_key_env_file" = {
+    # #     #   key = "OPENROUTER_API_KEY"; # Key in secrets.yaml
+    # #     #   format = "bash"; # or "zsh"
+    # #     #   # This creates a file that can be sourced.
+    # #     # };
+    # # };
+    # #   # Example of sourcing the secret into Zsh environment
+    # #   # This should ideally be in the zsh module, checking if sops is enabled.
+    # #   programs.zsh.initExtra = lib.mkIf (config.sops.secrets.OPENROUTER_API_KEY ? path) ''
+    # #     if [ -f "${config.sops.secrets.OPENROUTER_API_KEY.path}" ]; then
+    # #       export OPENROUTER_API_KEY="$(cat "${config.sops.secrets.OPENROUTER_API_KEY.path}")"
+    # #     fi
+    #   '';
+    # };
+  };
+}
+</file>
+
+<file path="modules/home-manager.nix">
+{...}: {
+  imports = [
+    # Programs - CLI
+    ./programs/git/user.nix
+    #./programs/zsh.nix
+    ./programs/nvim/user.nix
+    ./programs/lazygit/user.nix
+    #./programs/fzf.nix
+    #./programs/bat.nix
+    #./programs/zoxide.nix
+    #./programs/direnv.nix
+    #./programs/gpg.nix
+    #./programs/pass.nix
+    #./programs/dotfiles.nix
+
+    # Programs - General Packages (home.packages)
+    #    ./programs/packages.nix
+    ./programs/dotfiles/user.nix
+
+    # Desktop / GUI - Handled by Home Manager
+    #./desktop/firefox.nix
+  ];
+}
+</file>
+
+<file path=".gitignore">
+# Emacs backup files
+*~
+# Emacs autosave files
+# (files that start and end with #)
+# (these are in the current dir, not just .emacs.d)
+# e.g., #foo.txt#
+# Also cover .#lockfiles
+# Emacs desktop save files
+*#
+.#*
+.emacs.desktop
+.emacs.desktop.lock
+
+.env
+
+dotfiles/emacs/vanilla/elpaca
+</file>
+
+<file path="hosts/darwin-macbook-m1/default.nix">
+{
+  inputs,
+  specialArgs,
+  ...
+}: let
+  username = specialArgs.username;
+  home-directory = specialArgs.home-directory;
+in {
+  imports = [
+    ../../modules/default.nix # Common modules
+    # Import Homebrew module definition from nix-homebrew flake
+    inputs.nix-homebrew.darwinModules.nix-homebrew
+    inputs.home-manager.darwinModules.home-manager
+  ];
+
+  # System state version
+  system.stateVersion = 5;
+
+  # Enable Home Manager integration (this is a custom option from modules/default.nix)
+
+  # Enable desired modules for this host using the structure in modules/default.nix
+  modules = {
+    home-manager = {
+      enable = true;
+    };
+    system = {
+      nix-settings.enable = true;
+      users.enable = true; # This will pull user setup from modules/system/users.nix
+      sops.enable = true; # Assuming sops is used on Darwin too
+      homebrew.enable = true; # Enable the homebrew module (to be created)
+    };
+    services = {
+      openssh.enable = true;
+      aerospace.enable = true;
+    };
+    programs = {
+      git.enable = true;
+      lazygit.enable = true;
+      #      zsh.enable = true;
+      nvim.enable = true;
+      # fzf.enable = true;
+      # bat.enable = true;
+      # zoxide.enable = true;
+      # direnv.enable = true;
+      # gpg.enable = true;
+      # pass.enable = true;
+      #packages.enable = true;
+      dotfiles.enable = true;
+    };
+    desktop = {
+      #firefox.enable = true; # If you use Firefox and have a module for it
+      dock.enable = true; # macOS dock settings (module to be created)
+    };
+  };
+
+  # nix-homebrew = {
+  #   enable = true; # This enables the actual nix-homebrew module from the input.
+  #   taps = {
+  #     # These are fundamental and needed for nix-homebrew to work
+  #     "homebrew/homebrew-core" = inputs.homebrew-core;
+  #     "homebrew/homebrew-cask" = inputs.homebrew-cask;
+  #     "homebrew/homebrew-bundle" = inputs.homebrew-bundle;
+  #   };
+  #   mutableTaps = false;
+  # };
+
+  # Home Manager configuration for this host
+  home-manager = {
+    useGlobalPkgs = true; # Use system-level pkgs for HM
+    useUserPackages = true; # Allow user-specific packages in HM
+    extraSpecialArgs = specialArgs; # Pass username, home-directory, inputs, self, dotfiles, userScripts
+    users.${username} = {...}: {
+      imports = [
+        ../../modules/home-manager.nix # A new file to bridge host enables to HM module imports
+      ];
+      home.homeDirectory = home-directory;
+      home.username = username;
+      home.stateVersion = "24.11"; # As per your original home.nix
+    };
+  };
+}
+</file>
+
+<file path="modules/desktop/default.nix">
+# Desktop environment modules
+{
+  lib,
+  config,
+  pkgs,
+  ...
+}: {
+  imports = [
+    ./core.nix # Should be empty or removed
+    #./firefox.nix
+
+    # Linux DE components
+    # ./waybar.nix
+    #./rofi.nix
+    # ./wofi.nix # To be created (if used)
+
+    # Cross-platform GUI apps
+    # ./wezterm.nix # (already in packages, but could be a module for specific settings)
+
+    # Darwin GUI elements
+    ./dock.nix
+  ];
+}
+</file>
+
+<file path="modules/default.nix">
+{lib, ...}: let
+  inherit (lib) mkEnableOption mkOption types;
+in {
+  options.modules.home-manager.enable = mkEnableOption "Home Manager integration";
+  imports = [
+    ./system/default.nix
+    ./services/default.nix
+    ./programs/default.nix
+    ./desktop/default.nix
+  ];
+}
+</file>
+
+<file path="overlays/aider-overlay.nix">
+# overlays/aider-overlay.nix
+final: prev: let
+  version = "0.82.0";
+in {
+  aider-chat = prev.aider-chat.overrideAttrs (old: {
+    version = version;
+    src = prev.fetchFromGitHub {
+      owner = "Aider-AI";
+      repo = "aider";
+      tag = "v${version}";
+      # placeholder; replace with correct sha256:
+      hash = "sha256-W3GO5+0rprQHmn1upL3pcXuv2e9Wir6TW0tUnvZj48E=";
+    };
+    propagatedBuildInputs =
+      old.propagatedBuildInputs or [];
+  });
+}
+</file>
+
+<file path="README.md">
+# Aloys' Dotfiles & System Configurations
+
+This repository contains my personal dotfiles and system configurations, managed primarily with [Nix](https://nixos.org/), [Home Manager](https://github.com/nix-community/home-manager), and [Nix-Darwin](https://github.com/LnL7/nix-darwin).
+
+## Overview
+
+The main goal of this repository is to provide a reproducible and version-controlled setup for my development environments across macOS and NixOS systems.
+
+Key components:
+
+*   **`flake.nix`**: The entry point for Nix, defining packages, NixOS modules, Home Manager configurations, and Nix-Darwin setups.
+*   **`dotfiles/`**: Contains application-specific configurations (e.g., Neovim, WezTerm, Emacs). These are typically symlinked into place by Home Manager.
+*   **`darwin/`**: Specific configurations for macOS systems managed by `nix-darwin`.
+*   **`nixos/`**: Specific configurations for NixOS systems.
+*   **`home-manager/`**: Shared Home Manager configurations applicable to both macOS and NixOS.
+*   **`taskfile.yml`**: A task runner file to simplify common operations like applying configurations.
+
+## Secrets Management
+
+This configuration uses [sops-nix](https://github.com/Mic92/sops-nix) for managing secrets like API keys and passwords declaratively and securely.
+
+**Prerequisites:**
+*   You need `sops` installed and configured on your system. Typically, this involves setting up a GPG key.
+    ```bash
+    # Example: Install sops (macOS with Homebrew)
+    brew install sops
+    # Example: Install sops (Nix)
+    # nix-env -iA nixpkgs.sops
+    ```
+*   Ensure your GPG key is available and configured for sops. You might need a `.sops.yaml` file in the repository root to specify default encryption rules (e.g., your GPG key fingerprint). Example `.sops.yaml`:
+    ```yaml
+    creation_rules:
+      - pgp: 'YOUR_GPG_FINGERPRINT_HERE'
+    ```
+
+**Working with Secrets:**
+1.  Secrets are defined in `secrets.yaml` at the root of the repository.
+2.  **Important:** This file should be encrypted using `sops`.
+    *   To edit secrets: `sops secrets.yaml`
+    *   After editing and saving, `sops` will automatically re-encrypt the file if your environment is set up correctly (e.g., GPG agent).
+    *   To encrypt an existing plaintext `secrets.yaml`: `sops --encrypt --in-place secrets.yaml`
+3.  The Nix configurations (`NixOS` and `Home Manager`) will automatically decrypt these secrets at build time when applying the configuration.
+4.  Refer to `secrets.yaml` for the structure of expected secrets (e.g., `restic_password`, `openrouter_api_key`).
+
+## Using Tasks with `task`
+
+This repository uses [Task](https://taskfile.dev/) as a command runner, similar to `make` or `just`. It helps automate common development and system management workflows.
+
+### Installation
+
+To use the tasks defined in `taskfile.yml`, you first need to install `task`.
+
+**macOS (Homebrew):**
+```bash
+brew install go-task/tap/go-task
+```
+
+**Nix/NixOS:**
+If you have Nix installed, you can install it via `nix-env` or include it in your Nix configuration:
+```bash
+nix-env -iA nixpkgs.task
+```
+Or add `pkgs.task` to your `home.packages` or `environment.systemPackages`.
+
+For other installation methods (Linux, Windows, binaries), please refer to the [official Task installation guide](https://taskfile.dev/installation/).
+
+### Available Tasks
+
+To list all available tasks, run:
+```bash
+task
+```
+or
+```bash
+task --list-all
+```
+
+Here are some of the main tasks:
+
+*   **`task hms`**:
+    *   Description: Run `home-manager switch` for the current system.
+    *   Usage: `task hms`
+    *   Details: This task applies the Home Manager configuration defined in `home-manager/home.nix` and the system-specific flake output (e.g., `.#darwin` or `.#nixos`). It infers your system type (e.g., `darwin`, `linux`) using `uname`.
+
+*   **`task darwin-switch`**:
+    *   Description: Run `nix-darwin rebuild switch` (macOS only).
+    *   Usage: `task darwin-switch`
+    *   Details: This task applies the Nix-Darwin system configuration defined in `darwin/configuration.nix`. It will only run if your system is identified as `darwin`.
+
+*   **`task nvim-reload`**:
+    *   Description: Reloads the Neovim configuration by reinstalling its Nix profile.
+    *   Usage: `task nvim-reload`
+    *   Details: This is useful when you've made changes to the Neovim configuration managed by Nix and want to apply them without a full `home-manager switch`. It removes the existing profile and installs the one defined in `dotfiles/nvim/flake.nix`.
+
+*   **`task nixos-switch`**:
+    *   Description: Run `nixos-rebuild switch` (Linux/NixOS only).
+    *   Usage: `task nixos-switch`
+    *   Details: This task applies the NixOS system configuration. It will only run if your system is identified as `Linux`. It requires `sudo` privileges.
+
+### System Specific Tasks
+
+The `hms`, `darwin-switch`, and `nixos-switch` tasks use a variable `USER_SYSTEM`. This variable is automatically determined by running `uname | tr '[:upper:]' '[:lower:]'` (e.g., `darwin` for macOS, `linux` for Linux-based systems). The value of `USER_SYSTEM` should correspond to a hostname defined in your `flake.nix` outputs (e.g., `nixosConfigurations.your-hostname` or `darwinConfigurations.your-hostname`).
+
+For example, if your `flake.nix` has:
+```nix
+{
+  outputs = { self, nixpkgs, ... }@inputs: {
+    nixosConfigurations.myNixosBox = nixpkgs.lib.nixosSystem { ... };
+    darwinConfigurations.myMac = inputs.nix-darwin.lib.darwinSystem { ... };
+    homeConfigurations.user = inputs.home-manager.lib.homeManagerConfiguration { ... };
+  };
+}
+```
+Then `USER_SYSTEM` should resolve to `myNixosBox` on that NixOS machine, or `myMac` on that Mac. The tasks will then form the correct flake URI like `.#myNixosBox` or `.#myMac`.
+
+If the automatically determined value is not correct, or you want to target a different configuration defined in your flake, you can override `USER_SYSTEM` when running a task:
+```bash
+task hms USER_SYSTEM=your-flake-host-identifier
+task darwin-switch USER_SYSTEM=your-darwin-flake-identifier
+task nixos-switch USER_SYSTEM=your-nixos-flake-identifier
+```
+Replace `your-flake-host-identifier`, `your-darwin-flake-identifier`, or `your-nixos-flake-identifier` with the actual Nix host name defined in your `flake.nix`.
+
+## Nix Flakes
+
+This repository is structured as a Nix Flake.
+
+*   **To build and activate Home Manager for your user:**
+    ```bash
+    nix run home-manager/master -- switch --flake .#your-username@your-hostname
+    ```
+    (Or use the `task hms` command)
+
+*   **To rebuild a NixOS system:**
+    ```bash
+    sudo nixos-rebuild switch --flake .#your-nixos-hostname
+    ```
+
+*   **To rebuild a Nix-Darwin system:**
+    ```bash
+    nix run nix-darwin/master#darwin-rebuild -- switch --flake .#your-darwin-hostname
+    ```
+    (Or use the `task darwin-switch` command if on macOS)
+
+Make sure to replace `your-username@your-hostname`, `your-nixos-hostname`, or `your-darwin-hostname` with the appropriate values defined in your `flake.nix`. The tasks in `taskfile.yml` attempt to simplify this by inferring the system.Tool output for `overwrite_file_with_block`:
+</file>
+
+<file path="taskfile.yml">
+version: '3'
+
+tasks:
+  m1-switch:
+    desc: "Run nix-darwin rebuild switch for macOS"
+    cmds:
+      - sudo nix run nix-darwin/master#darwin-rebuild -- switch --flake .#darwin-macbook-m1
+
+  homelab-switch:
+    desc: "Run nixos-rebuild switch for Linux"
+    cmds:
+      - nixos-rebuild switch --flake .#linux-homelab-x86
+
+  nvim-reload:
+    desc: "Reload nvim configuration by reinstalling the nix profile"
+    cmds:
+      - nix profile remove dotfiles/nvim
+      - nix profile install .?dir=dotfiles/nvim#nvim
+
+  default:
+    desc: "Show available tasks"
+    cmds:
+      - task --list-all
+</file>
+
+<file path="flake.nix">
+{
+  description = "Aloys' Nix Chaos";
+  inputs = {
+    nixpkgs = {
+      url = "github:NixOS/nixpkgs";
+    };
+    nix-darwin = {
+      url = "github:LnL7/nix-darwin";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+    home-manager = {
+      url = "github:nix-community/home-manager";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+    # Needed for nix darwin for now as not all pkgs are within nixpkgs
+    nix-homebrew.url = "github:zhaofengli-wip/nix-homebrew";
+    homebrew-core = {
+      url = "github:homebrew/homebrew-core";
+      flake = false;
+    };
+    homebrew-cask = {
+      url = "github:homebrew/homebrew-cask";
+      flake = false;
+    };
+    homebrew-bundle = {
+      url = "github:homebrew/homebrew-bundle";
+      flake = false;
+    };
+    sops-nix = {
+      # Added sops-nix input
+      url = "github:Mic92/sops-nix";
+      inputs.nixpkgs.follows = "nixpkgs"; # Ensure it uses the same nixpkgs
+    };
+  };
+
+  outputs = {
+    self,
+    nix-darwin,
+    nixpkgs,
+    home-manager,
+    nix-homebrew,
+    homebrew-core,
+    homebrew-cask,
+    homebrew-bundle,
+    sops-nix,
+    ...
+  } @ inputs: let
+    # Define all overlays here
+    customOverlays = [
+      # Overlay from home-manager/home.nix
+      (import ./overlays/aider-overlay.nix)
+      (final: prev: {
+        # tree-sitter fix
+        tree-sitter-bundled-vendor = prev.tree-sitter-bundled-vendor.overrideAttrs (oldAttrs: {
+          outputHash = "sha256-ie+/48dVU3r+tx/sQBWRIZEWSNWwMBANCqQLnv96JXs=";
+        });
+      })
+    ];
+
+    username = "aloys";
+    systemLinux = "x86_64-linux";
+    systemDarwin = "aarch64-darwin";
+    homeDirectory = system:
+      if system == systemLinux
+      then "/home/${username}"
+      else "/Users/${username}";
+
+    # Centralized pkgs definition for a given system
+    pkgsForSystem = system:
+      import nixpkgs {
+        inherit system;
+        overlays = customOverlays;
+        config.allowUnfree = true;
+      };
+
+    # Common specialArgs for all systems
+    commonSpecialArgs = system: {
+      inherit inputs self username sops-nix; # sops-nix might be needed by HM modules
+      home-directory = homeDirectory system;
+      dotfiles = ./dotfiles;
+      userScripts = ./scripts;
+      isLinux = system == systemLinux;
+      isDarwin = system == systemDarwin;
+    };
+  in {
+    ##########################################
+    # Nix Darwin
+    ##########################################
+    darwinConfigurations."darwin-macbook-m1" = nix-darwin.lib.darwinSystem {
+      system = systemDarwin;
+      specialArgs = commonSpecialArgs systemDarwin;
+      modules = [
+        ./hosts/darwin-macbook-m1/default.nix
+      ];
+    };
+
+    ##########################################
+    # NixOS configuration
+    ##########################################
+    nixosConfigurations."linux-homelab-x86" = nixpkgs.lib.nixosSystem {
+      system = systemLinux;
+      specialArgs = commonSpecialArgs systemLinux;
+      modules = [
+        ./hosts/linux-homelab-x86/default.nix
+        # The home-manager configuration is now managed within hosts/linux-homelab-x86/default.nix
+      ];
+    };
+  };
+}
+</file>
+
+<file path="flake.lock">
+{
+  "nodes": {
+    "brew-src": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1749511373,
+        "narHash": "sha256-7u1TdHQaUCzzgf/n8T3bQosuYXyNBEPU/3WQQqozE5o=",
+        "owner": "Homebrew",
+        "repo": "brew",
+        "rev": "7b4ef99fed96966269ee35994407fa4c06097a4d",
+        "type": "github"
+      },
+      "original": {
+        "owner": "Homebrew",
+        "ref": "4.5.6",
+        "repo": "brew",
+        "type": "github"
+      }
+    },
+    "home-manager": {
+      "inputs": {
+        "nixpkgs": [
+          "nixpkgs"
+        ]
+      },
+      "locked": {
+        "lastModified": 1750033262,
+        "narHash": "sha256-TcFN78w6kPspxpbPsxW/8vQ1GAtY8Y3mjBaC+oB8jo4=",
+        "owner": "nix-community",
+        "repo": "home-manager",
+        "rev": "66523b0efe93ce5b0ba96dcddcda15d36673c1f0",
+        "type": "github"
+      },
+      "original": {
+        "owner": "nix-community",
+        "repo": "home-manager",
+        "type": "github"
+      }
+    },
+    "homebrew-bundle": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1745335228,
+        "narHash": "sha256-TIKR2UgtyUmHLNZp255/vLs+1I10hXe+sciMEbAGFwE=",
+        "owner": "homebrew",
+        "repo": "homebrew-bundle",
+        "rev": "a3265c84b232e13048ecbf6fc18a2eedfadbeb08",
+        "type": "github"
+      },
+      "original": {
+        "owner": "homebrew",
+        "repo": "homebrew-bundle",
+        "type": "github"
+      }
+    },
+    "homebrew-cask": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1750047943,
+        "narHash": "sha256-WrsCZZU7/xNdNsao5yXHQA3n2pNz8P6Jg1Rs79pjv0M=",
+        "owner": "homebrew",
+        "repo": "homebrew-cask",
+        "rev": "56133fc1b108ad2ab7e6fecf16cde27e2ad288c7",
+        "type": "github"
+      },
+      "original": {
+        "owner": "homebrew",
+        "repo": "homebrew-cask",
+        "type": "github"
+      }
+    },
+    "homebrew-core": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1750048619,
+        "narHash": "sha256-k/qBczLWbvW6TjAg+xBacSyk5yvzQzNZS3rP70dc404=",
+        "owner": "homebrew",
+        "repo": "homebrew-core",
+        "rev": "6b9d023a0f542cb6b0a0151ca3074f18f9086591",
+        "type": "github"
+      },
+      "original": {
+        "owner": "homebrew",
+        "repo": "homebrew-core",
+        "type": "github"
+      }
+    },
+    "nix-darwin": {
+      "inputs": {
+        "nixpkgs": [
+          "nixpkgs"
+        ]
+      },
+      "locked": {
+        "lastModified": 1749873626,
+        "narHash": "sha256-1Mc/D/1RwwmDKY59f4IpDBgcQttxffm+4o0m67lQ8hc=",
+        "owner": "LnL7",
+        "repo": "nix-darwin",
+        "rev": "2f140d6ac8840c6089163fb43ba95220c230f22b",
+        "type": "github"
+      },
+      "original": {
+        "owner": "LnL7",
+        "repo": "nix-darwin",
+        "type": "github"
+      }
+    },
+    "nix-homebrew": {
+      "inputs": {
+        "brew-src": "brew-src"
+      },
+      "locked": {
+        "lastModified": 1749952250,
+        "narHash": "sha256-V2ix0knpdJXirQ+4pjbnggjdSALTsFWGIP/NDpaQkdU=",
+        "owner": "zhaofengli-wip",
+        "repo": "nix-homebrew",
+        "rev": "37126f06f4890f019af3d7606ce5d30a457afcd0",
+        "type": "github"
+      },
+      "original": {
+        "owner": "zhaofengli-wip",
+        "repo": "nix-homebrew",
+        "type": "github"
+      }
+    },
+    "nixpkgs": {
+      "locked": {
+        "lastModified": 1750049819,
+        "narHash": "sha256-7hkluSCvePYQoSu6goqh4CKLVKhmr33rDf0LO+hNrlc=",
+        "owner": "NixOS",
+        "repo": "nixpkgs",
+        "rev": "a8cf52487b3d97f7f0fd6bf2bd484457adad063c",
+        "type": "github"
+      },
+      "original": {
+        "owner": "NixOS",
+        "repo": "nixpkgs",
+        "type": "github"
+      }
+    },
+    "root": {
+      "inputs": {
+        "home-manager": "home-manager",
+        "homebrew-bundle": "homebrew-bundle",
+        "homebrew-cask": "homebrew-cask",
+        "homebrew-core": "homebrew-core",
+        "nix-darwin": "nix-darwin",
+        "nix-homebrew": "nix-homebrew",
+        "nixpkgs": "nixpkgs",
+        "sops-nix": "sops-nix"
+      }
+    },
+    "sops-nix": {
+      "inputs": {
+        "nixpkgs": [
+          "nixpkgs"
+        ]
+      },
+      "locked": {
+        "lastModified": 1750119275,
+        "narHash": "sha256-Rr7Pooz9zQbhdVxux16h7URa6mA80Pb/G07T4lHvh0M=",
+        "owner": "Mic92",
+        "repo": "sops-nix",
+        "rev": "77c423a03b9b2b79709ea2cb63336312e78b72e2",
+        "type": "github"
+      },
+      "original": {
+        "owner": "Mic92",
+        "repo": "sops-nix",
+        "type": "github"
+      }
+    }
+  },
+  "root": "root",
+  "version": 7
+}
+</file>
+
+</files>
