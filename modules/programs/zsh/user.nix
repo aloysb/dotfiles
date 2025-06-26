@@ -11,7 +11,7 @@
 in {
   options.modules.programs.zsh.enable = lib.mkEnableOption "Zsh shell and configuration";
 
-  config = lib.mkIf (config.modules.home-manager.enable && cfg.enable) {
+  config = lib.mkIf cfg.enable {
     programs.zsh = {
       enable = true;
       shellAliases = {
@@ -97,7 +97,7 @@ in {
     };
 
     # Ensure zsh is the default shell for the user on NixOS
-    users.defaultUserShell = lib.mkIf pkgs.stdenv.isLinux pkgs.zsh;
+    #users.defaultUserShell = lib.mkIf pkgs.stdenv.isLinux pkgs.zsh;
 
     # Ensure .p10k.zsh is symlinked if it's part of the dotfiles repo
     # This would typically be handled by the dotfiles module.

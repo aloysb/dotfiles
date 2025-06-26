@@ -1,12 +1,14 @@
-{ lib, config, pkgs, ... }:
-
-let
-  cfg = config.modules.programs.zoxide;
-in
 {
-  options.modules.programs.zoxide = lib.mkEnableOption "zoxide (smarter cd)";
+  lib,
+  config,
+  pkgs,
+  ...
+}: let
+  cfg = config.modules.programs.zoxide;
+in {
+  options.modules.programs.zoxide.enable = lib.mkEnableOption "zoxide (smarter cd)";
 
-  config = lib.mkIf (config.modules.home-manager.enable && cfg.enable) {
+  config = lib.mkIf cfg.enable {
     programs.zoxide = {
       enable = true;
       enableZshIntegration = config.modules.programs.zsh.enable; # If zsh module is active

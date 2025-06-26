@@ -9,7 +9,7 @@
     ./programs/lazygit/user.nix
     #./programs/fzf.nix
     #./programs/bat.nix
-    #./programs/zoxide.nix
+    ./programs/zoxide/user.nix
     #./programs/direnv.nix
     #./programs/gpg.nix
     #./programs/pass.nix
