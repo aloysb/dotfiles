@@ -1,11 +1,14 @@
-{ lib, config, pkgs, specialArgs, ... }:
-
-let
+{
+  lib,
+  config,
+  pkgs,
+  specialArgs,
+  ...
+}: let
   cfg = config.modules.programs.zsh;
   homeDir = specialArgs.home-directory; # Use specialArgs for home-directory
   dotfilesDir = specialArgs.dotfiles; # Path to ./dotfiles from flake root
-in
-{
+in {
   options.modules.programs.zsh = lib.mkEnableOption "Zsh shell and configuration";
 
   config = lib.mkIf (config.modules.home-manager.enable && cfg.enable) {
@@ -16,9 +19,9 @@ in
         nixsw = "pushd ${homeDir}/.config/nix > /dev/null && just nix-switch && popd > /dev/null";
         nvimsw = "pushd ${homeDir}/.config/nix > /dev/null && just nvim-reload && popd > /dev/null";
         gg = "lazygit"; # Assuming lazygit is installed
-        yy = "yazi";   # Assuming yazi is installed
-        fk = "fuck";   # Assuming thefuck is installed
-        p = "pnpm";    # Assuming pnpm (via corepack) is available
+        yy = "yazi"; # Assuming yazi is installed
+        fk = "fuck"; # Assuming thefuck is installed
+        p = "pnpm"; # Assuming pnpm (via corepack) is available
         hypr = "Hyprland -c ${homeDir}/.config/hyprland/hyprland.conf"; # Path to hyprland config
         aid = "aider -c ~/.aider.config.yml";
         aidcp = "aider -c ~/.aider.config.yml --copy-paste";
@@ -26,12 +29,16 @@ in
         paidcp = "aider -c ~/.aider.perso.config.yml --copy-paste";
         # Emacs aliases might need adjustment based on how Emacs is installed/configured
         doomd = "emacs --daemon=\"doom\" --init-directory ${dotfilesDir}/emacs/doom";
-        d = lib.mkIf pkgs.stdenv.isDarwin "/Applications/Emacs.app/Contents/MacOS/bin/emacsclient -c -n -q -s 'doom'";
-        d = lib.mkIf pkgs.stdenv.isLinux "emacsclient -c -n -q -s 'doom'"; # Basic Linux emacsclient
+        d =
+          if pkgs.stdenv.isDarwin
+          then "/Applications/Emacs.app/Contents/MacOS/bin/emacsclient -c -n -q -s 'doom'"
+          else "emacsclient -c -n -q -s 'doom'";
         dl = "emacs --init-dir ${dotfilesDir}/emacs/doom";
         emacsd = "emacs --daemon=\"vanilla\" --init-directory ${dotfilesDir}/emacs/vanilla";
-        e = lib.mkIf pkgs.stdenv.isDarwin "/Applications/Emacs.app/Contents/MacOS/bin/emacsclient -c -n -q -s 'vanilla' -a \"emacs --init-dir ${dotfilesDir}/emacs/vanilla\"";
-        e = lib.mkIf pkgs.stdenv.isLinux "emacsclient -c -n -q -s 'vanilla' -a \"emacs --init-dir ${dotfilesDir}/emacs/vanilla\"";
+        e =
+          if pkgs.stdenv.isDarwin
+          then "/Applications/Emacs.app/Contents/MacOS/bin/emacsclient -c -n -q -s 'vanilla' -a \"emacs --init-dir ${dotfilesDir}/emacs/vanilla\""
+          else "emacsclient -c -n -q -s 'vanilla' -a \"emacs --init-dir ${dotfilesDir}/emacs/vanilla\"";
         el = "emacs --init-dir ${dotfilesDir}/emacs/vanilla";
         t = "task"; # Assuming taskwarrior is installed
       };
@@ -91,9 +98,6 @@ in
 
     # Ensure zsh is the default shell for the user on NixOS
     users.defaultUserShell = lib.mkIf pkgs.stdenv.isLinux pkgs.zsh;
-    # For Darwin, default shell is usually set via system preferences or `chsh`
-    # However, nix-darwin can set it:
-    programs.zsh.enable = lib.mkIf pkgs.stdenv.isDarwin true; # This refers to system-level zsh setup for darwin
 
     # Ensure .p10k.zsh is symlinked if it's part of the dotfiles repo
     # This would typically be handled by the dotfiles module.

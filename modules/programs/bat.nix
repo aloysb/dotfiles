@@ -1,9 +1,11 @@
-{ lib, config, pkgs, ... }:
-
-let
-  cfg = config.modules.programs.bat;
-in
 {
+  lib,
+  config,
+  pkgs,
+  ...
+}: let
+  cfg = config.modules.programs.bat;
+in {
   options.modules.programs.bat = lib.mkEnableOption "bat (cat clone with syntax highlighting)";
 
   config = lib.mkIf (config.modules.home-manager.enable && cfg.enable) {

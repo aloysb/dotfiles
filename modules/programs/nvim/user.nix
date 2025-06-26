@@ -1,20 +1,23 @@
-{ lib, config, pkgs, specialArgs, ... }:
-
-let
+{
+  lib,
+  config,
+  pkgs,
+  specialArgs,
+  ...
+}: let
   cfg = config.modules.programs.nvim;
   dotfilesDir = specialArgs.dotfiles; # Path to ./dotfiles from flake root
-in
-{
+in {
   options.modules.programs.nvim = lib.mkEnableOption "Neovim editor configuration";
 
-  config = lib.mkIf (config.modules.home-manager.enable && cfg.enable) {
+  config = lib.mkIf cfg.enable {
     # Neovim is primarily configured by its own Lua files,
     # so the main thing Home Manager does is install it and symlink configs.
     # The existing `home-manager/symlinks.nix` handles the config linking.
     # We'll replicate that logic in the `dotfiles.nix` module later.
 
     # Ensure Neovim is installed
-    home.packages = [ pkgs.neovim ];
+    home.packages = [pkgs.neovim];
 
     # If you had specific `programs.neovim` options in Home Manager, they would go here.
     # For example:

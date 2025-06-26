@@ -1,11 +1,14 @@
-{ lib, config, pkgs, specialArgs, ... }:
-
-let
+{
+  lib,
+  config,
+  pkgs,
+  specialArgs,
+  ...
+}: let
   cfg = config.modules.desktop.waybar;
   homeDir = specialArgs.home-directory;
   dotfilesDir = specialArgs.dotfiles; # ./dotfiles from flake root
-in
-{
+in {
   options.modules.desktop.waybar = lib.mkEnableOption "Waybar status bar (Linux-specific)";
 
   config = lib.mkIf (cfg.enable && pkgs.stdenv.isLinux && config.modules.home-manager.enable) {
@@ -31,8 +34,8 @@ in
         networkmanagerapplet # For network applet in systray (if using systray and NM)
         libappindicator-gtk3 # For systray icons
         gnome.gnome-tweaks # For fontconfig settings that Waybar might respect
-        font-awesome # Icons, also in hyprland.nix - good to have consistently
-        (nerdfonts.override { fonts = [ "FiraCode" "JetBrainsMono" ]; }) # Also in hyprland.nix
+        font-awesome # Icons
+        (nerdfonts.override {fonts = ["FiraCode" "JetBrainsMono"];}) # Also in hyprland.nix
       ];
     };
   };

@@ -1,80 +1,84 @@
-{ lib, config, pkgs, specialArgs, ... }:
-
-let
+{
+  lib,
+  config,
+  pkgs,
+  specialArgs,
+  ...
+}: let
   cfg = config.modules.programs.packages;
   isDarwin = pkgs.stdenv.isDarwin;
   isLinux = pkgs.stdenv.isLinux;
-in
-{
+in {
   options.modules.programs.packages = lib.mkEnableOption "General suite of user packages";
 
   config = lib.mkIf (config.modules.home-manager.enable && cfg.enable) {
-    home.packages = with pkgs; [
-      # Common packages from original home.nix
-      curl
-      gh
-      wezterm # Assuming this is preferred over foot for now, or can be conditional
-      ripgrep
-      just
-      fd
-      jq
-      tree
-      lazygit
-      lazydocker
-      zig
-      entr
-      neofetch
-      delta # Git delta is also configured in the git module, this ensures it's in packages
-      caddy
-      corepack
-      go
-      delve
-      ffmpeg
-      devenv
-      hurl
-      uv
-      pre-commit
-      thunderbird
-      docker # Docker CLI tools
-      docker-compose
-      postgresql # Client tools
-      pm2
-      glow # Markdown reader
-      nodejs_20 # Or a more generic nodejs latest/lts
-      btop
-      wireguard-tools # For VPN
-      go-task # Task runner
+    home.packages = with pkgs;
+      [
+        # Common packages from original home.nix
+        curl
+        gh
+        wezterm # Assuming this is preferred over foot for now, or can be conditional
+        ripgrep
+        just
+        fd
+        jq
+        tree
+        lazygit
+        lazydocker
+        zig
+        entr
+        neofetch
+        delta # Git delta is also configured in the git module, this ensures it's in packages
+        caddy
+        corepack
+        go
+        delve
+        ffmpeg
+        devenv
+        hurl
+        uv
+        pre-commit
+        thunderbird
+        docker # Docker CLI tools
+        docker-compose
+        postgresql # Client tools
+        pm2
+        glow # Markdown reader
+        nodejs_20 # Or a more generic nodejs latest/lts
+        btop
+        wireguard-tools # For VPN
+        go-task # Task runner
 
-      # AI related tools
-      # claude-code # This seems to be a custom package, ensure it's available via overlays if used
-      # repomix # Custom package?
-      ollama
-      aider-chat # This is in an overlay, ensure overlay is active
+        # AI related tools
+        # claude-code # This seems to be a custom package, ensure it's available via overlays if used
+        # repomix # Custom package?
+        ollama
+        aider-chat # This is in an overlay, ensure overlay is active
 
-      # Yazi - was enabled separately, but can be part of general packages too
-      yazi
+        # Yazi - was enabled separately, but can be part of general packages too
+        yazi
 
-      # The Fuck - was disabled, can be added here if re-enabled
-      # thefuck
-    ]
-    ++ lib.optionals isDarwin [
-      colima
-      _1password-cli # Ensure this package name is correct
-    ]
-    ++ lib.optionals isLinux [
-      # hyprland related pkgs - some of these might be dependencies of hyprland module itself
-      # or system-level packages rather than home.packages
-      # hyprpaper # often a service or system package for hyprland
-      # rofi-wayland # if rofi module doesn't provide it
-      # wl-clipboard
-      # waybar # if waybar module doesn't provide it
+        # The Fuck - was disabled, can be added here if re-enabled
+        # thefuck
+      ]
+      ++ lib.optionals isDarwin [
+        colima
+        _1password-cli # Ensure this package name is correct
+      ]
+      ++ lib.optionals isLinux [
+        # hyprland related pkgs - some of these might be dependencies of hyprland module itself
+        # or system-level packages rather than home.packages
+        # hyprpaper # often a service or system package for hyprland
+        # rofi-wayland # if rofi module doesn't provide it
+        # wl-clipboard
+        # waybar # if waybar module doesn't provide it
 
-      # others for Linux
-      brightnessctl
-      font-awesome # For icons in waybar etc.
-      # impala # network TUI - check if still needed/used
-      bluez # Bluetooth utilities, often system-level but sometimes user tools are useful
-    ];
+        # others for Linux
+        brightnessctl
+        font-awesome # For icons in waybar etc.
+        # impala # network TUI - check if still needed/used
+        bluez # Bluetooth utilities, often system-level but sometimes user tools are useful
+      ];
 
     # Programs that were enabled via `programs.<name>.enable` but are essentially just packages
     # if their modules don't do much more than install them + basic config.

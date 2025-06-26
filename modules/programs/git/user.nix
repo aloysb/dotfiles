@@ -1,14 +1,17 @@
-{ lib, config, pkgs, specialArgs, ... }:
-
-let
+{
+  lib,
+  config,
+  pkgs,
+  specialArgs,
+  ...
+}: let
   cfg = config.modules.programs.git;
   username = specialArgs.username; # Get username from specialArgs passed from flake
   userEmail = "aloysberger@gmail.com"; # As per original config, can be made an option
-in
-{
-  options.modules.programs.git = lib.mkEnableOption "Git version control";
+in {
+  options.modules.programs.git.enable = lib.mkEnableOption "Git version control";
 
-  config = lib.mkIf (config.modules.home-manager.enable && cfg.enable) {
+  config = lib.mkIf cfg.enable {
     programs.git = {
       enable = true;
       userName = username; # Use the abstracted username
@@ -59,9 +62,9 @@ in
     # Ensure GPG agent is set up if commit signing is enabled
     # This is often handled by a gpg module or system-level gpg agent setup
     # For Home Manager, it could be:
-    programs.gnupg.agent = lib.mkIf config.programs.git.extraConfig.commit.gpgSign {
-      enable = true;
-      enableSSHSupport = true; # Common to enable this as well
-    };
+    # programs.gnupg.agent = lib.mkIf config.programs.git.extraConfig.commit.gpgSign {
+    #   enable = true;
+    #   enableSSHSupport = true; # Common to enable this as well
+    # };
   };
 }

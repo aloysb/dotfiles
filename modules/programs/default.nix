@@ -1,25 +1,26 @@
 # Programs modules
-{ lib, config, pkgs, ... }: {
+{
+  lib,
+  config,
+  pkgs,
+  ...
+}: {
   imports = [
     ./core.nix # Should be empty or removed
 
     # CLI Tools
-    ./zsh.nix
-    ./git.nix
-    ./nvim.nix
-    ./fzf.nix
-    ./bat.nix
-    ./eza.nix
-    ./zoxide.nix
-    ./direnv.nix
-    ./gpg.nix
-    ./pass.nix # password-store
-
-    # Development related
-    # ./tmux.nix # If you add it
+    #./zsh.nix
+    ./nvim/system.nix
+    ./git/system.nix
+    # ./fzf.nix
+    # ./bat.nix
+    # ./zoxide.nix
+    # ./direnv.nix
+    # ./gpg.nix
+    # ./pass.nix # password-store
 
     # General packages & dotfiles management
-    ./packages.nix # For home.packages
-    ./dotfiles.nix # For symlinks
+    #./packages.nix # For home.packages
+    #./dotfiles.nix # For symlinks
   ];
 }

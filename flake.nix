@@ -79,8 +79,8 @@
       home-directory = homeDirectory system;
       dotfiles = ./dotfiles;
       userScripts = ./scripts;
-      pkgs = pkgsForSystem system; # Make pkgs available in specialArgs for modules if they need it directly
-      # though typically modules receive pkgs as a top-level argument.
+      isLinux = system == systemLinux;
+      isDarwin = system == systemDarwin;
     };
   in {
     ##########################################

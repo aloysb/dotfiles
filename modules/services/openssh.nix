@@ -1,29 +1,26 @@
-{ lib, config, pkgs, ... }:
-
-let
-  cfg = config.modules.services.openssh;
-in
 {
-  options.modules.services.openssh = lib.mkEnableOption "OpenSSH server configuration";
+  lib,
+  config,
+  specialArgs,
+  ...
+}: let
+  isLinux = specialArgs.isLinux;
+in {
+  options.modules.services.openssh = lib.mkEnableOption "OpenSSH server";
 
-  config = lib.mkIf cfg.enable {
-    services.openssh = {
-      enable = true;
-      # settings = {
-      #   PermitRootLogin = "no"; # Example: common security practice
-      #   PasswordAuthentication = false; # Example: if only using key-based auth
-      #   KbdInteractiveAuthentication = false; # Also for disabling password auth
-      # };
-      # extraConfig allows appending raw string to sshd_config
-      # This was in darwin/configuration.nix, useful for both platforms
-      extraConfig = ''
-        AcceptEnv WEZTERM_REMOTE_PANE # If you use Wezterm's remote pane feature
-      '';
-    };
+  config = lib.mkIf config.modules.services.openssh.enable (lib.mkMerge [
+    {
+      services.openssh = {
+        enable = true;
+        extraConfig = ''
+          AcceptEnv WEZTERM_REMOTE_PANE
+        '';
+      };
+    }
 
-    # Firewall rules for SSH (NixOS specific)
-    networking.firewall = lib.mkIf (pkgs.stdenv.isLinux && config.networking.firewall.enable) {
-      allowedTCPPorts = [ 22 ]; # Or whatever port SSH is configured on
-    };
-  };
+    (lib.optionalAttrs isLinux {
+      # Only NixOS has this option, so no guards needed inside the file.
+      networking.firewall.allowedTCPPorts = [22];
+    })
+  ]);
 }
