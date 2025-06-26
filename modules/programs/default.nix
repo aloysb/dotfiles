@@ -9,7 +9,6 @@
     ./core.nix # Should be empty or removed
 
     # CLI Tools
-    #./zsh.nix
     ./nvim/system.nix
     ./git/system.nix
     # ./fzf.nix

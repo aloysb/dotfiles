@@ -1,8 +1,10 @@
 {...}: {
   imports = [
+    # Shell
+    ./programs/zsh/user.nix
+
     # Programs - CLI
     ./programs/git/user.nix
-    #./programs/zsh.nix
     ./programs/nvim/user.nix
     ./programs/lazygit/user.nix
     #./programs/fzf.nix

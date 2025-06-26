@@ -9,7 +9,7 @@
   homeDir = specialArgs.home-directory; # Use specialArgs for home-directory
   dotfilesDir = specialArgs.dotfiles; # Path to ./dotfiles from flake root
 in {
-  options.modules.programs.zsh = lib.mkEnableOption "Zsh shell and configuration";
+  options.modules.programs.zsh.enable = lib.mkEnableOption "Zsh shell and configuration";
 
   config = lib.mkIf (config.modules.home-manager.enable && cfg.enable) {
     programs.zsh = {
