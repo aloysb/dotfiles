@@ -1,5 +1,10 @@
 # Desktop environment modules
-{ lib, config, pkgs, ... }: {
+{
+  lib,
+  config,
+  pkgs,
+  ...
+}: {
   imports = [
     ./core.nix # Should be empty or removed
 
@@ -8,9 +13,6 @@
     ./waybar.nix
     ./rofi.nix
     # ./wofi.nix # To be created (if used)
-    ./dunst.nix
-    ./foot.nix
-    ./eww.nix
 
     # Cross-platform GUI apps
     ./firefox.nix

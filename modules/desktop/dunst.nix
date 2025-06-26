@@ -1,9 +1,12 @@
-{ lib, config, pkgs, specialArgs, ... }:
-
-let
-  cfg = config.modules.desktop.dunst;
-in
 {
+  lib,
+  config,
+  pkgs,
+  specialArgs,
+  ...
+}: let
+  cfg = config.modules.desktop.dunst;
+in {
   options.modules.desktop.dunst = lib.mkEnableOption "Dunst notification daemon (Linux-specific)";
 
   config = lib.mkIf (cfg.enable && pkgs.stdenv.isLinux && config.modules.home-manager.enable) {

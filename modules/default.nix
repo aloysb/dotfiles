@@ -1,9 +1,6 @@
-{ lib, ... }:
-
-let
+{lib, ...}: let
   inherit (lib) mkEnableOption mkOption types;
-in
-{
+in {
   imports = [
     ./system/default.nix
     ./services/default.nix
@@ -40,7 +37,6 @@ in
       tmux = mkEnableOption "Tmux terminal multiplexer"; # Example, if you add it
       fzf = mkEnableOption "fzf fuzzy finder";
       bat = mkEnableOption "bat (cat clone with syntax highlighting)";
-      eza = mkEnableOption "eza (ls replacement)";
       zoxide = mkEnableOption "zoxide (smarter cd)";
       direnv = mkEnableOption "direnv per-directory environments";
       gpg = mkEnableOption "GnuPG for encryption and signing";
@@ -77,6 +73,5 @@ in
       # username = mkOption { type = types.str; description = "Username for Home Manager."; };
       # homeDirectory = mkOption { type = types.str; description = "Home directory for Home Manager."; };
     };
-
   };
 }
