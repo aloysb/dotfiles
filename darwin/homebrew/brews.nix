@@ -1,5 +1,0 @@
-[
-  "restic"
-  "exercism"
-  "wireguard-tools"
-]
