@@ -15,9 +15,8 @@ in {
       dashboard-in-overlay = false; # Though dashboard is gone, setting might exist
       mru-spaces = false;
       show-process-indicators = true; # Redundant with system.dock.showindicators, but harmless
-      # static-only = false; # Not directly in system.dock, might be useful
-      launchanim = true;
-      expose-group-by-app = true;
+      launchanim = false;
+      expose-group-app = true;
       scroll-to-open = true;
       minimize-to-application = true;
       # autohideDelay = 2.0; # Optional: delay before hiding
@@ -29,47 +28,19 @@ in {
 
       # Persistent apps in the Dock
       # The list of apps needs to be exact bundle identifiers or paths to .app bundles
-      # Example: persistentApps = [ "/Applications/Safari.app" "com.apple.Terminal" ];
-      # From original dock.nix:
       persistent-apps = [
         "/Applications/WezTerm.app"
-        "/Applications/Google Chrome Dev.app"
-        "/Applications/Safari Technology Preview.app"
-        # "/Applications/Emacs.app" # Assuming Emacs is installed via Homebrew cask or similar
-        # "/Applications/Firefox.app"
-        # "/Applications/Zed.app"
-        "/Applications/Obsidian.md"
+        "/Applications/Emacs.app" # Assuming Emacs is installed via Homebrew cask or similar
+        "/Applications/Firefox.app"
         "/System/Applications/System Settings.app"
         "/System/Applications/Utilities/Activity Monitor.app"
-        # "/Applications/Spotify.app"
-        # "/Applications/Discord.app"
-        # "/Applications/Telegram.app"
-        # "/Applications/WhatsApp.app"
-        # "/Applications/Signal.app"
-        # "/Applications/Notion.app"
-        # "/Applications/Linear.app"
-        # "/Applications/Cron.app"
-        # "/Applications/Spark Desktop.app"
-        # "/Applications/Superhuman.app"
-        # "/Applications/Things3.app"
-        # "/Applications/Tailscale.app" # If installed as an app
-        # "/Applications/Parcel.app"
+        "/Applications/Spotify.app"
+        "/Applications/Discord.app"
       ];
 
       # Persistent others (folders, URLs)
       # Example: persistentOthers = [ "~/Downloads" ];
-      # From original dock.nix (empty, but structure is there):
       persistent-others = [];
-
-      # Other dock settings from `system.defaults.dock` in original configuration
-      # These are now part of `services.dock` in nix-darwin
-      # "dashboard-in-overlay" = false; # Dashboard is deprecated
-      # "show-process-indicators" = true; # Covered by showindicators
-      # "static-only" = false; # Allow non-apps in dock (folders, etc.)
-      # "launchanim" = true; # Launch animation for apps
-      # "expose-group-by-app" = true; # Group windows by app in Mission Control
-      # "scroll-to-open" = true; # Scroll on Dock icon to open Exposé/Cycle windows
-      # "minimize-to-application" = true; # Minimize windows into their app icon
     };
   };
 }

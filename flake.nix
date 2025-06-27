@@ -81,6 +81,7 @@
       userScripts = ./scripts;
       isLinux = system == systemLinux;
       isDarwin = system == systemDarwin;
+      pkgs = pkgsForSystem system;
     };
   in {
     ##########################################
