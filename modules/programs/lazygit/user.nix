@@ -10,6 +10,10 @@ in {
   config = lib.mkIf cfg.enable {
     programs.lazygit = {
       enable = true;
+      settings = {
+        git = {disableForcePushing = true;};
+        quitOnTopLevelReturn = true;
+      };
     };
   };
 }

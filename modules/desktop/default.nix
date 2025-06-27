@@ -8,7 +8,7 @@
   imports =
     [
       ./core.nix # Should be empty or removed
-      ./firefox.nix
+      #./firefox.nix
       # Linux DE components
       # ./waybar.nix
       #./rofi.nix

@@ -14,8 +14,8 @@ tasks:
   nvim-reload:
     desc: "Reload nvim configuration by reinstalling the nix profile"
     cmds:
-      - nix profile remove dotfiles/nvim
-      - nix profile install .?dir=dotfiles/nvim#nvim
+      - nix profile remove programs/dotfiles/nvim
+      - nix profile install .?dir=programs/dotfiles/nvim#nvim
 
   default:
     desc: "Show available tasks"

@@ -15,15 +15,7 @@ in {
       programs.waybar = {
         enable = true;
         package = pkgs.waybar; # Or a specific variant if needed
-        # Settings and style are managed by config files symlinked by the dotfiles module.
-        # config = {}; # Raw config options if not using external files
-        # style = "";  # Raw style options if not using external files
       };
-
-      # Ensure Waybar config files are symlinked from dotfiles
-      # This is handled by the dotfiles.nix module:
-      # home.file.".config/waybar/config.jsonc".source = "${dotfilesDir}/waybar/config.jsonc";
-      # home.file.".config/waybar/style.css".source = "${dotfilesDir}/waybar/style.css";
 
       # Include packages that Waybar might need for its modules, if not dependencies of Waybar itself
       home.packages = with pkgs; [

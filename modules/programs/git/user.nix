@@ -61,8 +61,9 @@ in {
 
     home.packages = with pkgs; [
       gh # GitHub CLI
-      git-delta # For delta
+      delta # For delta
       pre-commit # For pre-commit hooks
+      gitleaks # For secret scanning
     ];
 
     # Ensure GPG agent is set up if commit signing is enabled

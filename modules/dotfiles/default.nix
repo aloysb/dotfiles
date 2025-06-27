@@ -25,7 +25,6 @@ in {
     home.file = lib.mkMerge [
       # -------- always ----------
       (link ".config/wezterm" "wezterm")
-      (link ".config/lazygit" "lazygit")
       (link ".config/nvim" "nvim")
       (link ".config/wallpapers" "wallpapers")
       (link ".config/emacs" "emacs")
