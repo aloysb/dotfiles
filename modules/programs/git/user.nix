@@ -59,6 +59,12 @@ in {
       };
     };
 
+    home.packages = with pkgs; [
+      gh # GitHub CLI
+      git-delta # For delta
+      pre-commit # For pre-commit hooks
+    ];
+
     # Ensure GPG agent is set up if commit signing is enabled
     # This is often handled by a gpg module or system-level gpg agent setup
     # For Home Manager, it could be:

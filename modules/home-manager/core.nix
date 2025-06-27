@@ -16,7 +16,6 @@ in {
       [
         # Common packages from original home.nix
         curl
-        gh
         wezterm # Assuming this is preferred over foot for now, or can be conditional
         ripgrep
         just
@@ -27,7 +26,6 @@ in {
         zig
         entr
         neofetch
-        delta # Git delta is also configured in the git module, this ensures it's in packages
         caddy
         corepack
         go
@@ -73,24 +71,12 @@ in {
         bluez # Bluetooth utilities, often system-level but sometimes user tools are useful
       ];
 
-    # Programs that were enabled via `programs.<name>.enable` but are essentially just packages
-    # if their modules don't do much more than install them + basic config.
-    # Example: yazi was `programs.yazi.enable`. If its module only installs and adds zsh integration
-    # (which is often default or covered by zsh plugin managers), it could just be in home.packages.
-    # For now, assuming specific modules like yazi, eza, etc., handle their own package installation.
-
-    programs.yazi = {
-      enable = true; # Keep explicit yazi program enable for now
-      enableZshIntegration = config.modules.programs.zsh.enable;
-    };
-
     programs.thefuck = {
       enable = false; # As per original config
       enableInstantMode = true;
       enableZshIntegration = config.modules.programs.zsh.enable;
     };
 
-    # home-manager itself, if it needs to be in packages (usually not)
-    # programs.home-manager.enable = true; # This is for the HM module itself
+    programs.home-manager.enable = true; # This is for the HM module itself
   };
 }

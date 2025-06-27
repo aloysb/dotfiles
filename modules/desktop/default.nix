@@ -5,19 +5,18 @@
   pkgs,
   ...
 }: {
-  imports = [
-    ./core.nix # Should be empty or removed
-    #./firefox.nix
-
-    # Linux DE components
-    # ./waybar.nix
-    #./rofi.nix
-    # ./wofi.nix # To be created (if used)
-
-    # Cross-platform GUI apps
-    # ./wezterm.nix # (already in packages, but could be a module for specific settings)
-
-    # Darwin GUI elements
-    ./dock.nix
-  ];
+  imports =
+    [
+      ./core.nix # Should be empty or removed
+      ./firefox.nix
+      # Linux DE components
+      # ./waybar.nix
+      #./rofi.nix
+      # ./wofi.nix # To be created (if used)
+    ]
+    ++ lib.optionals pkgs.stdenv.isLinux [
+    ]
+    ++ lib.optionals pkgs.stdenv.isDarwin [
+      ./dock.nix
+    ];
 }

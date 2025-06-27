@@ -16,7 +16,7 @@ in {
       mru-spaces = false;
       show-process-indicators = true; # Redundant with system.dock.showindicators, but harmless
       launchanim = false;
-      expose-group-app = true;
+      expose-group-apps = true;
       scroll-to-open = true;
       minimize-to-application = true;
       # autohideDelay = 2.0; # Optional: delay before hiding

@@ -6,8 +6,6 @@
   ...
 }: let
   cfg = config.modules.desktop.waybar;
-  homeDir = specialArgs.home-directory;
-  dotfilesDir = specialArgs.dotfiles; # ./dotfiles from flake root
 in {
   options.modules.desktop.waybar = lib.mkEnableOption "Waybar status bar (Linux-specific)";
 
