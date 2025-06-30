@@ -1,12 +1,12 @@
 version: '3'
 
 tasks:
-  m1-switch:
+  switch-m1:
     desc: "Run nix-darwin rebuild switch for macOS"
     cmds:
       - sudo nix run nix-darwin/master#darwin-rebuild -- switch --flake .#darwin-macbook-m1
 
-  homelab-switch:
+  switch-homelab:
     desc: "Run nixos-rebuild switch for Linux"
     cmds:
       - nixos-rebuild switch --flake .#linux-homelab-x86

@@ -48,6 +48,9 @@
       gpg.enable = true;
       #pass.enable = true;
     };
+    services = {
+      restic.enable = true;
+    };
   };
 in {
   imports = [
@@ -79,12 +82,13 @@ in {
     useGlobalPkgs = true; # Use system-level pkgs for HM
     useUserPackages = true; # Allow user-specific packages in HM
     extraSpecialArgs = specialArgs; # Pass username, home-directory, inputs, self, dotfiles, userScripts
-    backupFileExtension = "bk";
+    backupFileExtension = "backup";
     users.${username} = {config, ...}: {
       imports = [
         ../../modules/home-manager/default.nix
       ];
       config = {
+        launchd.enable = true;
         modules = modulesHM;
         home = {
           homeDirectory = home-directory;

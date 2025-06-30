@@ -4,6 +4,9 @@
     # Shell
     ../programs/zsh/user.nix
 
+    # Services
+    ../services/restic/user.nix
+
     # Programs - CLI
     ../programs/git/user.nix
     ../programs/nvim/user.nix
