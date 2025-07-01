@@ -48,7 +48,8 @@
     # Define all overlays here
     customOverlays = [
       # Overlay from home-manager/home.nix
-      (import ./overlays/aider-overlay.nix)
+      (import ./overlays/aider.nix)
+      (import ./overlays/bitwarden-cli.nix)
       (final: prev: {
         # tree-sitter fix
         tree-sitter-bundled-vendor = prev.tree-sitter-bundled-vendor.overrideAttrs (oldAttrs: {
