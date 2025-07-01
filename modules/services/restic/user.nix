@@ -8,17 +8,17 @@
   cfg = config.modules.services.restic;
   username = specialArgs.username;
 
-  parseDotEnv = import ./lib/dotenv.nix {
+  parseDotEnv = import ./dotenv.nix {
     inherit lib;
-    file = ./para.env;
+    file = ./.env.para;
   };
   # A list of paths to back up
   # The tilde '~' will be automatically expanded to the user's home directory.
   backupPaths = [
-    "~/areas"
-    "~/resources"
-    "~/archives"
-    # "~/projects" # You can add this back if you're happy with the global excludes
+    "/Users/${username}/areas"
+    "/Users/${username}/resources"
+    "/Users/${username}/archives"
+    # "/Users/${username}/projects" # You can add this back if you're happy with the global excludes
   ];
 in {
   options = {
@@ -49,10 +49,6 @@ in {
           ProgramArguments =
             [
               "${pkgs.restic}/bin/restic"
-              "-r"
-              "s3:s3.us-west-004.backblazeb2.com/backup-para"
-              "--password-file"
-              "./restic-password"
               "backup"
             ]
             ++ backupPaths;

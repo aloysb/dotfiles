@@ -69,13 +69,11 @@ in {
           COREPACK_ENABLE_AUTO_PIN = "0";
           CONF = "$HOME/.config/"; # Standard XDG
           DY = "$HOME/dylan/"; # User specific
-          # XDG_CONFIG_HOME is automatically set by HM if not mistaken, but doesn't hurt
           XDG_CONFIG_HOME = "$HOME/.config";
-          DOOMDIR = "${dotfilesDir}/emacs/doom"; # Path to doom emacs config
         }
         // lib.optionalAttrs pkgs.stdenv.isDarwin {
           # DOCKER_HOST specific to colima on Darwin, conditionally added here.
-          DOCKER_HOST = "unix://${homeDir}/.colima/default/docker.sock";
+          #DOCKER_HOST = "unix://${homeDir}/.colima/default/docker.sock";
         };
 
       oh-my-zsh = {

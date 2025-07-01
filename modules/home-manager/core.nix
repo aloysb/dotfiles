@@ -40,11 +40,10 @@ in {
         docker-compose
         postgresql # Client tools
         pm2
-        glow # Markdown reader
         nodejs_20 # Or a more generic nodejs latest/lts
         btop
-        wireguard-tools # For VPN
         go-task # Task runner
+        bitwarden-cli # Password manager
 
         # AI related tools
         claude-code

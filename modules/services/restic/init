@@ -1,0 +1,8 @@
+#!/usr/bin/env bash
+# Init Para
+
+set -a
+source .env.para
+restic init
+set +a
+
