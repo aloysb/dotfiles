@@ -42,7 +42,6 @@ in {
         nodejs_20 # Or a more generic nodejs latest/lts
         btop
         go-task # Task runner
-        bitwarden-cli # Password manager
 
         # AI related tools
         claude-code
