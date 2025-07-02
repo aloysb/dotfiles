@@ -47,7 +47,6 @@ in {
         claude-code
         repomix
         ollama
-        aider-chat # This is in an overlay, ensure overlay is active
       ]
       ++ lib.optionals isDarwin [
         colima
