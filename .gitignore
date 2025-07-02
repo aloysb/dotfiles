@@ -14,3 +14,4 @@
 .env
 
 dotfiles/emacs/vanilla/elpaca
+modules/services/restic/.env.*
