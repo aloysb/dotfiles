@@ -14,9 +14,6 @@ in
     modules = [
       ../../modules/default.nix # Common modules
 
-      # Import sops-nix NixOS module
-      inputs.sops-nix.nixosModules.sops # For system-level secrets
-
       # Hardware configuration for this specific host
       ../../nixos/hardware-configuration.nix # Keep this as it's machine-specific
 
@@ -48,7 +45,6 @@ in
           system = {
             nix-settings.enable = true;
             users.enable = true; # This will pull user setup from modules/system/users.nix
-            sops.enable = true; # Module to be created/populated
           };
           services = {
             openssh.enable = true; # Module to be created/populated
@@ -88,7 +84,6 @@ in
             # The ... is for args like pkgs, config, lib
             imports = [
               ../../modules/home-manager.nix # A new file to bridge host enables to HM module imports
-              inputs.sops-nix.homeManagerModules.sops # For user-level secrets
             ];
             home.homeDirectory = home-directory;
             home.username = username;

@@ -10,7 +10,8 @@
 
   parseDotEnv = import ./dotenv.nix {
     inherit lib;
-    file = ./.env.para;
+    #file = ./.env.para;
+    file = ./.env.example;
   };
   # A list of paths to back up
   # The tilde '~' will be automatically expanded to the user's home directory.

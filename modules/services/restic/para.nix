@@ -15,7 +15,7 @@ in {
   ];
   repository = "s3:s3.us-west-004.backblazeb2.com";
   exclude = excludes;
-  environmentFile = "./.env.para";
+  #environmentFile = "./.env.para";
   passwordFile = "./.restic-password";
   initialize = true;
   timerConfig = {

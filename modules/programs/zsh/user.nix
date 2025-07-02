@@ -49,9 +49,6 @@ in {
         fi
       '';
       initExtra = ''
-        # Secrets (e.g., OPENROUTER_API_KEY) should be handled by sops-nix module if enabled
-        # export OPENROUTER_API_KEY=$(pass show openrouter/api_key) # Old way
-
         export OLLAMA_API_BASE=http://127.0.0.1:11434
 
         # Source Powerlevel10k configuration if it exists

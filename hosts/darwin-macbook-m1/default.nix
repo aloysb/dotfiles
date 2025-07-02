@@ -14,7 +14,6 @@
     system = {
       nix-settings.enable = true;
       users.enable = true; # This will pull user setup from modules/system/users.nix
-      sops.enable = true; # Assuming sops is used on Darwin too
       homebrew.enable = true; # Enable the homebrew module (to be created)
     };
     services = {

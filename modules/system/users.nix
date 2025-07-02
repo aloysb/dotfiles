@@ -35,7 +35,6 @@ in {
     # users.users.${username} = lib.mkIf pkgs.stdenv.isLinux {
     #   isNormalUser = true;
     #   # initialPassword = "password"; # WARNING: Insecure. Manage with sops or imperatively.
-    #   # This should be removed or handled by sops.
     #   # shell = pkgs.zsh; # This will be handled by the ZSH module via Home Manager
     #   extraGroups = ["nixos" "docker" "uinput" "input"]; # From original nixos/configuration.nix
     #   # "wheel" is already added above.

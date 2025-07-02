@@ -26,11 +26,7 @@
       url = "github:homebrew/homebrew-bundle";
       flake = false;
     };
-    sops-nix = {
-      # Added sops-nix input
-      url = "github:Mic92/sops-nix";
-      inputs.nixpkgs.follows = "nixpkgs"; # Ensure it uses the same nixpkgs
-    };
+    agenix.url = "github:ryantm/agenix";
   };
 
   outputs = {
@@ -42,7 +38,7 @@
     homebrew-core,
     homebrew-cask,
     homebrew-bundle,
-    sops-nix,
+    agenix,
     ...
   } @ inputs: let
     # Define all overlays here
@@ -75,7 +71,7 @@
 
     # Common specialArgs for all systems
     commonSpecialArgs = system: {
-      inherit inputs self username sops-nix; # sops-nix might be needed by HM modules
+      inherit inputs self username agenix;
       home-directory = homeDirectory system;
       dotfiles = ./modules/dotfiles;
       userScripts = ./scripts;

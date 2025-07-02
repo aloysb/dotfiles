@@ -37,7 +37,6 @@ in {
           autostash = true;
         };
         # GPG signing key - this should ideally be configured dynamically
-        # or through sops if the key itself is sensitive or varies by machine.
         # For now, using the hardcoded one from your config.
         user.signingkey = "501A50921536CA05";
         commit.gpgSign = true; # Enable commit signing

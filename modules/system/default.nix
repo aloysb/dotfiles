@@ -10,6 +10,5 @@
     ./nix-settings.nix
     ./users.nix
     ./homebrew.nix # homebrew module (Darwin only)
-    ./sops.nix # sops module - system parts & HM integration aid
   ];
 }

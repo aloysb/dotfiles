@@ -1,11 +1,6 @@
-# Placeholder for core system module
-{
-  lib,
-  config,
-  pkgs,
-  ...
-}: {
+{pkgs, ...}: {
   environment.systemPackages = with pkgs; [
     git
+    agenix-cli
   ];
 }
